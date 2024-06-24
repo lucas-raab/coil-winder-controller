@@ -1,0 +1,69 @@
+<div id="pancake" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="800" data-tchmi-height="640">
+
+<div id="TcHmiDatagrid_pancake_input" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="24" data-tchmi-row-numbers-resizable="false" data-tchmi-show-row-numbers="false" data-tchmi-width-mode="Parent" data-tchmi-height-mode="Parent" data-tchmi-right="45.0" data-tchmi-bottom="0" data-tchmi-right-unit="%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list%/s%">
+<script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
+[
+  {
+    "name": "radius",
+    "label": "Radius",
+    "control": "NumericInput",
+    "width": 100,
+    "widthUnit": "%",
+    "resize": false,
+    "sortable": false,
+    "minWidth": 0,
+    "minWidthUnit": "px",
+    "editable": true,
+    "horizontalAlignment": "Left",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false
+  }
+]
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-cell-content-padding" type="application/json">
+{
+  "left": 3,
+  "leftUnit": "px",
+  "right": 3,
+  "rightUnit": "px",
+  "top": 0,
+  "topUnit": "px",
+  "bottom": 0,
+  "bottomUnit": "px"
+}
+</script>
+
+
+
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiDatagrid_pancake_input.onDataChanged",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list%/s%",
+        "value": {
+          "objectType": "Symbol",
+          "valueType": "tchmi:general#/definitions/String",
+          "symbolExpression": "%ctrl%TcHmiDatagrid_pancake_input%/ctrl%"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+</div>

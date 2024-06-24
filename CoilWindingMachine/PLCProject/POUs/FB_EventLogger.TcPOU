@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_EventLogger" Id="{4c915152-ce96-45c7-b663-4d8b33611a66}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EventLogger
+VAR
+	fbMessage : ARRAY[0..100] OF FB_TcMessage;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{7c372fc6-5f86-47fb-b2e8-1c337bb96366}" />
+    <Method Name="CYCLIC" Id="{83d44212-4098-4224-9294-dd20f0edd67d}">
+      <Declaration><![CDATA[METHOD CYCLIC : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INIT" Id="{46b05bf5-334b-4678-b5a1-3cc69e6f9417}">
+      <Declaration><![CDATA[METHOD INIT : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//initlize event log messages
+fbMessage[0].CreateEx(TC_Events.PLC_events.INIT, 0);
+fbMessage[1].CreateEx(TC_Events.PLC_events.WindingStarted, 0);
+fbMessage[2].CreateEx(TC_Events.PLC_events.WindingExitTC, 0);
+fbMessage[3].CreateEx(TC_Events.PLC_events.InvalidInputs, 0);
+fbMessage[4].CreateEx(TC_Events.PLC_events.WindingExitUser, 0);
+fbMessage[5].CreateEx(TC_Events.PLC_events.AxisErrorState, 0);
+fbMessage[6].CreateEx(TC_Events.PLC_events.WindingPaused, 0);
+fbMessage[7].CreateEx(TC_Events.PLC_events.WindingExitUser, 0);
+fbMessage[8].CreateEx(TC_Events.PLC_events.HomingError, 0);
+fbMessage[9].CreateEx(TC_Events.PLC_events.ESTOP,0);
+
+
+
+
+fbMessage[0].Send(0);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_EventLogger">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_EventLogger.CYCLIC">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_EventLogger.INIT">
+      <LineId Id="6" Count="9" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="3" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

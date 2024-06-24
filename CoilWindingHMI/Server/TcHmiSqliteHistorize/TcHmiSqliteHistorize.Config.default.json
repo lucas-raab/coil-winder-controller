@@ -1,0 +1,58 @@
+{
+    "commitInterval": "PT10S",
+    "enableBackup": false,
+    "historizedSymbolList": {
+        "PLC1.MAIN.FB_hmi_connection.rpm.0": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.rpm.1": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.rpm.2": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.rpm.3": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.torque.0": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.torque.1": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.torque.2": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        },
+        "PLC1.MAIN.FB_hmi_connection.torque.3": {
+            "interval": "PT1S",
+            "maxEntries": 10000,
+            "recordingEnabled": true,
+            "rowLimit": 100000
+        }
+    },
+    "inMemory": false,
+    "maxBackups": 1,
+    "mode": 3,
+    "vacuumOnStartup": false
+}

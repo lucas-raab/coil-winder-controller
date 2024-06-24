@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="input_bounds" Id="{350e6503-6652-40d6-b2eb-f5a82733be9e}">
+    <Declaration><![CDATA[//defines bounds for all HMI inputs
+TYPE input_bounds :
+STRUCT
+	
+	linear_speed_low : LREAL := 0.01;
+	linear_speed_high: LREAL := 2.0;
+
+	tension_low : LREAL := 0.5;
+	tension_high : LREAL := 5;
+	
+	turn_count_pickup_low : INT := 1;
+	turn_count_pickup_high : INT := 1000;
+	
+	radius_payoff_low : LREAL:=1;
+	radius_payoff_high : LREAL:=1000;
+
+	coil_shape_low : INT :=0;
+	coil_shape_high : INT :=2;
+	
+	acceleration_low : LREAL :=0.1;
+	acceleration_high : LREAL :=1;
+	
+	decceleration_low : LREAL :=0.1;
+	decelleration_high : LREAL :=1;
+
+	jerk_low : LREAL:=0.1;
+	jerk_high : LREAL:=1;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

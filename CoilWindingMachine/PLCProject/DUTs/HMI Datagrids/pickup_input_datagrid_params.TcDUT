@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="pickup_input_datagrid_params" Id="{b7539696-72a5-4d3a-afb5-a7b1f2f66c16}">
+    <Declaration><![CDATA[TYPE pickup_input_datagrid_params :
+STRUCT
+	motor_name : STRING;
+	turn_count: INT;
+	coil_shape: INT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

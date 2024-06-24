@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_hmi_connection" Id="{16fd796a-42c3-43cf-88b6-53e67b78becc}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_hmi_connection
+VAR_INPUT
+	//Initlize datagrid params
+	payoff_input_datagrid_params_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_input_datagrid_params;
+	payoff_output_datagrid_params_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_output_datagrid_params;
+	pickup_input_datagrid_params_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_input_datagrid_params;
+	pickup_output_datagrid_params_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_output_datagrid_params;
+	general_input_datagrid_params_list: ARRAY[1..1] OF general_input_datagrid_params;
+	misc_settings_input_datagrid_params_list :ARRAY[1..1] OF misc_settings_input_datagrid_params;
+	pickup_pancake_input_datagrid_params_list : ARRAY[1..1] OF pancake_params_0;
+	pickup_racetrack_input_datagrid_params_list : ARRAY[1..1] OF racetrack_params_1;
+	
+	//Outputs
+	
+	motor_turncount : ARRAY[1..4] of DINT;
+	
+	
+	
+	//buttons
+	
+	//CONTROL PAGE
+	resetUI : BOOL ;
+	startUI : BOOL ;
+	tensionUI : BOOL;
+	homeUI : BOOL;
+	
+	//SETTINGS
+	checkInputsUI : BOOL;
+	updateInputsUI : BOOL;
+	
+	//OUTPUT
+	clearUI : BOOL;
+	
+	//HISTORYIZED VARS
+	torque : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
+	rpm : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
+	
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{9718d345-c687-4cc8-aec1-c0b0c29132ec}" />
+    <Method Name="CYCLIC" Id="{e0324688-916e-4bfe-98af-5869031e350d}">
+      <Declaration><![CDATA[METHOD CYCLIC : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[torque[1]:=0.01+torque[2];
+
+torque[2]:=0.02+torque[2];
+
+torque[3]:=0.04+torque[3];
+
+torque[4]:=0.08+torque[4];]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INIT" Id="{380bcd9f-89dd-442f-8edd-b047340f0d4e}">
+      <Declaration><![CDATA[METHOD INIT : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[init_datagrids();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="init_datagrids" Id="{9e027757-0043-4a80-8af8-6e4796c997e6}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD init_datagrids : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//initalize datagrids for ui
+FOR i := 1 TO GVL.MAX_PAYOFF_COUNT DO
+	
+	payoff_input_datagrid_params_list[i].motor_name := TO_STRING(i);
+	payoff_output_datagrid_params_list[i].motor_name := TO_STRING(i);
+		
+END_FOR;
+
+pickup_input_datagrid_params_list[1].motor_name := TO_STRING(1);
+pickup_output_datagrid_params_list[1].motor_name := TO_STRING(1);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_hmi_connection">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_hmi_connection.CYCLIC">
+      <LineId Id="10" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_hmi_connection.INIT">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_hmi_connection.init_datagrids">
+      <LineId Id="6" Count="8" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{89db02fc-403c-41e5-9629-9f906630e622}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	InitComplete: BOOL;
+	
+	//Function Block INIT
+	FB_hmi_connection: FB_hmi_connection;
+	FB_WindingControl: FB_WindingControl;
+	FB_EventLogger: FB_EventLogger;
+	
+	
+	
+	
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CYCLIC();]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{5be72f40-ae86-44c7-98c0-16546f0605de}">
+      <Folder Name="Init Methods" Id="{56da2c24-90a7-4142-9494-8c615ded5ee6}" />
+    </Folder>
+    <Method Name="CYCLIC" Id="{18bc88a2-8c6d-4614-9e8b-5364e5c9f027}">
+      <Declaration><![CDATA[METHOD CYCLIC : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT InitComplete THEN
+    InitComplete := INIT();
+    RETURN;
+END_IF
+
+//FB Cyclic logic. 
+
+FB_EventLogger.CYCLIC(); //event logger
+FB_hmi_connection.CYCLIC(); //hmi inputs and outputs
+FB_WindingControl.CYCLIC(); //motor control. ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INIT" Id="{d283a7a7-3eaa-4933-86d8-aab52f7a452a}">
+      <Declaration><![CDATA[METHOD INIT : BOOL
+VAR_INPUT
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Function Block INIT
+FB_hmi_connection.INIT();
+FB_WindingControl.INIT();
+FB_EventLogger.INIT();
+//MAIN INIT
+
+
+FB_WindingControl.hmiConnection:=ADR(FB_hmi_connection);
+FB_WindingControl.eventLogger:=ADR(FB_EventLogger);
+
+INIT:=TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="MAIN">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.CYCLIC">
+      <LineId Id="6" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="1" />
+    </LineIds>
+    <LineIds Name="MAIN.INIT">
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

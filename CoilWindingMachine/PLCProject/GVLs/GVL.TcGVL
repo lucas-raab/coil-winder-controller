@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL" Id="{82c12ed3-04a3-470e-88cc-f5802007fc59}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	MAX_PAYOFF_COUNT : INT:=3;
+	MAX_PICKUP_COUNT : INT:=1;
+	
+	//TO DO. need to figure these out. can do once we have hardware.
+	PICKUP_RATED_CURRENT : LREAL :=1.0;
+	PICKUP_TORQUE_CONSTANT: LREAL :=1.0;
+	PAYOFF_RATED_CURRENT: LREAL :=1.0;
+	PAYOFF_TORQUE_CONSTANT: LREAL :=1.0;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

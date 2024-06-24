@@ -1,0 +1,1593 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_WindingControl" Id="{2bf4d53e-3c0a-48b3-b562-160f25601b83}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_WindingControl
+VAR_INPUT
+	//Input hmi connection from MAIN
+	hmiConnection: POINTER TO FB_hmi_connection;
+	eventLogger: POINTER TO FB_EventLogger;
+END_VAR
+
+VAR
+//Function Blocks
+
+//CONTROL VARS
+desiredTension : LREAL:=0;
+desiredLinspeed : LREAL:=0;
+unwinding : BOOL := FALSE;
+desiredTurnCountPickup : DINT:=0;
+//exit conditions
+target_turn_count : DINT :=0;
+
+//STATUS VARS
+state : INT:=0;
+
+eta : LREAL :=0;
+etaFormattedString : STRING(255);
+progressPercent : LREAL :=0;
+
+
+tensioned : BOOL:=FALSE;
+winding : BOOL:=FALSE;
+
+
+//COIL MODELS
+coil_model_base_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+coil_model_base_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+	
+coil_model_rot_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+coil_model_rot_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+
+//AXIS LIST
+payoff_axis_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;
+pickup_axis_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;
+
+END_VAR
+VAR CONSTANT
+	input_bounds : input_bounds;
+	MAX_COIL_TYPE_COUNT : INT :=1; //number of coil types. counts from 0
+	MAX_SIZE_COIL_MODEL : INT :=1205;
+	TARGET_PICKUP_FORCE: LREAL :=10;
+	pi : LREAL := 4 * ATAN(1);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{b393cdcb-7058-41c2-9d03-a8f8d00b2dde}">
+      <Folder Name="Axis Control" Id="{49ec2768-53b2-482d-b44d-ec52fe555e63}" />
+      <Folder Name="Error Checks" Id="{dad124df-88d7-4412-bdba-255c48b7272a}" />
+      <Folder Name="Exit Checks" Id="{866f0ce9-c940-4c68-80f5-47885684bea2}" />
+      <Folder Name="HMI updates" Id="{df5bfcf9-c740-45ae-b19d-3c3cd0aca00f}" />
+      <Folder Name="Init Methods" Id="{313976c9-8371-4349-a1d4-ac334e51a051}" />
+      <Folder Name="Input Checks" Id="{3dff40f9-587b-485b-8ffe-a3d1acaecd62}" />
+      <Folder Name="MISC" Id="{df8274f9-8bfd-43c2-9dbf-d95ad8873f48}" />
+      <Folder Name="Motor Control" Id="{4367b06a-8be7-4cee-a828-1c414585ef9d}" />
+      <Folder Name="Status Updates" Id="{912579cd-d079-4ec8-869a-781310624225}" />
+    </Folder>
+    <Method Name="all_check" Id="{3616b09d-79ac-4d4e-a9a8-9c800c9db7f0}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD all_check : BOOL
+VAR_INPUT
+	write: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[all_check:= all_check OR general_input_check(write:=write);
+all_check:= all_check OR payoff_input_check(write:=write);
+all_check:=all_check OR pickup_input_check(write:=write);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CYCLIC" Id="{66242b1c-4d63-4218-b0e7-5f4fc34ce9db}">
+      <Declaration><![CDATA[METHOD CYCLIC : BOOL
+VAR
+	
+	i: INT;
+	cnt : INT :=0;
+	errorStatus : BOOL :=FALSE;
+	errorOutput : BOOL :=FALSE; //if true we wont output a new log message in case of error. meant to stop repeats
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//cycle counter
+cnt := cnt +1;
+
+
+//-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
+	CASE state OF
+		10:
+		// ========================================10========================================
+		IF hmiConnection^.resetUI THEN
+		reset();
+		hmiConnection^.resetUI:=FALSE;
+		END_IF
+	
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
+				 strArg:= '');
+			hmiConnection^.startUI:=FALSE;
+			
+		END_IF
+		IF hmiConnection^.tensionUI THEN
+		state:=20;
+		END_IF
+	
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+			
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			 
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			state:=50;
+		END_IF
+		
+		
+		// ========================================10========================================
+		
+		20,21:
+		// ========================================20========================================
+		
+		//tension button
+		IF hmiConnection^.resetUI THEN
+		reset();
+		hmiConnection^.resetUI:=FALSE;
+		END_IF
+	
+		//start button
+		IF hmiConnection^.startUI THEN
+			state:=30;
+			
+		END_IF
+		
+		//tension button
+		IF NOT hmiConnection^.tensionUI THEN
+		state:=10;
+		END_IF
+	
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+				 strArg:= '');
+			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		
+		// ========================================20========================================
+		
+		30,31:
+		// ========================================30========================================
+		
+		//tension button
+		IF hmiConnection^.resetUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to reset during winding. Please pause winding.',
+				 strArg:= '');
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+	
+		//start button
+		IF NOT hmiConnection^.startUI THEN
+			state:=20;
+			
+		END_IF
+		
+		//tension button
+		IF NOT hmiConnection^.tensionUI THEN
+			hmiConnection^.startUI:=FALSE;
+			state:=10;
+		END_IF
+	
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:=FALSE;
+			
+		END_IF
+		IF hmiConnection^.homeUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+				 strArg:= '');
+			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		// ========================================30========================================
+		
+		
+		40,41:
+		// ========================================40========================================
+		//tension button
+		IF  hmiConnection^.tensionUI THEN
+			state:=40;
+			
+		ELSE
+			state:=41;
+			
+		END_IF
+		
+		//reset button
+		IF hmiConnection^.resetUI THEN
+			reset();
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+	
+		//start button
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to start while finished. Please reset first.',
+				 strArg:= '');
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+		
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+				 strArg:= '');
+			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		
+		// ========================================40========================================
+
+		// ========================================400========================================
+		400:
+			
+		
+		//reset button
+		IF hmiConnection^.resetUI THEN
+			reset();
+			state:=10;
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+	
+		//start button
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to start while in error state. Please reset first, and resolve error.',
+				 strArg:= '');
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+		
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
+				 strArg:= '');
+			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		// ========================================400========================================
+		
+		// =======================================50========================================
+		50:
+		IF  hmiConnection^.tensionUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to tension while in homing sdtate. Please stop homing.',
+				 strArg:= '');
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+		
+		//reset button
+		IF hmiConnection^.resetUI THEN
+			reset();
+			state:=10;
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+	
+		//start button
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				 msgFmtStr := 'Error Occured. Unable to start while in homing sdtate. Please stop homing.',
+				 strArg:= '');
+			hmiConnection^.resetUI:=FALSE;
+			
+		END_IF
+		
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			
+			hmiConnection^.homeUI:=FALSE;
+			state:=10;
+		END_IF
+		// ========================================50========================================
+	END_CASE
+//-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
+	
+//clear status vars for axis. we will update them depending on our current state.
+pickup_axis_list[1].setClear();
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoff_axis_list[i].setClear();
+END_FOR
+
+//check FOR error, IF error THEN set state TO 400
+
+general_error_check(errorStatus=>errorStatus,errorOutput:=errorOutput);
+
+//if no error, but currently in error state set winding to standby
+//if none of the above state is unmodified
+IF errorStatus THEN
+	state:=400;
+ELSIF state=400 AND NOT errorStatus THEN
+	state:=10;
+END_IF
+
+//update HMI with certain motor values. 
+update_torque();
+
+
+
+//-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
+CASE state OF
+	00: //INIT STATE
+	
+	
+	
+	
+	state:=10;
+	
+	// ========================================10========================================
+	10: //STANDBY STATE. 
+	//wait for user inputs to transition to tension state. All motors are idle. Can edit params
+	
+	
+	
+	// ========================================20========================================
+	20: //STANDBY WITH STANDSTILL TENSION INITAL
+	//inital error check for standstill tension state
+	
+	//check inputs for standstill tension
+	IF standstill_tension_check() THEN
+		//if error then revert to standby
+		state:=10;
+		hmiConnection^.tensionUI:=FALSE;
+	ELSE
+		state:=21;
+		
+	END_IF
+	// ========================================20========================================
+	
+	// ========================================21========================================
+	21://STANDBY WITH STANDSTILL TENSION
+	//no movement in cable, but tension is being created. waiting on user inputs to start winding. Can edit params
+	
+	
+	standstill_tension();
+	// ========================================21========================================
+
+	// ========================================30========================================
+	30: //WINDING TENSION INITAL
+	//inital error check for winding tension state.
+	
+	// INPUT VALIDATION
+	IF winding_check() THEN
+		//if error then revert to standby
+		state:=20;
+		hmiConnection^.startUI:=FALSE;
+	ELSE
+		state:=31;
+		
+	END_IF
+	// ========================================30========================================
+	
+	// ========================================31========================================
+	31: //WINDING TENSION 
+	//cable currently being wound with set tension. Can not edit params
+	
+	
+	winding_tension();
+	
+	
+	//check for exit conditions 
+	IF winding_check() THEN
+		state:=40;
+		
+	ELSE
+		state:=31;
+	END_IF
+	
+	//get status updates
+	//only calculate once very N turns in order to save resources
+	IF (cnt MOD 10 =0) THEN
+		find_eta();
+		get_current_progress();
+	END_IF
+	
+	// ========================================31========================================
+	
+	
+	// ========================================40========================================
+	40: //FINISHED HOLD STANDSTILL TENSION
+	//cable winding finished, currently mainting tension until user input. Can not edit params
+	
+	standstill_tension();
+	
+	IF standstill_tension_check() THEN
+		//if error then revert to standby
+		state:=51;
+		
+	ELSE
+		state:=40;
+		
+	END_IF
+	// ========================================40========================================
+	
+	// ========================================41========================================
+	41: //FINISHED TENSION
+	//cable winding finished, waiting on user reset to transition to standby state. Can edit params
+	
+	// ========================================41========================================
+	
+
+	// ========================================50========================================
+	50:
+	//exit homing state if homing is done or error.
+	IF home() THEN
+		state:=10;
+	
+	ELSE
+		state:=50;
+	END_IF
+	
+	
+	
+	
+	
+	// ========================================50========================================
+	
+	// ========================================51========================================
+	
+	400: //ERROR STATE
+	//error on a axis preventing motor movement, or winding start.
+	
+	500: //ESTOP STATE
+	//triggered on estop press. can be cleared with reset
+	
+END_CASE
+//-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
+
+
+
+//Call cyclic methods of all axies 
+pickup_axis_list[1].CYLIC();
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoff_axis_list[i].CYLIC();
+END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
+      <Declaration><![CDATA[//updates eta var
+METHOD find_eta : BOOL
+VAR
+	turncount_diff : LREAL:=desiredTurnCountPickup-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+	
+	
+	length : LREAL; //length of straight sections in race track coil
+	minutes: DINT;
+	
+	seconds: DINT;
+	minutesString: STRING;
+	secondsString: STRING;
+	formattedString: STRING(255);
+END_VAR
+VAR CONSTANT
+	pi : LREAL := 4 * ATAN(1);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//if we are finished out put 0 seconds and exit
+IF state <=59 OR state >= 50 THEN
+eta:=0;
+RETURN ;
+END_IF
+
+CASE pickup_axis_list[1].coilShapeID OF
+	//finds eta given turn count
+	//formulas are a function of circumfrence given turn count. we take the intergral of this, with respect to turn count, with the upper bound being our target turn count 
+	0:
+	eta:=((pi*pickup_axis_list[1].pancake.radius)*(turncount_diff)+(pickup_axis_list[1].tape_info.tape_depth/2)*(desiredTurnCountPickup*desiredTurnCountPickup-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns*-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns))/(desiredTurnCountPickup);
+	
+	1:	
+	
+	(*
+	eta:=((2*pi*racetrack_params.radius*target_turn_count_pickup+pi*tape_info.tape_depth*target_turn_count_pickup*target_turn_count_pickup+2*racetrack_params.length*target_turn_count_pickup)
+		 -(2*pi*racetrack_params.radius*pickup_motor_list[1].turn_count+pi*tape_info.tape_depth*target_turn_count_pickup*pickup_motor_list[1].turn_count+2*racetrack_params.length*pickup_motor_list[1].turn_count));
+		 *)
+END_CASE
+
+
+// Convert the LREAL value to minutes and seconds
+minutes := TRUNC(eta / 60);
+seconds := TRUNC(eta - (minutes * 60));
+
+// Convert the minutes and seconds to strings
+minutesString := DINT_TO_STRING(minutes);
+secondsString := DINT_TO_STRING(seconds);
+
+// Format the final output string
+etaFormattedString := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="general_error_check" Id="{8ba42383-7e8f-4747-9137-d6b0ee74634e}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD general_error_check : BOOL
+VAR
+	i: INT;
+	pickup_motor_count: INT;
+END_VAR
+VAR_OUTPUT
+	errorStatus : BOOL ;
+END_VAR
+VAR_IN_OUT
+	errorOutput: BOOL ;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Checks to see if there are any errors in a enabled axis.
+
+IF pickup_axis_list[1].AXIS.Status.Error THEN
+		errorStatus:=TRUE;
+		
+	
+END_IF
+
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].AXIS.Status.Error AND payoff_axis_list[i].enabled THEN
+		errorStatus:=TRUE;
+		
+		IF NOT errorOutput THEN
+			
+			ADSLOGSTR(
+        		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        		msgFmtStr := 'Error occurred. At least one payoff motor needs to be enabled',
+        		strArg := ''
+   			 );
+		
+		
+		
+		END_IF
+		
+		
+		
+	
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="general_input_check" Id="{a3d14995-b6bb-4412-80c9-b4d7fa9675b0}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD general_input_check : BOOL
+VAR_INPUT
+	write: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF hmiConnection^.general_input_datagrid_params_list[1].tension < input_bounds.tension_low OR hmiConnection^.general_input_datagrid_params_list[1].tension > input_bounds.tension_high THEN
+	general_input_check := TRUE;
+	
+	ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Tension outside of range. ',
+        	strArg := ''
+   		 );
+	
+ELSE
+	
+	IF write THEN
+		desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+	
+	END_IF
+END_IF
+
+IF hmiConnection^.general_input_datagrid_params_list[1].linspeed < input_bounds.linear_speed_low OR hmiConnection^.general_input_datagrid_params_list[1].linspeed > input_bounds.linear_speed_high THEN
+	general_input_check := TRUE;
+	
+	ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Linear speedc out of range.',
+        	strArg := ''
+   		 );
+	
+ELSE
+	IF write THEN
+		desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+	
+	END_IF
+	
+END_IF
+
+IF write THEN
+	unwinding:=hmiConnection^.general_input_datagrid_params_list[1].unwinding;
+	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="get_current_progress" Id="{504eb237-53a6-4e39-b7e7-217f0cf72225}" FolderPath="Methods\Status Updates\">
+      <Declaration><![CDATA[METHOD get_current_progress : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF unwinding THEN
+	progressPercent := 100-(pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
+	
+ELSE
+	progressPercent := (pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
+
+END_IF
+	
+
+	]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD home : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//check to see if we are done
+pickup_axis_list[1].setPos();
+home := home AND pickup_axis_list[1].MCPOS.Done ;
+	
+
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+			payoff_axis_list[i].setPos();
+			home := home AND payoff_axis_list[i].MCPOS.Done ;
+		END_IF
+			
+	END_FOR
+
+	
+//cancels home if we run into any error
+home := home OR pickup_axis_list[1].MCPOS.Error;
+	
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		
+		home := home OR payoff_axis_list[i].MCPOS.Error;
+	END_IF
+			
+END_FOR
+			
+			
+		
+	]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INIT" Id="{a56443b6-9d3c-4e19-bf68-551e95d54fd0}">
+      <Declaration><![CDATA[METHOD INIT : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[init_coil_model();
+//Call cyclic methods of all axies 
+
+pickup_axis_list[1].INIT();
+
+pickup_axis_list[1].torqaueConstrant:=GVL.PICKUP_TORQUE_CONSTANT;
+pickup_axis_list[1].ratedCurrent:=GVL.PICKUP_RATED_CURRENT;
+
+
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoff_axis_list[i].INIT();
+	payoff_axis_list[1].torqaueConstrant:=GVL.PAYOFF_TORQUE_CONSTANT;
+	payoff_axis_list[1].ratedCurrent:=GVL.PAYOFF_RATED_CURRENT;
+	
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="init_coil_model" Id="{90edf354-a001-4a69-9922-1b60f25b1548}" FolderPath="Methods\Init Methods\">
+      <Declaration><![CDATA[METHOD init_coil_model : BOOL
+VAR 
+	med_val : LREAL; // intermediate value 
+	i :INT ;
+	
+	coil_type: INT:=0;
+	cnt: INT :=0; //temp
+END_VAR
+VAR CONSTANT
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//TO DO.
+
+(*
+
+
+
+	//1:
+	//creates 1205 points to model a race track coil. we do this 
+	cnt:=0;
+	FOR i := -150 TO 150 DO
+    	coil_model_base_Xcords[1][i+151]:=racetrack_params_1.radius+pickup_motor_list[1].turn_count*tape_info.tape_depth;
+		coil_model_base_Ycords[1][i+151]:=i;
+		
+		
+	END_FOR;
+	FOR i := -150 TO 150 DO
+    	coil_model_base_Xcords[1][i+452]:=-(coil_shape_params.radius+pickup_motor_list[1].turn_count*tape_info.tape_depth);
+		coil_model_base_Ycords[1][i+452]:=i;
+	
+	END_FOR;
+	FOR i := -150 TO 150 DO
+		med_val:=(pi/300)*i+pi;
+		
+		
+    	coil_model_base_Xcords[1][i+753]:=(coil_shape_params.radius+pickup_motor_list[1].turn_count*tape_info.tape_depth)*SIN(med_val);
+		coil_model_base_Ycords[1][i+753]:=-1*coil_shape_params.length*COS(med_val);
+	
+	END_FOR;
+	FOR i := -150 TO 150 DO
+		med_val:=(pi/300)*i;
+		
+		
+    	coil_model_base_Xcords[1][i+904]:=(coil_shape_params.radius+pickup_motor_list[1].turn_count*tape_info.tape_depth)*SIN(med_val);
+		coil_model_base_Ycords[1][i+904]:=coil_shape_params.length*COS(med_val);
+	
+	END_FOR;
+	 
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="input_update" Id="{a62c6a9d-53f4-4e3a-966f-6f249a814bd7}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD input_update : BOOL
+VAR_INPUT
+	general : BOOL ;
+	pickup : BOOL ;
+	payoff : BOOL ;
+END_VAR
+
+
+
+VAR
+	
+	//chooses which inputs we will update.         
+	i: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//NOT NEEDED ANYMORE
+(*
+
+
+//Updates internal winding control variables with HMI inputs. 
+IF pickup THEN
+	pickup_axis_list[1].coilShapeID:=hmiConnection^.pickup_input_datagrid_params_list[1].coil_shape;
+	desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
+END_IF
+
+IF payoff THEN
+	FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+	IF payoff_axis_list[i].enabled THEN
+		payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].outer_dia;
+		
+	
+	END_IF
+	
+	END_FOR
+END_IF
+
+IF general THEN
+	desiredLinspeed:=hmiConnection^.general_input_datagrid_params_list[1].linspeed;
+	desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+	unwinding:=hmiConnection^.general_input_datagrid_params_list[1].unwinding;
+	
+	pickup_axis_list[1].directionB:=BOOL_TO_INT(unwinding);
+	
+	FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+		payoff_axis_list[i].directionB:=BOOL_TO_INT(unwinding);
+
+	END_FOR
+END_IF
+
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="payoff_input_check" Id="{70c3f949-5037-419d-bccb-87705ebd3434}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD payoff_input_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_input
+	write: BOOL;
+END_VAR
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	
+	IF write THEN
+		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+	END_IF
+
+	IF hmiConnection^.payoff_input_datagrid_params_list[i].enabled THEN
+		
+	
+		IF hmiConnection^.payoff_input_datagrid_params_list[i].radius < input_bounds.radius_payoff_low OR hmiConnection^.payoff_input_datagrid_params_list[i].radius > input_bounds.radius_payoff_high THEN
+		payoff_input_check := TRUE;
+	
+		ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Payoff Radius outside of range.',
+        	strArg := ''
+   		 );
+		END_IF
+	ELSE
+	
+		IF write THEN
+			desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
+		END_IF
+		
+	END_IF
+	
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="pickup_input_check" Id="{3a472a75-4ad8-4147-bca7-de8a29e62be5}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD pickup_input_check : BOOL
+VAR_INPUT
+	write : BOOL ;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF hmiConnection^.pickup_input_datagrid_params_list[1].turn_count < input_bounds.turn_count_pickup_low OR hmiConnection^.pickup_input_datagrid_params_list[1].turn_count > input_bounds.turn_count_pickup_high THEN
+	pickup_input_check := TRUE;
+	
+	ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Pickup turncount outside of range.',
+        	strArg := ''
+   		 );
+	
+ELSE
+	
+	IF write THEN
+		desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
+	END_IF
+
+	
+	
+	
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="read_status" Id="{c26500a1-9771-4061-a160-1627c7f00ff3}" FolderPath="Methods\Axis Control\">
+      <Declaration><![CDATA[METHOD read_status : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ //updates status of all axises, pickup and payoff
+
+pickup_axis_list[1].Axis.ReadStatus();
+
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoff_axis_list[i].AXIS.ReadStatus();
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="reset" Id="{aef7dc8a-f8b9-41a2-9568-128920b7af80}" FolderPath="Methods\MISC\">
+      <Declaration><![CDATA[METHOD reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[state := 10;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="standstill_tension" Id="{2810c0a6-5d8e-4e25-8bef-5c7267116cff}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD standstill_tension : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF unwinding THEN
+	
+//to do. add unwinding functionality
+
+ELSE
+	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/1000;
+	
+	//TO DO need to find what to set these to. 
+	pickup_axis_list[1].velocityLimitLow:=0;
+	pickup_axis_list[1].velocityLimitHigh:=0;
+	
+	
+	pickup_axis_list[1].setTorque();
+	
+	
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+			payoff_axis_list[i].setStop();
+		END_IF
+	END_FOR 
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="standstill_tension_check" Id="{4514199c-9af5-4a98-ad75-0298298ebf12}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD standstill_tension_check : BOOL
+VAR_OUTPUT
+
+END_VAR
+VAR
+	input_bounds : input_bounds; //struct defining input bounds
+	i: INT; //counter
+	
+	
+	payoffEnableCheck :BOOL :=FALSE; //var to hold payoff enable var
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//check to see if HMI vars are valid for stand still tension before winding. outputs true if there was an error.
+
+//PICKUP AXIS CHECKS
+
+IF hmiConnection^.general_input_datagrid_params_list[1].tension < input_bounds.tension_low OR hmiConnection^.general_input_datagrid_params_list[1].tension > input_bounds.tension_high THEN
+	standstill_tension_check := TRUE;
+	
+	ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Tension outside of range. Unable to start tension',
+        	strArg := ''
+   		 );
+	
+ELSE
+	desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+	
+END_IF
+
+//PAYOFF AXIS CHECKS
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoffEnableCheck:=payoffEnableCheck OR hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+	
+END_FOR
+
+
+IF NOT payoffEnableCheck THEN
+	standstill_tension_check := TRUE;
+	
+	ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. At least one payoff motor needs to be enabled',
+        	strArg := ''
+   		 );
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="update_torque" Id="{ea80d7c9-b122-46ba-af4e-b3e883f32cba}" FolderPath="Methods\HMI updates\">
+      <Declaration><![CDATA[METHOD update_torque : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//update act ual torque values ofc motors. send these values to HMI
+
+pickup_axis_list[1].getTorque();
+hmiConnection^.torque[1]:=pickup_axis_list[1].actualTorque;
+
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	payoff_axis_list[i].getTorque();
+	hmiConnection^.torque[i+1]:=payoff_axis_list[i].actualTorque;
+
+END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="winding_check" Id="{31081dd9-0820-42d0-a9d6-769c3442a1c8}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD winding_check : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="winding_exit_check" Id="{d54735ba-4782-466e-8281-2700698b8cff}" FolderPath="Methods\Exit Checks\">
+      <Declaration><![CDATA[METHOD winding_exit_check : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Checks to see if various conditions are met to exit
+
+//turn count condition.
+
+IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= target_turn_count THEN
+	winding_exit_check :=TRUE;
+		
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="winding_tension" Id="{b4e997d8-0092-4fca-a6b8-7c2e056fe739}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD winding_tension : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF unwinding THEN
+	//to do 
+	
+ELSE
+	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/1000;
+	
+	//TO DO need to find what to set these to. 
+	pickup_axis_list[1].velocityLimitLow:=0;
+	pickup_axis_list[1].velocityLimitHigh:=1;
+	
+	pickup_axis_list[1].setTorque();
+	
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+			//ASSUMING CONTINOUS UPDATE LIKE FUNCTION
+			//TO DO figure out directions
+			payoff_axis_list[i].setVelocity();
+			
+			payoff_axis_list[i].velocity:=(desiredLinspeed/payoff_axis_list[i].getDistToAxis())*57.29578;
+			
+			
+		END_IF
+	END_FOR 
+END_IF
+	
+	]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_WindingControl">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.all_check">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.CYCLIC">
+      <LineId Id="170" Count="1" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="182" Count="0" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="457" Count="0" />
+      <LineId Id="284" Count="0" />
+      <LineId Id="287" Count="2" />
+      <LineId Id="331" Count="0" />
+      <LineId Id="290" Count="3" />
+      <LineId Id="308" Count="0" />
+      <LineId Id="304" Count="2" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="296" Count="3" />
+      <LineId Id="586" Count="0" />
+      <LineId Id="300" Count="1" />
+      <LineId Id="567" Count="0" />
+      <LineId Id="585" Count="0" />
+      <LineId Id="302" Count="0" />
+      <LineId Id="459" Count="2" />
+      <LineId Id="470" Count="1" />
+      <LineId Id="489" Count="0" />
+      <LineId Id="463" Count="0" />
+      <LineId Id="584" Count="0" />
+      <LineId Id="615" Count="0" />
+      <LineId Id="618" Count="1" />
+      <LineId Id="616" Count="1" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="309" Count="1" />
+      <LineId Id="312" Count="0" />
+      <LineId Id="333" Count="1" />
+      <LineId Id="313" Count="1" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="315" Count="1" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="317" Count="0" />
+      <LineId Id="321" Count="2" />
+      <LineId Id="336" Count="1" />
+      <LineId Id="324" Count="3" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="328" Count="1" />
+      <LineId Id="568" Count="0" />
+      <LineId Id="330" Count="0" />
+      <LineId Id="472" Count="0" />
+      <LineId Id="583" Count="0" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="479" Count="1" />
+      <LineId Id="582" Count="0" />
+      <LineId Id="473" Count="0" />
+      <LineId Id="620" Count="0" />
+      <LineId Id="622" Count="0" />
+      <LineId Id="624" Count="2" />
+      <LineId Id="623" Count="0" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="474" Count="0" />
+      <LineId Id="311" Count="0" />
+      <LineId Id="339" Count="1" />
+      <LineId Id="342" Count="3" />
+      <LineId Id="365" Count="2" />
+      <LineId Id="346" Count="0" />
+      <LineId Id="368" Count="0" />
+      <LineId Id="348" Count="9" />
+      <LineId Id="369" Count="0" />
+      <LineId Id="358" Count="5" />
+      <LineId Id="576" Count="0" />
+      <LineId Id="364" Count="0" />
+      <LineId Id="481" Count="0" />
+      <LineId Id="581" Count="0" />
+      <LineId Id="483" Count="0" />
+      <LineId Id="492" Count="0" />
+      <LineId Id="487" Count="1" />
+      <LineId Id="482" Count="0" />
+      <LineId Id="628" Count="4" />
+      <LineId Id="627" Count="0" />
+      <LineId Id="341" Count="0" />
+      <LineId Id="370" Count="0" />
+      <LineId Id="404" Count="0" />
+      <LineId Id="373" Count="1" />
+      <LineId Id="420" Count="7" />
+      <LineId Id="375" Count="2" />
+      <LineId Id="380" Count="6" />
+      <LineId Id="401" Count="2" />
+      <LineId Id="387" Count="2" />
+      <LineId Id="417" Count="0" />
+      <LineId Id="397" Count="2" />
+      <LineId Id="577" Count="0" />
+      <LineId Id="400" Count="0" />
+      <LineId Id="569" Count="0" />
+      <LineId Id="580" Count="0" />
+      <LineId Id="494" Count="0" />
+      <LineId Id="498" Count="1" />
+      <LineId Id="501" Count="0" />
+      <LineId Id="500" Count="0" />
+      <LineId Id="633" Count="0" />
+      <LineId Id="635" Count="4" />
+      <LineId Id="634" Count="0" />
+      <LineId Id="493" Count="0" />
+      <LineId Id="372" Count="0" />
+      <LineId Id="502" Count="0" />
+      <LineId Id="418" Count="1" />
+      <LineId Id="435" Count="4" />
+      <LineId Id="455" Count="0" />
+      <LineId Id="440" Count="14" />
+      <LineId Id="428" Count="0" />
+      <LineId Id="578" Count="0" />
+      <LineId Id="456" Count="0" />
+      <LineId Id="570" Count="0" />
+      <LineId Id="579" Count="0" />
+      <LineId Id="572" Count="3" />
+      <LineId Id="571" Count="0" />
+      <LineId Id="640" Count="0" />
+      <LineId Id="642" Count="4" />
+      <LineId Id="641" Count="0" />
+      <LineId Id="371" Count="0" />
+      <LineId Id="647" Count="0" />
+      <LineId Id="695" Count="1" />
+      <LineId Id="689" Count="0" />
+      <LineId Id="697" Count="2" />
+      <LineId Id="693" Count="1" />
+      <LineId Id="651" Count="32" />
+      <LineId Id="686" Count="1" />
+      <LineId Id="700" Count="0" />
+      <LineId Id="688" Count="0" />
+      <LineId Id="648" Count="0" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="458" Count="0" />
+      <LineId Id="283" Count="0" />
+      <LineId Id="179" Count="1" />
+      <LineId Id="523" Count="0" />
+      <LineId Id="526" Count="1" />
+      <LineId Id="524" Count="0" />
+      <LineId Id="528" Count="0" />
+      <LineId Id="552" Count="0" />
+      <LineId Id="529" Count="1" />
+      <LineId Id="554" Count="0" />
+      <LineId Id="553" Count="0" />
+      <LineId Id="534" Count="4" />
+      <LineId Id="525" Count="0" />
+      <LineId Id="599" Count="0" />
+      <LineId Id="598" Count="0" />
+      <LineId Id="597" Count="0" />
+      <LineId Id="587" Count="1" />
+      <LineId Id="522" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="555" Count="2" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="505" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="516" Count="2" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="203" Count="0" />
+      <LineId Id="503" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="53" Count="3" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="507" Count="1" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="504" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="509" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="78" Count="6" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="513" Count="1" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="224" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="109" Count="2" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="116" Count="2" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="520" Count="0" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="176" Count="0" />
+      <LineId Id="519" Count="0" />
+      <LineId Id="174" Count="0" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="510" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="521" Count="0" />
+      <LineId Id="147" Count="6" />
+      <LineId Id="125" Count="2" />
+      <LineId Id="511" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="512" Count="0" />
+      <LineId Id="161" Count="1" />
+      <LineId Id="142" Count="1" />
+      <LineId Id="603" Count="1" />
+      <LineId Id="610" Count="0" />
+      <LineId Id="612" Count="2" />
+      <LineId Id="611" Count="0" />
+      <LineId Id="608" Count="1" />
+      <LineId Id="605" Count="2" />
+      <LineId Id="600" Count="0" />
+      <LineId Id="144" Count="2" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="2" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="515" Count="0" />
+      <LineId Id="541" Count="2" />
+      <LineId Id="540" Count="0" />
+      <LineId Id="547" Count="4" />
+      <LineId Id="545" Count="1" />
+      <LineId Id="544" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.find_eta">
+      <LineId Id="22" Count="12" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="37" Count="12" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.general_error_check">
+      <LineId Id="20" Count="1" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="22" Count="5" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="52" Count="3" />
+      <LineId Id="48" Count="3" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.general_input_check">
+      <LineId Id="6" Count="9" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="19" Count="11" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="47" Count="3" />
+      <LineId Id="46" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.get_current_progress">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.home">
+      <LineId Id="22" Count="1" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="15" Count="2" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="33" Count="7" />
+      <LineId Id="24" Count="3" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.INIT">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.init_coil_model">
+      <LineId Id="52" Count="1" />
+      <LineId Id="49" Count="2" />
+      <LineId Id="16" Count="31" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.input_update">
+      <LineId Id="73" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="35" Count="3" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="43" Count="3" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.payoff_input_check">
+      <LineId Id="35" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="60" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="77" Count="14" />
+      <LineId Id="71" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.pickup_input_check">
+      <LineId Id="6" Count="9" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="16" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.read_status">
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.reset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.standstill_tension">
+      <LineId Id="23" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="53" Count="13" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.standstill_tension_check">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="47" Count="3" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="40" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="52" Count="3" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="43" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.update_torque">
+      <LineId Id="6" Count="2" />
+      <LineId Id="12" Count="3" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.winding_check">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.winding_exit_check">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.winding_tension">
+      <LineId Id="31" Count="0" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="69" Count="17" />
+      <LineId Id="67" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

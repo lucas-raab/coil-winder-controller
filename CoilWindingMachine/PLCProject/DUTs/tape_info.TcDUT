@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="tape_info" Id="{274aa57e-0dba-497b-91ec-c5d61c0d6cdf}">
+    <Declaration><![CDATA[//material properties of the tape
+TYPE tape_info :
+STRUCT
+	tape_width: LREAL:=4.0;
+	tape_depth: LREAL:=0.1;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

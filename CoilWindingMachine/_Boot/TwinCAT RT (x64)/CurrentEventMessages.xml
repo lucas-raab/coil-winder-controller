@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<TcEventSources Version="2">
+	<Source>
+		<GUID>{01B5B929-3591-4DC6-9004-D919902D976D}</GUID>
+		<Name LcId="1033">PLC Events</Name>
+		<Event>
+			<Id>1</Id>
+			<Message LcId="1033">Init_Finished</Message>
+			<Detail>
+				<Name>DescriptionText</Name>
+				<Text LcId="1033">Initlization finished sucessfuly.</Text>
+			</Detail>
+		</Event>
+		<Event>
+			<Id>2</Id>
+			<Message LcId="1033">Winding Started</Message>
+		</Event>
+		<Event>
+			<Id>3</Id>
+			<Message LcId="1033">Winding Finished due to turn count limit</Message>
+		</Event>
+		<Event>
+			<Id>4</Id>
+			<Message LcId="1033">InvalidInputs</Message>
+		</Event>
+		<Event>
+			<Id>5</Id>
+			<Message LcId="1033">Windind exited due to error.</Message>
+		</Event>
+		<Event>
+			<Id>6</Id>
+			<Message LcId="1033">One or more axis is in a error state.</Message>
+		</Event>
+		<Event>
+			<Id>7</Id>
+			<Message LcId="1033">Winding paused due to user request.</Message>
+		</Event>
+		<Event>
+			<Id>8</Id>
+			<Message LcId="1033">Winding exited due to user</Message>
+		</Event>
+		<Event>
+			<Id>9</Id>
+			<Message LcId="1033">Unable to complete homing due to error</Message>
+		</Event>
+		<Event>
+			<Id>10</Id>
+			<Message LcId="1033">ESTOP TRIGGERED. Exting program. Reset required</Message>
+		</Event>
+		<Detail>
+			<Name>Comment</Name>
+			<Text LcId="1033">Events related to motor functionality, and winding status.</Text>
+		</Detail>
+	</Source>
+</TcEventSources>

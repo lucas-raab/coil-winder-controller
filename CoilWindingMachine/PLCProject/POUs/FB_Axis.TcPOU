@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Axis" Id="{67c536b7-cb91-42b9-a9d5-7bc5afe11e21}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Axis
+
+VAR_INPUT
+	
+	//========================================================AXIS SHAPE========================================================
+	coilShapeID : INT :=0; //defines shape of coil attached to axis. 
+	pancake : pancake_params_0; //ID 0
+	racetrack : racetrack_params_1;//ID 1
+	
+	//========================================================AXIS DIMENSIONS========================================================
+	outerRadiusCurrent : LREAL; //outer radius of coil
+	
+	//========================================================AXIS TAPE========================================================
+	tape_info : tape_info;
+	
+	//========================================================AXIS CONTROL BOOL========================================================
+	//sets which FB's should be executed cyclicaly 
+	powerEnable : BOOL ;
+	resetEnable : BOOL ;
+	velocityEnable : BOOL ;
+	haltEnable : BOOL ;
+	homeEnable : BOOL ;
+	stopEnable: BOOL ;
+	torqueEnable: BOOL ;
+	posEnable: BOOL;
+	
+	//NON FB RELATED
+	enabled :BOOL ; //sets whether axis is enabled
+	
+	//========================================================AXIS CONTROL MISC OPTIONS========================================================
+	//misc options for axis
+	directionB : INT :=0 ;
+	direction    : MC_Direction := MC_Positive_Direction; (* Direction of motion *)
+	buffermode : MC_BufferMode := MC_Aborting; (* Buffer mode *)
+	moveOptions      : ST_MoveOptions;
+	homeOptions : ST_HomingOptions;
+	
+	
+	
+	//========================================================AXIS CONTROL VALUES========================================================
+	//TORQUE CONTROL
+	torque : LREAL;
+	velocityLimitHigh : LREAL;
+	velocityLimitLow : LREAL; 
+
+	//SECONDARY TORQUE CONTROL SETTINGS
+	acceleration : LREAL:=1;
+	deceleration : LREAL:=1;
+	torqueRamp : LREAL:=1;
+
+	jerk : LREAL:=1;
+	
+	//VELOCITY CONTROL
+	velocity : LREAL;
+	
+	//========================================================AXIS STATUS VARS========================================================
+	
+	actualTorque : LREAL ;
+	actualVelocity : LREAL;
+	
+	
+	//========================================================AXIS PARAMS========================================================
+	
+	ratedCurrent : LREAL;
+	torqaueConstrant : LREAL;
+	
+	//========================================================AXIS CONTROL FB========================================================
+	//instiantes fb's for various axis control functions
+	MCPOWER: MC_Power;
+	MCRESET : MC_Reset;
+	MCHOME : MC_Home;
+	MCVELOCITY : MC_MoveVelocity;
+	MCHALT : MC_Halt;
+	MCSTOP : MC_Stop;
+	MCGETVELOCITY : MC_ReadActualVelocity;
+	MCTORQUECONTROL : MC_TorqueControl;
+	MCPOS : MC_SetPosition;
+	
+	//========================================================AXIS========================================================
+	AXIS : Axis_REF;
+	
+
+
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Folder Name="Methods" Id="{a176b26e-e67a-42bd-94f4-2f0b6113d4b7}" />
+    <Method Name="CYLIC" Id="{7c186ae0-44c4-4808-9e23-1f18de41fa53}">
+      <Declaration><![CDATA[METHOD CYLIC : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	homePosition: LREAL;
+	velocity: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCPOWER(Axis:=Axis,
+		Enable:=powerEnable,
+		Enable_Positive:=powerEnable,
+		Enable_Negative:=powerEnable);
+		
+MCHOME(Execute:=homeEnable,
+		Position:=homePosition,
+		HomingMode:=MC_DefaultHoming,
+  		BufferMode := BufferMode,
+    	Options := homeOptions,
+		Axis:=Axis);
+		
+MCSTOP(Axis:=Axis,
+		Execute:=stopEnable,
+		Deceleration:=deceleration,
+		Jerk:=jerk,Options:=moveOptions);
+		
+MCHALT(Axis:=Axis,
+		Execute:=haltEnable,
+		Deceleration:=deceleration,
+		Jerk:=jerk,BufferMode:=buffermode,
+		Options:=moveOptions);	
+
+MCTORQUECONTROL(Axis:=Axis,
+				Execute:=torqueEnable,
+				ContinuousUpdate:=TRUE,
+				Relative:=FALSE,
+				Torque:=torque,
+				TorqueRamp:=torqueRamp,
+				VelocityLimitHigh:=velocityLimitHigh,
+				VelocityLimitLow:=velocityLimitLow);
+				
+MCVELOCITY(Axis:=Axis,
+			Execute:=velocityEnable,
+			Acceleration:=acceleration,
+			Deceleration:=deceleration,
+			Jerk:=jerk,
+			Direction:=direction,
+			Velocity:=velocity);
+			
+MCPOS(Axis:=AXIS,
+	 Execute:=posEnable,
+	 Position:=0,
+	 Mode:=FALSE);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="getDistToAxis" Id="{6b2436af-4b54-4ed0-a9cd-4034ab7bf577}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD getDistToAxis : LREAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Finds distance to axis from internal dimension and turn count vars. 
+
+//output units in mm. IMPORTANT
+
+CASE coilShapeID OF
+	0:
+	
+	CASE directionB OF
+		
+	0: //Finds direction if motor is being unwound
+	
+	getDistToAxis:=pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth; 
+	
+	1: //Finds direction if motor is being wound
+	
+	getDistToAxis:=pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth;
+	
+	
+	END_CASE
+	
+	
+	
+	
+	
+	1://TO DO. IMPLEMENT OTHER COIL IDS BESDIES PANCAKE
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="getTorque" Id="{6c5c5c23-bebe-4cf8-bf3b-ff120224285b}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD getTorque : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqaueConstrant;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="INIT" Id="{cb6cd0a9-c647-4489-a174-b70a666913ba}">
+      <Declaration><![CDATA[METHOD INIT : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[powerEnable:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setClear : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setHalt" Id="{2d8b8748-a52f-4cd2-900f-26056fd38ca1}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setHalt : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=TRUE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setHome" Id="{4b055be3-c329-44b4-84a9-fb655fd8c656}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setHome : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= TRUE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setPos" Id="{c270b1b3-4e96-4a7e-92d9-23393108ef68}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setPos : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setReset" Id="{704b19ac-a526-4b1d-961a-2b6ba452c168}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setReset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setStop" Id="{612bcacf-3053-4295-8be1-bb716811093b}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setStop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=TRUE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setTorque" Id="{37fa63df-8844-4715-be14-1d1e190c6f35}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setTorque : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= TRUE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="setVelocity" Id="{2e422cbc-a452-44f9-b242-0ddad3731936}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD setVelocity : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=TRUE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Axis">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.CYLIC">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="3" />
+      <LineId Id="12" Count="6" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="43" Count="3" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="26" Count="2" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="29" Count="2" />
+      <LineId Id="33" Count="6" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="56" Count="2" />
+    </LineIds>
+    <LineIds Name="FB_Axis.getDistToAxis">
+      <LineId Id="5" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="25" Count="4" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="14" Count="3" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.getTorque">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.INIT">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setClear">
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setHalt">
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setHome">
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setPos">
+      <LineId Id="6" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setReset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setStop">
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setTorque">
+      <LineId Id="10" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setVelocity">
+      <LineId Id="6" Count="1" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

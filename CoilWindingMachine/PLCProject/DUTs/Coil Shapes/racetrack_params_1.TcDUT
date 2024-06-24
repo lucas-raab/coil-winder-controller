@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="racetrack_params_1" Id="{9bcef055-0d66-4b5b-bf04-ca262786d40f}">
+    <Declaration><![CDATA[//Defining our dimensions for our racetrack coil
+TYPE racetrack_params_1 :
+STRUCT
+	length : LREAL := 150; //mm
+	radius : LREAL := 100; //mm
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
