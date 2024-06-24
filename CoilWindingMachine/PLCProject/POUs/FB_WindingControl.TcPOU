@@ -381,6 +381,7 @@ END_IF
 
 //update HMI with certain motor values. 
 update_torque();
+update_error_status();
 
 
 
@@ -1050,6 +1051,30 @@ IF NOT payoffEnableCheck THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="update_error_status" Id="{8a130ded-d455-41f2-ac7c-8c70dbeb7a89}" FolderPath="Methods\HMI updates\">
+      <Declaration><![CDATA[METHOD update_error_status : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[hmiConnection^.output_error_datagrid_list[0].errorStatus:=pickup_axis_list[1].AXIS.Status.Error;
+hmiConnection^.output_error_datagrid_list[0].errorID:=pickup_axis_list[1].AXIS.Status.ErrorID;
+
+hmiConnection^.motor_state_datagrid_list[0].state:=pickup_axis_list[1].state;
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	hmiConnection^.output_error_datagrid_list[i].errorStatus:=payoff_axis_list[i].AXIS.Status.Error;
+	hmiConnection^.output_error_datagrid_list[i].errorID:=payoff_axis_list[i].AXIS.Status.ErrorID;
+	
+	hmiConnection^.motor_state_datagrid_list[i].state:=payoff_axis_list[i].state;
+	
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="update_torque" Id="{ea80d7c9-b122-46ba-af4e-b3e883f32cba}" FolderPath="Methods\HMI updates\">
       <Declaration><![CDATA[METHOD update_torque : BOOL
 VAR_INPUT
@@ -1289,6 +1314,7 @@ END_IF
       <LineId Id="599" Count="0" />
       <LineId Id="598" Count="0" />
       <LineId Id="597" Count="0" />
+      <LineId Id="709" Count="0" />
       <LineId Id="587" Count="1" />
       <LineId Id="522" Count="0" />
       <LineId Id="26" Count="0" />
@@ -1558,6 +1584,17 @@ END_IF
       <LineId Id="51" Count="0" />
       <LineId Id="44" Count="0" />
       <LineId Id="43" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.update_error_status">
+      <LineId Id="5" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.update_torque">
       <LineId Id="6" Count="2" />

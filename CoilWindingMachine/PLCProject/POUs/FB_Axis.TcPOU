@@ -61,6 +61,9 @@ VAR_INPUT
 	actualTorque : LREAL ;
 	actualVelocity : LREAL;
 	
+	state : INT;
+	
+	
 	
 	//========================================================AXIS PARAMS========================================================
 	
@@ -144,7 +147,9 @@ MCVELOCITY(Axis:=Axis,
 MCPOS(Axis:=AXIS,
 	 Execute:=posEnable,
 	 Position:=0,
-	 Mode:=FALSE);]]></ST>
+	 Mode:=FALSE);
+	 
+stateUpdate();]]></ST>
       </Implementation>
     </Method>
     <Method Name="getDistToAxis" Id="{6b2436af-4b54-4ed0-a9cd-4034ab7bf577}" FolderPath="Methods\">
@@ -307,6 +312,26 @@ torqueEnable:= FALSE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="stateUpdate" Id="{47b61579-401b-4a3b-b130-c999b128bc7b}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD stateUpdate : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF powerEnable := TRUE THEN
+	state:=1;
+END_IF
+IF NOT enabled THEN
+	state:=2;
+END_IF
+IF torqueEnable OR velocityEnable OR posEnable THEN
+	state:=3;
+END_IF
+IF AXIS.Status.Error THEN
+	state:=4;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Axis">
       <LineId Id="9" Count="0" />
     </LineIds>
@@ -328,6 +353,7 @@ posEnable:=FALSE;]]></ST>
       <LineId Id="59" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="56" Count="2" />
+      <LineId Id="67" Count="1" />
     </LineIds>
     <LineIds Name="FB_Axis.getDistToAxis">
       <LineId Id="5" Count="0" />
@@ -388,6 +414,9 @@ posEnable:=FALSE;]]></ST>
       <LineId Id="9" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.stateUpdate">
+      <LineId Id="5" Count="11" />
     </LineIds>
   </POU>
 </TcPlcObject>

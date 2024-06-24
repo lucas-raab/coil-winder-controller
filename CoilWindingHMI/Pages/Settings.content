@@ -1,7 +1,7 @@
 <div id="Settings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-height="100" data-tchmi-width-unit="%" data-tchmi-height-unit="%">
 
 <div id="MainSettings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-height-mode="Content">
-<div id="TcHmiTextblock_MainSettings_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="32" data-tchmi-left-unit="px" data-tchmi-text="%l%L_MainSettings%/l%" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="16">
+<div id="TcHmiTextblock_MainSettings_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="32" data-tchmi-left-unit="px" data-tchmi-text="Main Settings" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="16">
 
 
     <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
@@ -16,7 +16,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiTextblock_MiscSettings_Localization_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="%f%%l%L_MainSettings_Pickup%/l%%/f%">
+<div id="TcHmiTextblock_MiscSettings_Localization_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Pickup Motor Settings">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -30,7 +30,7 @@
     "name": "motor_name",
     "label": "Pickup motor ID",
     "control": "TextBox",
-    "width": 25,
+    "width": 32,
     "widthUnit": "%",
     "resize": true,
     "sortable": false,
@@ -49,7 +49,7 @@
     "name": "turn_count",
     "label": "Turn Count",
     "control": "NumericInput",
-    "width": 25,
+    "width": 32,
     "widthUnit": "%",
     "resize": true,
     "sortable": false,
@@ -68,7 +68,7 @@
     "name": "coil_shape",
     "label": "Coil Shape",
     "control": "ComboBox",
-    "width": 25,
+    "width": 36,
     "widthUnit": "%",
     "resize": true,
     "sortable": false,
@@ -234,7 +234,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiTextblock_MiscSettings_Localization_4" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="%f%%l%L_MainSettings_Pickup_coilshape%/l%%/f%" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="True">
+<div id="TcHmiTextblock_MiscSettings_Localization_4" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Coil Parameters">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -271,7 +271,7 @@
     "minWidth": 100,
     "minWidthUnit": "px",
     "editable": true,
-    "horizontalAlignment": "Left",
+    "horizontalAlignment": "Center",
     "verticalAlignment": "Center",
     "headerHorizontalAlignment": "Center",
     "headerVerticalAlignment": "Center",
@@ -355,7 +355,7 @@
 ]
 </script>
 </div>
-<div id="TcHmiTextblock_MiscSettings_Localization_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="%f%%l%L_MainSettings_Input%/l%%/f%">
+<div id="TcHmiTextblock_MiscSettings_Localization_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="General Settings">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -372,7 +372,7 @@
 
     
 
-<div id="TcHmiTextblock_MiscSettings_Localization_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="%f%%l%L_MainSettings_Payoff%/l%%/f%" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True">
+<div id="TcHmiTextblock_MiscSettings_Localization_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Payoff Motor Settings">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -415,7 +415,7 @@
       "color": "None"
     },
     "editable": true,
-    "horizontalAlignment": "Left",
+    "horizontalAlignment": "Center",
     "verticalAlignment": "Center",
     "headerHorizontalAlignment": "Center",
     "headerVerticalAlignment": "Center",

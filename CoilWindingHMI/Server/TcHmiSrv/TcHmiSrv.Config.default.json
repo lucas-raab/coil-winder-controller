@@ -28,6 +28,14 @@
     "DEFAULTTIMEZONE": "client",
     "DEFAULTUSERGROUP": "__SystemUsers",
     "DEFINITIONS": {
+        "PLC1.ARRAY_0..3_OF-motor_state_datagrid": {
+            "items": {
+                "$ref": "#/definitions/PLC1.motor_state_datagrid"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "type": "array"
+        },
         "PLC1.ARRAY_1..1_OF-general_input_datagrid_params": {
             "items": {
                 "$ref": "#/definitions/PLC1.general_input_datagrid_params"
@@ -111,6 +119,21 @@
                         },
                         {
                             "propertyOrder": 3
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.motor_state_datagrid": {
+            "properties": {
+                "state": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 1
                         }
                     ]
                 }
@@ -2753,6 +2776,41 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_WindingControl.etaFormattedString": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::etaFormattedString",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "maxLength": 255,
+                        "propertyOrder": 10
+                    },
+                    {
+                        "$ref": "tchmi:general#/definitions/String"
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.progressPercent": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::progressPercent",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "propertyOrder": 11
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_hmi_connection.checkInputsUI": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2800,6 +2858,23 @@
                     },
                     {
                         "propertyOrder": 12
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_hmi_connection.motor_state_datagrid_list": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::motor_state_datagrid_list",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_0..3_OF-motor_state_datagrid"
+                    },
+                    {
+                        "propertyOrder": 10
                     }
                 ]
             },
@@ -5226,9 +5301,12 @@
                 "LocalizeText": 3,
                 "Login": 3,
                 "Logout": 3,
+                "PLC1.MAIN.FB_WindingControl.etaFormattedString": 3,
+                "PLC1.MAIN.FB_WindingControl.progressPercent": 3,
                 "PLC1.MAIN.FB_hmi_connection.checkInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.homeUI": 3,
+                "PLC1.MAIN.FB_hmi_connection.motor_state_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list": 3,

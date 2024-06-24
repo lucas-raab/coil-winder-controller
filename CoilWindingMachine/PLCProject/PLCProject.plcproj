@@ -30,6 +30,12 @@
     <Compile Include="DUTs\HMI Datagrids\misc_settings_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\HMI Datagrids\motor_state_datagrid.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\HMI Datagrids\output_error_datagrid.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\HMI Datagrids\payoff_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
