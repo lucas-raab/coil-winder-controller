@@ -14,7 +14,7 @@ VAR_INPUT
 	pickup_racetrack_input_datagrid_params_list : ARRAY[1..1] OF racetrack_params_1;
 	output_error_datagrid_list : ARRAY[0..3] OF output_error_datagrid;
 	motor_state_datagrid_list : ARRAY[0..3] OF motor_state_datagrid;
-	
+	overview_outputs_datagrid_list :ARRAY[1..1] OF overview_outputs_datagrid;
 	
 	color_list :ARRAY[0..3] OF DWORD;
 	//Outputs
@@ -42,6 +42,8 @@ VAR_INPUT
 	torque : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
 	rpm : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
 	
+	//misc
+	state : INT:=0;
 	
 END_VAR
 ]]></Declaration>
@@ -64,7 +66,9 @@ torque[2]:=0.02+torque[2];
 
 torque[3]:=0.04+torque[3];
 
-torque[4]:=0.08+torque[4];]]></ST>
+torque[4]:=0.08+torque[4];
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="INIT" Id="{380bcd9f-89dd-442f-8edd-b047340f0d4e}">
@@ -97,26 +101,6 @@ pickup_input_datagrid_params_list[1].motor_name := TO_STRING(1);
 pickup_output_datagrid_params_list[1].motor_name := TO_STRING(1);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="state_update_color" Id="{c8c0252f-b098-4271-bf17-40816466af5c}" FolderPath="Methods\">
-      <Declaration><![CDATA[METHOD state_update_color : BOOL
-VAR_INPUT
-END_VAR
-
-VAR
-	i: INT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[FOR i:=0 TO GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT DO
-	CASE motor_state_datagrid_list[i] OF
-		1:
-		
-		2:
-		3:
-		4:
-	END_CASE
-END_FOR]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="FB_hmi_connection">
       <LineId Id="9" Count="0" />
     </LineIds>
@@ -128,6 +112,8 @@ END_FOR]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="18" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
     </LineIds>
     <LineIds Name="FB_hmi_connection.INIT">
       <LineId Id="5" Count="0" />
@@ -135,14 +121,6 @@ END_FOR]]></ST>
     <LineIds Name="FB_hmi_connection.init_datagrids">
       <LineId Id="6" Count="8" />
       <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_hmi_connection.state_update_color">
-      <LineId Id="5" Count="1" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="13" Count="2" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

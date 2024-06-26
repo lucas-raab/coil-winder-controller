@@ -154,9 +154,6 @@
     <Content Include="Pages\Events.content">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Pages\Outputs - Copy.content">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Pages\Outputs.content">
       <SubType>Content</SubType>
     </Content>

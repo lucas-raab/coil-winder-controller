@@ -31,6 +31,8 @@ tensioned : BOOL:=FALSE;
 winding : BOOL:=FALSE;
 
 
+
+
 //COIL MODELS
 coil_model_base_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
 coil_model_base_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
@@ -41,6 +43,8 @@ coil_model_rot_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_M
 //AXIS LIST
 payoff_axis_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;
 pickup_axis_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;
+
+
 
 END_VAR
 VAR CONSTANT
@@ -90,6 +94,8 @@ END_VAR
       <Implementation>
         <ST><![CDATA[//cycle counter
 cnt := cnt +1;
+
+hmiConnection^.state:=state;
 
 
 //-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
@@ -745,6 +751,7 @@ pickup_axis_list[1].INIT();
 
 pickup_axis_list[1].torqaueConstrant:=GVL.PICKUP_TORQUE_CONSTANT;
 pickup_axis_list[1].ratedCurrent:=GVL.PICKUP_RATED_CURRENT;
+pickup_axis_list[1].enabled:=TRUE;
 
 
 
@@ -1175,6 +1182,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.CYCLIC">
       <LineId Id="170" Count="1" />
+      <LineId Id="719" Count="0" />
+      <LineId Id="718" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="182" Count="0" />
       <LineId Id="181" Count="0" />
@@ -1478,6 +1487,7 @@ END_IF
       <LineId Id="11" Count="0" />
       <LineId Id="27" Count="1" />
       <LineId Id="31" Count="0" />
+      <LineId Id="40" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="12" Count="2" />

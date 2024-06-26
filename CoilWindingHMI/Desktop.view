@@ -167,7 +167,7 @@
                     "classList": [],
                     "accessRights": []
                 }
-            ]</script></div><div id="Navigation_Left" data-tchmi-type="TcHmi.Controls.BaseTemplate.TcHmiNavigation" data-tchmi-width="320" data-tchmi-left="0" data-tchmi-top="%ctrl%Header_Top::Height%/ctrl%" data-tchmi-bottom="0" data-tchmi-target-region="%ctrl%Region_Center%/ctrl%" data-tchmi-navigation-orientation="Vertical" data-tchmi-keep-lowest-level="true">
+            ]</script></div><div id="Navigation_Left" data-tchmi-type="TcHmi.Controls.BaseTemplate.TcHmiNavigation" data-tchmi-width="229" data-tchmi-left="0" data-tchmi-top="%ctrl%Header_Top::Height%/ctrl%" data-tchmi-bottom="0" data-tchmi-target-region="%ctrl%Region_Center%/ctrl%" data-tchmi-navigation-orientation="Vertical" data-tchmi-keep-lowest-level="true">
 
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">[
 "divider",

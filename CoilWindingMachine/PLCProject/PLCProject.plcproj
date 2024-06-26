@@ -36,6 +36,9 @@
     <Compile Include="DUTs\HMI Datagrids\output_error_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\HMI Datagrids\overview_outputs_datagrid.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\HMI Datagrids\payoff_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>

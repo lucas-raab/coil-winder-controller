@@ -45,6 +45,15 @@
             "startOffset": 1,
             "type": "array"
         },
+        "PLC1.ARRAY_1..1_OF-overview_outputs_datagrid": {
+            "items": {
+                "$ref": "#/definitions/PLC1.overview_outputs_datagrid"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
         "PLC1.ARRAY_1..1_OF-pancake_params_0": {
             "items": {
                 "$ref": "#/definitions/PLC1.pancake_params_0"
@@ -134,6 +143,41 @@
                         },
                         {
                             "propertyOrder": 1
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.overview_outputs_datagrid": {
+            "properties": {
+                "linspeed": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "pickupTurnCount": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/DINT"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "torque": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 3
                         }
                     ]
                 }
@@ -2829,6 +2873,16 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_hmi_connection.color_list.0": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::color_list[0]",
+            "SCHEMA": {
+                "$ref": "tchmi:general#/definitions/DWORD"
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2875,6 +2929,23 @@
                     },
                     {
                         "propertyOrder": 10
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_hmi_connection.overview_outputs_datagrid_list": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::overview_outputs_datagrid_list",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..1_OF-overview_outputs_datagrid"
+                    },
+                    {
+                        "propertyOrder": 11
                     }
                 ]
             },
@@ -3019,6 +3090,24 @@
                     },
                     {
                         "propertyOrder": 10
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_hmi_connection.state": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::state",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/INT"
+                    },
+                    {
+                        "comment": "misc",
+                        "propertyOrder": 22
                     }
                 ]
             },
@@ -5304,9 +5393,11 @@
                 "PLC1.MAIN.FB_WindingControl.etaFormattedString": 3,
                 "PLC1.MAIN.FB_WindingControl.progressPercent": 3,
                 "PLC1.MAIN.FB_hmi_connection.checkInputsUI": 3,
+                "PLC1.MAIN.FB_hmi_connection.color_list.0": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.homeUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.motor_state_datagrid_list": 3,
+                "PLC1.MAIN.FB_hmi_connection.overview_outputs_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list": 3,
@@ -5318,6 +5409,7 @@
                 "PLC1.MAIN.FB_hmi_connection.rpm.2": 3,
                 "PLC1.MAIN.FB_hmi_connection.rpm.3": 3,
                 "PLC1.MAIN.FB_hmi_connection.startUI": 3,
+                "PLC1.MAIN.FB_hmi_connection.state": 3,
                 "PLC1.MAIN.FB_hmi_connection.tensionUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.torque": 3,
                 "PLC1.MAIN.FB_hmi_connection.torque.0": 3,
