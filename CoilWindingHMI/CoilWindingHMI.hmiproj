@@ -121,6 +121,7 @@
     <Folder Include="Server\ADS\" />
     <Folder Include="Server\TcHmiEcDiagnostics" />
     <Folder Include="Server\TcHmiLua\" />
+    <Folder Include="Server\TcHmiRecipeManagement" />
     <Folder Include="Server\TcHmiSqliteHistorize" />
     <Folder Include="Server\TcHmiSqliteLogger\" />
     <Folder Include="Server\TcHmiSrv\" />
@@ -198,6 +199,15 @@
     <Content Include="Server\TcHmiLua\TcHmiLua.Storage.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
+    </Content>
+    <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.default.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.remote.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Storage.json">
+      <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.default.json">
       <SubType>Content</SubType>

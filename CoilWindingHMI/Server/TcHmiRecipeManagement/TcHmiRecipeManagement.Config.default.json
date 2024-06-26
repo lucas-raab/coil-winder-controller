@@ -1,0 +1,236 @@
+{
+    "recipeList": {
+        "New recipe": {
+            "recipeTypeName": "Winding Parameters",
+            "values": {
+                "Coil Shape ID": 0,
+                "Enabled 1": false,
+                "Enabled 2": false,
+                "Enabled 3": false,
+                "Inital Outer Radius 1": 100.0,
+                "Inital Outer Radius 2": 100.0,
+                "Inital Outer Radius 3": 100.0,
+                "Linear Speed": 1.0,
+                "Target Turn Count": 1,
+                "Tension": 1.0
+            }
+        },
+        "New recipe 2": {
+            "recipeTypeName": "Winding Parameters",
+            "values": {
+                "Coil Shape ID": 1,
+                "Enabled 1": false,
+                "Enabled 2": false,
+                "Enabled 3": false,
+                "Inital Outer Radius 1": 100.0,
+                "Inital Outer Radius 2": 100.0,
+                "Inital Outer Radius 3": 100.0,
+                "Linear Speed": 1.0,
+                "Target Turn Count": 1,
+                "Tension": 1.0
+            }
+        }
+    },
+    "recipeTypeList": {
+        "General Parameters": {
+            "members": {
+                "Linear Speed": {
+                    "defaultValue": 1.0,
+                    "enabled": true,
+                    "group": "",
+                    "order": 1,
+                    "schema": {
+                        "maximum": 2.0,
+                        "minimum": 0.1
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredLinspeed",
+                    "unit": "m/s"
+                },
+                "Tension": {
+                    "defaultValue": 1.0,
+                    "enabled": true,
+                    "group": "",
+                    "order": 0,
+                    "schema": {
+                        "maximum": 5.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTension",
+                    "unit": "Nm"
+                },
+                "Unwinding": {
+                    "defaultValue": true,
+                    "enabled": true,
+                    "group": "",
+                    "order": 2,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_WindingControl.unwinding",
+                    "unit": ""
+                }
+            },
+            "options": {
+                "enabled": "Disabled"
+            },
+            "recipeTypeNames": []
+        },
+        "Payoff Parameters": {
+            "members": {},
+            "options": {
+                "enabled": "Disabled"
+            },
+            "recipeTypeNames": []
+        },
+        "Pickup Parameters": {
+            "members": {
+                "Coil Shape ID": {
+                    "defaultValue": 0,
+                    "enabled": true,
+                    "group": "",
+                    "order": 0,
+                    "schema": {
+                        "maximum": 1,
+                        "minimum": 0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID",
+                    "unit": ""
+                },
+                "Desired Turncount": {
+                    "defaultValue": 100,
+                    "enabled": true,
+                    "group": "",
+                    "order": 1,
+                    "schema": {
+                        "maximum": 100
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup",
+                    "unit": "Turns"
+                }
+            },
+            "options": {
+                "enabled": "Disabled"
+            },
+            "recipeTypeNames": []
+        },
+        "Winding Parameters": {
+            "members": {
+                "Coil Shape ID": {
+                    "comment": "0 = Pancake, 1 = Racetrack",
+                    "defaultValue": 1,
+                    "enabled": true,
+                    "group": "Pickup",
+                    "order": 2,
+                    "schema": {
+                        "maximum": 1,
+                        "minimum": 0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID",
+                    "unit": ""
+                },
+                "Enabled 1": {
+                    "defaultValue": false,
+                    "enabled": true,
+                    "group": "Payoff Motor 1",
+                    "order": 4,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled",
+                    "unit": ""
+                },
+                "Enabled 2": {
+                    "defaultValue": false,
+                    "enabled": true,
+                    "group": "Payoff Motor 2",
+                    "order": 6,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.enabled",
+                    "unit": ""
+                },
+                "Enabled 3": {
+                    "defaultValue": false,
+                    "enabled": true,
+                    "group": "Payoff Motor 3",
+                    "order": 8,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.enabled",
+                    "unit": ""
+                },
+                "Inital Outer Radius 1": {
+                    "defaultValue": 100.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 1",
+                    "order": 5,
+                    "schema": {
+                        "maximum": 500.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.pancake.radius",
+                    "unit": "mm"
+                },
+                "Inital Outer Radius 2": {
+                    "defaultValue": 100.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 2",
+                    "order": 7,
+                    "schema": {
+                        "maximum": 500.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.pancake.radius",
+                    "unit": "mm"
+                },
+                "Inital Outer Radius 3": {
+                    "defaultValue": 100.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 3",
+                    "order": 9,
+                    "schema": {
+                        "maximum": 500.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.pancake.radius",
+                    "unit": "mm"
+                },
+                "Linear Speed": {
+                    "defaultValue": 1.0,
+                    "enabled": true,
+                    "group": "General",
+                    "order": 1,
+                    "schema": {
+                        "maximum": 1.0,
+                        "minimum": 0.01
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredLinspeed",
+                    "unit": "m/s"
+                },
+                "Target Turn Count": {
+                    "defaultValue": 1,
+                    "enabled": true,
+                    "group": "Pickup",
+                    "order": 3,
+                    "schema": {
+                        "maximum": 1000,
+                        "minimum": 1
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup",
+                    "unit": "Turns"
+                },
+                "Tension": {
+                    "comment": "",
+                    "defaultValue": 1.0,
+                    "enabled": true,
+                    "group": "General",
+                    "order": 0,
+                    "schema": {
+                        "maximum": 10.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTension",
+                    "unit": "Nm"
+                }
+            },
+            "options": {
+                "enabled": "None"
+            },
+            "recipeTypeNames": []
+        }
+    }
+}

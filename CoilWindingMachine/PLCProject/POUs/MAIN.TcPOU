@@ -9,6 +9,7 @@ VAR
 	FB_hmi_connection: FB_hmi_connection;
 	FB_WindingControl: FB_WindingControl;
 	FB_EventLogger: FB_EventLogger;
+	FB_FileReadWrite: FB_fileReadWrite;
 	
 	
 	
@@ -37,7 +38,8 @@ END_IF
 
 FB_EventLogger.CYCLIC(); //event logger
 FB_hmi_connection.CYCLIC(); //hmi inputs and outputs
-FB_WindingControl.CYCLIC(); //motor control. ]]></ST>
+FB_WindingControl.CYCLIC(); //motor control. 
+FB_FileReadWrite.CYLIC();]]></ST>
       </Implementation>
     </Method>
     <Method Name="INIT" Id="{d283a7a7-3eaa-4933-86d8-aab52f7a452a}">
@@ -71,6 +73,7 @@ INIT:=TRUE;
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="11" Count="1" />
+      <LineId Id="18" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.INIT">
       <LineId Id="11" Count="0" />

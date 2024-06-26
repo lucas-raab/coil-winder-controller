@@ -158,7 +158,7 @@
               {
                 "compare1": {
                   "objectType": "Symbol",
-                  "valueType": "tchmi:general#/definitions/String",
+                  "valueType": "tchmi:general#/definitions/BOOL",
                   "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.homeUI%/s%"
                 },
                 "compare2": {
@@ -193,7 +193,7 @@
                 "value": {
                   "objectType": "StaticValue",
                   "valueType": "tchmi:general#/definitions/String",
-                  "value": "Homing In Progress"
+                  "value": "Home"
                 },
                 "asyncWait": true
               }

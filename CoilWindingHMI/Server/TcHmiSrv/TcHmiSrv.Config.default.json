@@ -352,6 +352,13 @@
             "REQUIRED": true,
             "STARTUPTYPE": 0
         },
+        "TcHmiRecipeManagement": {
+            "ENABLED": true,
+            "NAME": "TcHmiRecipeManagement",
+            "PATH": "..\\..\\Packages\\Beckhoff.TwinCAT.HMI.RecipeManagement.19.0.120\\runtimes\\win-x64\\native\\",
+            "REQUIRED": false,
+            "STARTUPTYPE": 1
+        },
         "TcHmiSqliteHistorize": {
             "ENABLED": true,
             "NAME": "TcHmiSqliteHistorize",
@@ -2820,6 +2827,58 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_WindingControl.desiredLinspeed": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::desiredLinspeed",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "propertyOrder": 4
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.desiredTension": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::desiredTension",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "Function Blocks\r\nCONTROL VARS",
+                        "propertyOrder": 3
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::desiredTurnCountPickup",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/DINT"
+                    },
+                    {
+                        "propertyOrder": 6
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_WindingControl.etaFormattedString": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2838,6 +2897,132 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[0]::enabled",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "sets whether axis is enabled",
+                        "propertyOrder": 14
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.pancake.radius": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[0]::pancake::radius",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "radius of pancake coil in mm",
+                        "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.enabled": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[1]::enabled",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "sets whether axis is enabled",
+                        "propertyOrder": 14
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.pancake.radius": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[1]::pancake::radius",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "radius of pancake coil in mm",
+                        "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.enabled": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[2]::enabled",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "sets whether axis is enabled",
+                        "propertyOrder": 14
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.pancake.radius": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::payoff_axis_list[2]::pancake::radius",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "radius of pancake coil in mm",
+                        "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::pickup_axis_list[0]::coilShapeID",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/INT"
+                    },
+                    {
+                        "comment": "defines shape of coil attached to axis.",
+                        "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_WindingControl.progressPercent": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -2850,6 +3035,23 @@
                     },
                     {
                         "propertyOrder": 11
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.unwinding": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::unwinding",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "propertyOrder": 5
                     }
                 ]
             },
@@ -4530,6 +4732,190 @@
             "SCHEMA": {},
             "USEMAPPING": true
         },
+        "TcHmiRecipeManagement.ActivateRecipe": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "ActivateRecipe",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "writeValue": {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "path"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.Config": {
+            "ACCESS": 0,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "Config",
+            "OPTIONS": {},
+            "SCHEMA": {},
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.GetActiveRecipes": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "GetActiveRecipes",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "items": {
+                    "recipe": {
+                        "type": "string"
+                    }
+                },
+                "type": "array",
+                "writeValue": {
+                    "anyOf": [
+                        {
+                            "items": {
+                                "description": "recipe name(s)",
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "$ref": "tchmi:general#/definitions/VOID"
+                        }
+                    ]
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.GetRecipes": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "GetRecipes",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "items": {
+                    "recipes": {
+                        "type": "string"
+                    }
+                },
+                "type": "array",
+                "writeValue": {
+                    "properties": {
+                        "recipeTypePath": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "recipeTypePath"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.ListRecipeTypes": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "ListRecipeTypes",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.ListRecipes": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "ListRecipes",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.ReadFromTarget": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "ReadFromTarget",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "properties": {
+                    "path": {
+                        "type": "string"
+                    },
+                    "values": {
+                        "additionalProperties": {},
+                        "type": "object"
+                    }
+                },
+                "type": "object",
+                "writeValue": {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "path"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
+        "TcHmiRecipeManagement.UpdateRecipe": {
+            "ACCESS": 3,
+            "DOMAIN": "TcHmiRecipeManagement",
+            "DYNAMIC": false,
+            "HIDDEN": true,
+            "MAPPING": "UpdateRecipe",
+            "OPTIONS": {},
+            "SCHEMA": {
+                "function": true,
+                "properties": {
+                    "info": {
+                        "description": "List of updates made",
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object",
+                "writeValue": {
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "path"
+                    ],
+                    "type": "object"
+                }
+            },
+            "USEMAPPING": true
+        },
         "TcHmiSqliteHistorize.Config": {
             "ACCESS": 0,
             "DOMAIN": "TcHmiSqliteHistorize",
@@ -5390,8 +5776,19 @@
                 "LocalizeText": 3,
                 "Login": 3,
                 "Logout": 3,
+                "PLC1.MAIN.FB_WindingControl.desiredLinspeed": 3,
+                "PLC1.MAIN.FB_WindingControl.desiredTension": 3,
+                "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup": 3,
                 "PLC1.MAIN.FB_WindingControl.etaFormattedString": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.pancake.radius": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.enabled": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.pancake.radius": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.enabled": 3,
+                "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.pancake.radius": 3,
+                "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID": 3,
                 "PLC1.MAIN.FB_WindingControl.progressPercent": 3,
+                "PLC1.MAIN.FB_WindingControl.unwinding": 3,
                 "PLC1.MAIN.FB_hmi_connection.checkInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.color_list.0": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
@@ -5430,6 +5827,13 @@
                 "TcHmiEcDiagnostics.ListConfiguredDevices": 1,
                 "TcHmiEcDiagnostics.ListMastersOfRoute": 3,
                 "TcHmiEcDiagnostics.ListSlavesWithForcedProcessData": 3,
+                "TcHmiRecipeManagement.ActivateRecipe": 3,
+                "TcHmiRecipeManagement.GetActiveRecipes": 3,
+                "TcHmiRecipeManagement.GetRecipes": 3,
+                "TcHmiRecipeManagement.ListRecipeTypes": 3,
+                "TcHmiRecipeManagement.ListRecipes": 3,
+                "TcHmiRecipeManagement.ReadFromTarget": 3,
+                "TcHmiRecipeManagement.UpdateRecipe": 3,
                 "TcHmiSqliteHistorize.DeleteDatabaseEntries": 3,
                 "TcHmiSqliteHistorize.Diagnostics": 1,
                 "TcHmiSqliteHistorize.GetTrendLineData": 3,

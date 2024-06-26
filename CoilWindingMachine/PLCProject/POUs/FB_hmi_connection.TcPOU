@@ -57,17 +57,10 @@ VAR_INPUT
 END_VAR
 
 VAR
-	i: INT;
+
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[torque[1]:=0.01+torque[2];
-
-torque[2]:=0.02+torque[2];
-
-torque[3]:=0.04+torque[3];
-
-torque[4]:=0.08+torque[4];
-
+        <ST><![CDATA[
 ]]></ST>
       </Implementation>
     </Method>
@@ -105,14 +98,7 @@ pickup_output_datagrid_params_list[1].motor_name := TO_STRING(1);]]></ST>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_hmi_connection.CYCLIC">
-      <LineId Id="10" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="27" Count="0" />
+      <LineId Id="372" Count="0" />
       <LineId Id="26" Count="0" />
     </LineIds>
     <LineIds Name="FB_hmi_connection.INIT">

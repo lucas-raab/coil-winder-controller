@@ -369,6 +369,7 @@ hmiConnection^.state:=state;
 //clear status vars for axis. we will update them depending on our current state.
 pickup_axis_list[1].setClear();
 
+
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].setClear();
 END_FOR
@@ -386,8 +387,7 @@ ELSIF state=400 AND NOT errorStatus THEN
 END_IF
 
 //update HMI with certain motor values. 
-update_torque();
-update_error_status();
+hmi_update();
 
 
 
@@ -461,7 +461,7 @@ CASE state OF
 	END_IF
 	
 	//get status updates
-	//only calculate once very N turns in order to save resources
+	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
 	IF (cnt MOD 10 =0) THEN
 		find_eta();
 		get_current_progress();
@@ -696,6 +696,19 @@ END_IF
 	]]></ST>
       </Implementation>
     </Method>
+    <Method Name="hmi_update" Id="{15a1114f-a0f7-4eca-8f18-4cf797395fba}" FolderPath="Methods\HMI updates\">
+      <Declaration><![CDATA[METHOD hmi_update : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//collection of functions to update hmi vars. 
+
+update_error_status();
+update_torque();
+update_velocity();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
       <Declaration><![CDATA[METHOD home : BOOL
 VAR_INPUT
@@ -705,7 +718,11 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//check to see if we are done
+        <ST><![CDATA[//to do . something about the set pos function is broken but not sure what. in duplicate project i was able to replicate the error so either 
+//it is something to do with virtual axis, or bug in twincat. may need to find workaround with drive manager. 
+
+
+//check to see if we are done
 pickup_axis_list[1].setPos();
 home := home AND pickup_axis_list[1].MCPOS.Done ;
 	
@@ -720,12 +737,13 @@ home := home AND pickup_axis_list[1].MCPOS.Done ;
 
 	
 //cancels home if we run into any error
-home := home OR pickup_axis_list[1].MCPOS.Error;
+//home := home OR pickup_axis_list[1].MCPOS.Error;
 	
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		
-		home := home OR payoff_axis_list[i].MCPOS.Error;
+		payoff_axis_list[i].setPos();
+		home := home AND payoff_axis_list[i].MCPOS.Done;
 	END_IF
 			
 END_FOR
@@ -988,11 +1006,11 @@ IF unwinding THEN
 //to do. add unwinding functionality
 
 ELSE
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/1000;
+	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/2000;
 	
 	//TO DO need to find what to set these to. 
 	pickup_axis_list[1].velocityLimitLow:=0;
-	pickup_axis_list[1].velocityLimitHigh:=0;
+	pickup_axis_list[1].velocityLimitHigh:=1;
 	
 	
 	pickup_axis_list[1].setTorque();
@@ -1000,7 +1018,8 @@ ELSE
 	
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		IF payoff_axis_list[i].enabled THEN
-			payoff_axis_list[i].setStop();
+			payoff_axis_list[i].setTorque();
+			payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2000;
 		END_IF
 	END_FOR 
 END_IF
@@ -1100,6 +1119,31 @@ hmiConnection^.torque[1]:=pickup_axis_list[1].actualTorque;
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].getTorque();
 	hmiConnection^.torque[i+1]:=payoff_axis_list[i].actualTorque;
+
+END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="update_velocity" Id="{e3d6da1b-3c09-4f36-8e11-85f4c14af595}" FolderPath="Methods\HMI updates\">
+      <Declaration><![CDATA[METHOD update_velocity : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//update act ual torque values ofc motors. send these values to HMI
+
+
+hmiConnection^.rpm[1]:=pickup_axis_list[1].actualVelocity;
+
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+
+	hmiConnection^.rpm[i+1]:=payoff_axis_list[i].actualVelocity;
 
 END_FOR
 
@@ -1310,6 +1354,7 @@ END_IF
       <LineId Id="458" Count="0" />
       <LineId Id="283" Count="0" />
       <LineId Id="179" Count="1" />
+      <LineId Id="728" Count="0" />
       <LineId Id="523" Count="0" />
       <LineId Id="526" Count="1" />
       <LineId Id="524" Count="0" />
@@ -1322,7 +1367,6 @@ END_IF
       <LineId Id="525" Count="0" />
       <LineId Id="599" Count="0" />
       <LineId Id="598" Count="0" />
-      <LineId Id="597" Count="0" />
       <LineId Id="709" Count="0" />
       <LineId Id="587" Count="1" />
       <LineId Id="522" Count="0" />
@@ -1464,7 +1508,14 @@ END_IF
       <LineId Id="16" Count="1" />
       <LineId Id="11" Count="0" />
     </LineIds>
+    <LineIds Name="FB_WindingControl.hmi_update">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="2" />
+    </LineIds>
     <LineIds Name="FB_WindingControl.home">
+      <LineId Id="56" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="57" Count="1" />
       <LineId Id="22" Count="1" />
       <LineId Id="6" Count="1" />
       <LineId Id="15" Count="2" />
@@ -1476,7 +1527,9 @@ END_IF
       <LineId Id="41" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="42" Count="0" />
-      <LineId Id="33" Count="7" />
+      <LineId Id="33" Count="4" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="38" Count="2" />
       <LineId Id="24" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -1563,7 +1616,9 @@ END_IF
       <LineId Id="30" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="25" Count="0" />
-      <LineId Id="53" Count="13" />
+      <LineId Id="53" Count="11" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="65" Count="1" />
       <LineId Id="51" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -1615,6 +1670,10 @@ END_IF
       <LineId Id="41" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="42" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.update_velocity">
+      <LineId Id="6" Count="12" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_check">
       <LineId Id="5" Count="0" />

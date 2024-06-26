@@ -254,7 +254,17 @@
       },
       "color_disabled": {
         "value": {
-          "color": "rgba(104, 102, 102, 1)"
+          "angle": 207.0796460176995,
+          "stopPoints": [
+            {
+              "color": "rgba(71, 69, 69, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(173, 166, 166, 1)",
+              "stop": "100%"
+            }
+          ]
         },
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,
@@ -262,7 +272,17 @@
       },
       "color_powered": {
         "value": {
-          "color": "rgba(27, 233, 75, 1)"
+          "angle": 115.69026548672784,
+          "stopPoints": [
+            {
+              "color": "rgba(45, 151, 5, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(94, 225, 14, 1)",
+              "stop": "100%"
+            }
+          ]
         },
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,
@@ -270,7 +290,17 @@
       },
       "color_winding": {
         "value": {
-          "color": "rgba(249, 197, 25, 1)"
+          "angle": 347.25663716814176,
+          "stopPoints": [
+            {
+              "color": "rgba(181, 141, 9, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(255, 244, 0, 1)",
+              "stop": "100%"
+            }
+          ]
         },
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,
@@ -278,9 +308,25 @@
       },
       "color_error": {
         "value": {
-          "color": "rgba(218, 29, 29, 1)"
+          "angle": 0.0,
+          "stopPoints": [
+            {
+              "color": "rgba(154, 10, 10, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(193, 7, 7, 1)",
+              "stop": "100%"
+            }
+          ]
         },
         "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "fontSizeSmall": {
+        "value": 16,
+        "type": "tchmi:general#/definitions/INT",
         "persist": false,
         "readonly": false
       }
