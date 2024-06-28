@@ -425,7 +425,7 @@
   },
   {
     "name": "radius",
-    "label": "Outer Radius (m)",
+    "label": "Outer Radius (mm)",
     "control": "NumericInput",
     "width": 35,
     "widthUnit": "%",

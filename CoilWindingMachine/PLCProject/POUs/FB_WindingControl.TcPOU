@@ -26,6 +26,8 @@ target_turn_count : DINT :=0;
 
 //STATUS VARS
 state : INT:=0;
+cnt : INT :=0;
+
 
 eta : LREAL :=0;
 etaFormattedString : STRING(255);
@@ -91,7 +93,7 @@ all_check:=all_check OR pickup_input_check(write:=write);
 VAR
 	
 	i: INT;
-	cnt : INT :=0;
+	
 	errorStatus : BOOL :=FALSE;
 	errorOutput : BOOL :=FALSE; //if true we wont output a new log message in case of error. meant to stop repeats
 END_VAR
@@ -453,6 +455,17 @@ CASE state OF
 	31: //WINDING TENSION 
 	//cable currently being wound with set tension. Can not edit params
 	
+	//get status updates
+	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
+	// to do not sure why this isn't working. in my head it should be. going to just remove it for now
+	//IF (cnt MOD 10 =0) THEN
+	find_eta();
+	get_current_progress();
+	//END_IF
+	
+	
+	//test
+	progressPercent := (pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/(360*desiredTurnCountPickup))*100;
 	
 	winding_tension();
 	
@@ -466,12 +479,7 @@ CASE state OF
 		state:=31;
 	END_IF
 	
-	//get status updates
-	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
-	IF (cnt MOD 10 =0) THEN
-		find_eta();
-		get_current_progress();
-	END_IF
+
 	
 	// ========================================31========================================
 	
@@ -685,9 +693,9 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="get_current_progress" Id="{504eb237-53a6-4e39-b7e7-217f0cf72225}" FolderPath="Methods\Status Updates\">
-      <Declaration><![CDATA[METHOD get_current_progress : BOOL
-VAR_INPUT
-END_VAR
+      <Declaration><![CDATA[METHOD get_current_progress 
+
+
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
@@ -719,9 +727,9 @@ update_velocity();
 
 
 
-hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360;
 hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=payoff_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
-
+hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].getDistToAxis();
 ]]></ST>
       </Implementation>
     </Method>
@@ -1216,17 +1224,17 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
 	//to do 
-	//seg fault to exit program :D
+	//seg fault to exit program :D remove when implmenting 
 	i:=0;
 	pickup_axis_list[i].acceleration:=0;
 ELSE
 	
 
 
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/1000;
+	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis();
 	
 	//TO DO need to find what to set these to. 
-	pickup_axis_list[1].velocityLimitLow:=payoff_axis_list[i].AXIS.NcToPlc.ActVelo;
+	pickup_axis_list[1].velocityLimitLow:=(desiredLinspeed/pickup_axis_list[1].getDistToAxis())*57.29578;
 	pickup_axis_list[1].velocityLimitHigh:=1000000 ;
 	
 	pickup_axis_list[1].setTorque();
@@ -1271,7 +1279,8 @@ END_IF
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.CYCLIC">
-      <LineId Id="170" Count="1" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="746" Count="0" />
       <LineId Id="719" Count="0" />
       <LineId Id="718" Count="0" />
       <LineId Id="155" Count="0" />
@@ -1455,7 +1464,11 @@ END_IF
       <LineId Id="513" Count="1" />
       <LineId Id="46" Count="0" />
       <LineId Id="36" Count="0" />
-      <LineId Id="224" Count="1" />
+      <LineId Id="224" Count="0" />
+      <LineId Id="749" Count="5" />
+      <LineId Id="747" Count="1" />
+      <LineId Id="755" Count="2" />
+      <LineId Id="225" Count="0" />
       <LineId Id="94" Count="0" />
       <LineId Id="109" Count="2" />
       <LineId Id="113" Count="0" />
@@ -1464,11 +1477,6 @@ END_IF
       <LineId Id="116" Count="2" />
       <LineId Id="115" Count="0" />
       <LineId Id="120" Count="0" />
-      <LineId Id="164" Count="0" />
-      <LineId Id="520" Count="0" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="175" Count="0" />
-      <LineId Id="177" Count="0" />
       <LineId Id="176" Count="0" />
       <LineId Id="519" Count="0" />
       <LineId Id="174" Count="0" />
@@ -1562,8 +1570,8 @@ END_IF
       <LineId Id="14" Count="2" />
       <LineId Id="13" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="18" Count="0" />
       <LineId Id="17" Count="0" />
+      <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="56" Count="0" />

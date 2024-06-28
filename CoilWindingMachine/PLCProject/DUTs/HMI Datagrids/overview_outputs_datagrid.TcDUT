@@ -3,7 +3,7 @@
   <DUT Name="overview_outputs_datagrid" Id="{e6246681-c8bb-433b-9ca0-dfb70caf6722}">
     <Declaration><![CDATA[TYPE overview_outputs_datagrid :
 STRUCT
-	pickupTurnCount : DINT;
+	pickupTurnCount : LREAL;
 	linspeed : LREAL;
 	torque : LREAL;
 END_STRUCT

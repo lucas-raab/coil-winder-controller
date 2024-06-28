@@ -5,7 +5,7 @@
 [
   {
     "name": "radius",
-    "label": "Radius",
+    "label": "Radius (mm)",
     "control": "NumericInput",
     "width": 100,
     "widthUnit": "%",
