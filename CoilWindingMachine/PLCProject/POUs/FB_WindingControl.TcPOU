@@ -9,6 +9,11 @@ VAR_INPUT
 END_VAR
 
 VAR
+//temporay testing vars
+dist : LREAL ;
+
+
+
 //Function Blocks
 
 //CONTROL VARS
@@ -387,7 +392,7 @@ ELSIF state=400 AND NOT errorStatus THEN
 END_IF
 
 //update HMI with certain motor values. 
-hmi_update();
+ hmi_update();
 
 
 
@@ -453,7 +458,8 @@ CASE state OF
 	
 	
 	//check for exit conditions 
-	IF winding_check() THEN
+	IF winding_exit_check() THEN
+		hmiConnection^.startUI:=FALSE;
 		state:=40;
 		
 	ELSE
@@ -666,7 +672,7 @@ IF hmiConnection^.general_input_datagrid_params_list[1].linspeed < input_bounds.
 	
 ELSE
 	IF write THEN
-		desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+		desiredLinspeed:=hmiConnection^.general_input_datagrid_params_list[1].linspeed;
 	
 	END_IF
 	
@@ -700,13 +706,23 @@ END_IF
       <Declaration><![CDATA[METHOD hmi_update : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//collection of functions to update hmi vars. 
 
 update_error_status();
 update_torque();
-update_velocity();]]></ST>
+update_velocity();
+
+
+
+hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=payoff_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
@@ -903,7 +919,7 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+        <ST><![CDATA[ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	
 	IF write THEN
 		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
@@ -920,13 +936,13 @@ END_VAR]]></Declaration>
         	msgFmtStr := 'Error occurred. Payoff Radius outside of range.',
         	strArg := ''
    		 );
-		END_IF
-	ELSE
-	
-		IF write THEN
-			desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
-		END_IF
 		
+		ELSE 
+			IF write THEN
+				payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].radius;
+			END_IF
+		END_IF
+	
 	END_IF
 	
 END_FOR]]></ST>
@@ -1000,13 +1016,16 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
+        <ST><![CDATA[//winding_tension();
+
+
+
 IF unwinding THEN
 	
 //to do. add unwinding functionality
 
 ELSE
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/2000;
+	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/2;
 	
 	//TO DO need to find what to set these to. 
 	pickup_axis_list[1].velocityLimitLow:=0;
@@ -1019,11 +1038,12 @@ ELSE
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		IF payoff_axis_list[i].enabled THEN
 			payoff_axis_list[i].setTorque();
-			payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2000;
+			payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2;
 		END_IF
 	END_FOR 
 END_IF
-]]></ST>
+(*
+*)]]></ST>
       </Implementation>
     </Method>
     <Method Name="standstill_tension_check" Id="{4514199c-9af5-4a98-ad75-0298298ebf12}" FolderPath="Methods\Input Checks\">
@@ -1170,7 +1190,7 @@ END_VAR
 
 //turn count condition.
 
-IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= target_turn_count THEN
+IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= desiredTurnCountPickup THEN
 	winding_exit_check :=TRUE;
 		
 	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
@@ -1189,13 +1209,18 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
 	//to do 
-	
+	//seg fault to exit program :D
+	i:=0;
+	pickup_axis_list[i].acceleration:=0;
 ELSE
+	
+
+
 	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/1000;
 	
 	//TO DO need to find what to set these to. 
-	pickup_axis_list[1].velocityLimitLow:=0;
-	pickup_axis_list[1].velocityLimitHigh:=1;
+	pickup_axis_list[1].velocityLimitLow:=payoff_axis_list[i].AXIS.NcToPlc.ActVelo;
+	pickup_axis_list[1].velocityLimitHigh:=1000000 ;
 	
 	pickup_axis_list[1].setTorque();
 	
@@ -1203,9 +1228,15 @@ ELSE
 		IF payoff_axis_list[i].enabled THEN
 			//ASSUMING CONTINOUS UPDATE LIKE FUNCTION
 			//TO DO figure out directions
-			payoff_axis_list[i].setVelocity();
 			
-			payoff_axis_list[i].velocity:=(desiredLinspeed/payoff_axis_list[i].getDistToAxis())*57.29578;
+			
+			payoff_axis_list[i].setVelocity();
+			dist:=payoff_axis_list[i].getDistToAxis();
+			
+			
+			
+			
+			payoff_axis_list[i].velocity:=(desiredLinspeed/dist)*57.29578;
 			
 			
 		END_IF
@@ -1412,7 +1443,9 @@ END_IF
       <LineId Id="224" Count="1" />
       <LineId Id="94" Count="0" />
       <LineId Id="109" Count="2" />
-      <LineId Id="113" Count="1" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="737" Count="0" />
+      <LineId Id="114" Count="0" />
       <LineId Id="116" Count="2" />
       <LineId Id="115" Count="0" />
       <LineId Id="120" Count="0" />
@@ -1511,6 +1544,11 @@ END_IF
     <LineIds Name="FB_WindingControl.hmi_update">
       <LineId Id="8" Count="1" />
       <LineId Id="5" Count="2" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="56" Count="0" />
@@ -1588,7 +1626,11 @@ END_IF
       <LineId Id="60" Count="1" />
       <LineId Id="68" Count="0" />
       <LineId Id="70" Count="0" />
-      <LineId Id="77" Count="14" />
+      <LineId Id="77" Count="9" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="89" Count="1" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="91" Count="0" />
       <LineId Id="71" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -1611,6 +1653,7 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension">
+      <LineId Id="80" Count="2" />
       <LineId Id="23" Count="1" />
       <LineId Id="26" Count="0" />
       <LineId Id="30" Count="0" />
@@ -1620,6 +1663,7 @@ END_IF
       <LineId Id="73" Count="0" />
       <LineId Id="65" Count="1" />
       <LineId Id="51" Count="1" />
+      <LineId Id="89" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension_check">
@@ -1689,8 +1733,17 @@ END_IF
     <LineIds Name="FB_WindingControl.winding_tension">
       <LineId Id="31" Count="0" />
       <LineId Id="59" Count="1" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="105" Count="0" />
       <LineId Id="35" Count="0" />
-      <LineId Id="69" Count="17" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="69" Count="11" />
+      <LineId Id="103" Count="1" />
+      <LineId Id="81" Count="1" />
+      <LineId Id="113" Count="3" />
+      <LineId Id="83" Count="3" />
       <LineId Id="67" Count="1" />
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="0" />

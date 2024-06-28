@@ -113,13 +113,6 @@ END_VAR]]></Declaration>
         <ST><![CDATA[
 powerEnable:=enabled; 
 
-MCRESET(Axis:=AXIS,Execute:=TRUE);
-
-IF NOT torqueEnable AND NOT velocityEnable and NOT stopEnable and not haltEnable THEN
-	AXIS.PlcToNc.ExtTorque:=0;
-	AXIS.PlcToNc.ExtSetVelo:=0;
-END_IF
-
 
 
 
@@ -157,23 +150,11 @@ MCVELOCITY(Axis:=Axis,
 			Jerk:=jerk,
 			Direction:=direction,
 			Velocity:=velocity);
-MCPOS(Axis:=AXIS,
-	 Execute:=FALSE,
-	 Position:=0,
-	 Mode:=TRUE,
-	 Options:=ST_SetPositionOptions);
 
-MCHOME(Execute:=TRUE ,
-		Position:=0,
-		HomingMode:=MC_DefaultHoming,
-  		BufferMode := BufferMode,
-    	Options := homeOptions,
-		Axis:=Axis);
+
+
 		
-IF test THEN
-	modmoveenable:=test;
-	MCMOVEMOD(AXIS:=AXIS,execute:=modmoveEnable,position:=0,velocity:=1,acceleration:=1,Deceleration:=1,jerk:=1);
-END_IF
+
 	 
 //to do . not quite sure of these units
 MCGETVELOCITY(Axis:=AXIS,
@@ -201,11 +182,11 @@ CASE coilShapeID OF
 		
 	0: //Finds direction if motor is being unwound
 	
-	getDistToAxis:=pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth; 
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth)/1000; 
 	
 	1: //Finds direction if motor is being wound
 	
-	getDistToAxis:=pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth;
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth)/1000;
 	
 	
 	END_CASE
@@ -236,7 +217,8 @@ END_VAR
       <Implementation>
         <ST><![CDATA[powerEnable:=TRUE;
 
-ST_SetPositionOptions.ClearPositionLag:=TRUE;]]></ST>
+ST_SetPositionOptions.ClearPositionLag:=TRUE;
+MCRESET(Axis:=AXIS,Execute:=TRUE);]]></ST>
       </Implementation>
     </Method>
     <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\">
@@ -250,7 +232,9 @@ stopEnable:=FALSE;
 haltEnable:=FALSE;
 homeEnable:= FALSE;
 torqueEnable:= FALSE;
-posEnable:=FALSE;]]></ST>
+posEnable:=FALSE;
+modmoveEnable:=FALSE;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="setHalt" Id="{2d8b8748-a52f-4cd2-900f-26056fd38ca1}" FolderPath="Methods\">
@@ -372,13 +356,7 @@ END_IF]]></ST>
     <LineIds Name="FB_Axis.CYLIC">
       <LineId Id="76" Count="1" />
       <LineId Id="92" Count="1" />
-      <LineId Id="98" Count="1" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="108" Count="0" />
-      <LineId Id="107" Count="0" />
-      <LineId Id="105" Count="0" />
-      <LineId Id="97" Count="0" />
-      <LineId Id="96" Count="0" />
+      <LineId Id="98" Count="0" />
       <LineId Id="78" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="3" />
@@ -394,13 +372,11 @@ END_IF]]></ST>
       <LineId Id="47" Count="1" />
       <LineId Id="29" Count="2" />
       <LineId Id="33" Count="6" />
-      <LineId Id="125" Count="3" />
       <LineId Id="59" Count="0" />
-      <LineId Id="130" Count="6" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="136" Count="0" />
       <LineId Id="129" Count="0" />
-      <LineId Id="109" Count="0" />
-      <LineId Id="137" Count="0" />
-      <LineId Id="117" Count="1" />
+      <LineId Id="118" Count="0" />
       <LineId Id="86" Count="0" />
       <LineId Id="88" Count="0" />
       <LineId Id="87" Count="0" />
@@ -432,11 +408,13 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setClear">
       <LineId Id="6" Count="3" />
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="0" />
+      <LineId Id="24" Count="1" />
     </LineIds>
     <LineIds Name="FB_Axis.setHalt">
       <LineId Id="6" Count="3" />

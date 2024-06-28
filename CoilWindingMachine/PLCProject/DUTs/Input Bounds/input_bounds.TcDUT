@@ -6,7 +6,7 @@ TYPE input_bounds :
 STRUCT
 	
 	linear_speed_low : LREAL := 0.01; //(m/s)
-	linear_speed_high: LREAL := 2.0;  //(m/s)
+	linear_speed_high: LREAL := 20.0;  //(m/s)
 
 	tension_low : LREAL := 0.5; //(N)
 	tension_high : LREAL := 5; //(N)

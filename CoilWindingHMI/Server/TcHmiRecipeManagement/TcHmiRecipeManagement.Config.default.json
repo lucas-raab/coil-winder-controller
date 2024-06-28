@@ -4,14 +4,14 @@
             "recipeTypeName": "Winding Parameters",
             "values": {
                 "Coil Shape ID": 0,
-                "Enabled 1": false,
+                "Enabled 1": true,
                 "Enabled 2": false,
                 "Enabled 3": false,
                 "Inital Outer Radius 1": 100.0,
                 "Inital Outer Radius 2": 100.0,
                 "Inital Outer Radius 3": 100.0,
                 "Linear Speed": 1.0,
-                "Target Turn Count": 1,
+                "Target Turn Count": 111,
                 "Tension": 1.0
             }
         },
