@@ -1205,6 +1205,13 @@ END_VAR
 
 VAR
 	i: INT;
+	
+	desiredVelocity : LREAL;
+	pickupLinspeed: LREAL;
+	adjustedVelocity: LREAL;
+END_VAR
+VAR CONSTANT
+	PERCENT_DIFFERENCE: LREAL := 1.1;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
@@ -1224,6 +1231,10 @@ ELSE
 	
 	pickup_axis_list[1].setTorque();
 	
+	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*	pickup_axis_list[1].getDistToAxis()/57.2957;
+	
+	
+	
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		IF payoff_axis_list[i].enabled THEN
 			//ASSUMING CONTINOUS UPDATE LIKE FUNCTION
@@ -1233,10 +1244,14 @@ ELSE
 			payoff_axis_list[i].setVelocity();
 			dist:=payoff_axis_list[i].getDistToAxis();
 			
+			desiredVelocity:=(desiredLinspeed/dist)*57.29578;
+			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
 			
 			
+			//sets payoff axis to half way point between target linspeed and the actual linspeed.
+			//i hope that this will give the pickup motor time to ramp up, while not giving too much speed to these motors.
+			payoff_axis_list[i].velocity:=(desiredVelocity+adjustedVelocity)/2;
 			
-			payoff_axis_list[i].velocity:=(desiredLinspeed/dist)*57.29578;
 			
 			
 		END_IF
@@ -1739,10 +1754,19 @@ END_IF
       <LineId Id="94" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="69" Count="11" />
+      <LineId Id="69" Count="7" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="122" Count="1" />
+      <LineId Id="77" Count="3" />
       <LineId Id="103" Count="1" />
       <LineId Id="81" Count="1" />
-      <LineId Id="113" Count="3" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="119" Count="1" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="131" Count="0" />
       <LineId Id="83" Count="3" />
       <LineId Id="67" Count="1" />
       <LineId Id="32" Count="0" />
