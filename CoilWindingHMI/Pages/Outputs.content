@@ -163,7 +163,7 @@
       ]
     </script>
   </div>
-<div id="TcHmiLinearGauge_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height-unit="px" data-tchmi-label-range="20" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="false" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-bottom="0" data-tchmi-right="10" data-tchmi-height="100" data-tchmi-set-point="%s%PLC1.MAIN.FB_WindingControl.progressPercent%/s%">
+<div id="TcHmiLinearGauge_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height-unit="px" data-tchmi-label-range="20" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="false" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-bottom="0" data-tchmi-right="10" data-tchmi-height="100" data-tchmi-set-point="%s%PLC1.MAIN.FB_WindingControl.progressPercent%/s%" data-tchmi-value="%s%PLC1.MAIN.FB_WindingControl.progressPercent%/s%">
 
 <script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
 {
@@ -192,7 +192,7 @@
 ]
 </script>
 </div>
-<div id="TcHmiTextbox_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="48" data-tchmi-height-unit="px" data-tchmi-left="20" data-tchmi-left-unit="px" data-tchmi-top="242" data-tchmi-top-unit="px" data-tchmi-width="230" data-tchmi-width-unit="px" data-tchmi-text="%s%PLC1.MAIN.FB_WindingControl.etaFormattedString%/s%">
+<div id="TcHmiTextbox_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="48" data-tchmi-height-unit="px" data-tchmi-left="20" data-tchmi-left-unit="px" data-tchmi-top="242" data-tchmi-top-unit="px" data-tchmi-width="230" data-tchmi-width-unit="px" data-tchmi-text="%s%PLC1.MAIN.FB_WindingControl.etaFormattedString%/s%" data-tchmi-text-font-size="24">
 <script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
 {
   "top": 3,

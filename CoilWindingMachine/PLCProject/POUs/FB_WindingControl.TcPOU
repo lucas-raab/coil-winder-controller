@@ -11,7 +11,12 @@ END_VAR
 VAR
 //temporay testing vars
 dist : LREAL ;
-
+	errorStatus : BOOL :=FALSE;
+	errorOutput : BOOL :=FALSE; //if true we wont output a new log message in case of error. meant to stop repeats
+	tape_thicnes: LREAL;
+	total_circum: LREAL;
+	currentTurnCount: LREAL;
+	currentCircum: LREAL;
 
 
 //Function Blocks
@@ -94,8 +99,8 @@ VAR
 	
 	i: INT;
 	
-	errorStatus : BOOL :=FALSE;
-	errorOutput : BOOL :=FALSE; //if true we wont output a new log message in case of error. meant to stop repeats
+
+	intital: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -459,13 +464,34 @@ CASE state OF
 	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
 	// to do not sure why this isn't working. in my head it should be. going to just remove it for now
 	//IF (cnt MOD 10 =0) THEN
-	find_eta();
-	get_current_progress();
+	etaFormattedString:=find_eta();
+		progressPercent :=get_current_progress();
+	
+	
 	//END_IF
+	tape_thicnes:=0;
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+			tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info.tape_depth/1000;
+		END_IF
+	END_FOR
+	
+
+	
+	
+	
+	total_circum:=2*pi*desiredTurnCountPickup*pickup_axis_list[1].pancake.radius/1000 + tape_thicnes*EXPT(desiredTurnCountPickup,2)*pi;
+	
+	currentTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+	
+	currentCircum:=2*pi*currentTurnCount*pickup_axis_list[1].pancake.radius/1000 +tape_thicnes*EXPT(currentTurnCount,2)*pi;
+	
+	
+	eta:=(total_circum-currentCircum)/desiredLinspeed;
 	
 	
 	//test
-	progressPercent := (pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/(360*desiredTurnCountPickup))*100;
+	progressPercent := get_current_progress();
 	
 	winding_tension();
 	
@@ -549,11 +575,8 @@ END_FOR
     </Method>
     <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
       <Declaration><![CDATA[//updates eta var
-METHOD find_eta : BOOL
+METHOD find_eta : STRING(255)
 VAR
-	turncount_diff : LREAL:=desiredTurnCountPickup-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
-	
-	
 	length : LREAL; //length of straight sections in race track coil
 	minutes: DINT;
 	
@@ -561,13 +584,18 @@ VAR
 	minutesString: STRING;
 	secondsString: STRING;
 	formattedString: STRING(255);
+	tape_thicnes: LREAL :=0; //total tape thickness in meters
+	i: INT;
+	total_circum: LREAL;
+	currentTurnCount: LREAL;
+	currentCircum: LREAL;
 END_VAR
 VAR CONSTANT
 	pi : LREAL := 4 * ATAN(1);
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//if we are finished out put 0 seconds and exit
-IF state <=59 OR state >= 50 THEN
+IF state <=59 AND state >= 50 THEN
 eta:=0;
 RETURN ;
 END_IF
@@ -576,10 +604,14 @@ CASE pickup_axis_list[1].coilShapeID OF
 	//finds eta given turn count
 	//formulas are a function of circumfrence given turn count. we take the intergral of this, with respect to turn count, with the upper bound being our target turn count 
 	0:
-	eta:=((pi*pickup_axis_list[1].pancake.radius)*(turncount_diff)+(pickup_axis_list[1].tape_info.tape_depth/2)*(desiredTurnCountPickup*desiredTurnCountPickup-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns*-pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns))/(desiredTurnCountPickup);
+	
+	
+
+	
+	
 	
 	1:	
-	
+	// to do. update this monster of a formula for the race track coil. derived through calculus, which is probably correct, just now cant figure it out because i decided to write a one liner instead of splitting up
 	(*
 	eta:=((2*pi*racetrack_params.radius*target_turn_count_pickup+pi*tape_info.tape_depth*target_turn_count_pickup*target_turn_count_pickup+2*racetrack_params.length*target_turn_count_pickup)
 		 -(2*pi*racetrack_params.radius*pickup_motor_list[1].turn_count+pi*tape_info.tape_depth*target_turn_count_pickup*pickup_motor_list[1].turn_count+2*racetrack_params.length*pickup_motor_list[1].turn_count));
@@ -596,7 +628,7 @@ minutesString := DINT_TO_STRING(minutes);
 secondsString := DINT_TO_STRING(seconds);
 
 // Format the final output string
-etaFormattedString := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
+find_eta := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
 ]]></ST>
       </Implementation>
     </Method>
@@ -693,16 +725,16 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="get_current_progress" Id="{504eb237-53a6-4e39-b7e7-217f0cf72225}" FolderPath="Methods\Status Updates\">
-      <Declaration><![CDATA[METHOD get_current_progress 
+      <Declaration><![CDATA[METHOD get_current_progress : LREAL
 
 
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
-	progressPercent := 100-(pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
+	get_current_progress := 100-(pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
 	
 ELSE
-	progressPercent := (pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
+	get_current_progress := ((pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/desiredTurnCountPickup)*100;
 
 END_IF
 	
@@ -727,7 +759,7 @@ update_velocity();
 
 
 
-hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360;
+hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
 hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=payoff_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].getDistToAxis();
 ]]></ST>
@@ -1024,10 +1056,10 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//winding_tension();
+        <ST><![CDATA[winding_tension();
 
 
-
+(*
 IF unwinding THEN
 	
 //to do. add unwinding functionality
@@ -1050,7 +1082,7 @@ ELSE
 		END_IF
 	END_FOR 
 END_IF
-(*
+
 *)]]></ST>
       </Implementation>
     </Method>
@@ -1234,6 +1266,7 @@ ELSE
 	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis();
 	
 	//TO DO need to find what to set these to. 
+	// to do . velo limits do not function how I thought they would need to ask beckhoff how they work.
 	pickup_axis_list[1].velocityLimitLow:=(desiredLinspeed/pickup_axis_list[1].getDistToAxis())*57.29578;
 	pickup_axis_list[1].velocityLimitHigh:=1000000 ;
 	
@@ -1466,7 +1499,11 @@ END_IF
       <LineId Id="36" Count="0" />
       <LineId Id="224" Count="0" />
       <LineId Id="749" Count="5" />
-      <LineId Id="747" Count="1" />
+      <LineId Id="789" Count="0" />
+      <LineId Id="767" Count="0" />
+      <LineId Id="747" Count="0" />
+      <LineId Id="790" Count="18" />
+      <LineId Id="748" Count="0" />
       <LineId Id="755" Count="2" />
       <LineId Id="225" Count="0" />
       <LineId Id="94" Count="0" />
@@ -1518,7 +1555,14 @@ END_IF
       <LineId Id="544" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.find_eta">
-      <LineId Id="22" Count="12" />
+      <LineId Id="22" Count="9" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="34" Count="0" />
       <LineId Id="50" Count="1" />
       <LineId Id="35" Count="1" />
       <LineId Id="52" Count="0" />
@@ -1762,7 +1806,9 @@ END_IF
       <LineId Id="94" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="69" Count="7" />
+      <LineId Id="69" Count="2" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="72" Count="4" />
       <LineId Id="121" Count="0" />
       <LineId Id="124" Count="0" />
       <LineId Id="122" Count="1" />
