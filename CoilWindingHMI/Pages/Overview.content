@@ -6,130 +6,6 @@
       ]
     </script>
   </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_15" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top="59" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-height="81.9" data-tchmi-right="10" data-tchmi-width="49">
-<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
-        [
-        "background-container"
-        ]
-      </script>
-
-    
-
-<div id="TcHmiTextblock_MiscSettings_Localization_6" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Outputs">
-<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
-          [
-          "headline-3"
-          ]
-        </script>
-      </div>
-<div id="TcHmiDatagrid_overview_outputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="50" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="14" data-tchmi-bottom="10" data-tchmi-background-image-vertical-alignment="Bottom" data-tchmi-row-numbers-vertical-alignment="Bottom" data-tchmi-row-numbers-horizontal-alignment="Left" data-tchmi-right="10" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.overview_outputs_datagrid_list%/s%">
-<script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
-[
-  {
-    "name": "pickupTurnCount",
-    "label": "Pickup Turn Count",
-    "control": "NumericInput",
-    "width": 33,
-    "widthUnit": "%",
-    "resize": false,
-    "sortable": false,
-    "minWidth": 100,
-    "minWidthUnit": "px",
-    "editable": false,
-    "horizontalAlignment": "Center",
-    "verticalAlignment": "Center",
-    "headerHorizontalAlignment": "Center",
-    "headerVerticalAlignment": "Center",
-    "ignoreEscapeSequences": false,
-    "autoFocusOut": true,
-    "autoSelectText": false
-  },
-  {
-    "name": "tension",
-    "label": "Estimated Tension (N)",
-    "control": "NumericInput",
-    "width": 33,
-    "widthUnit": "%",
-    "resize": false,
-    "sortable": false,
-    "minWidth": 100,
-    "minWidthUnit": "px",
-    "editable": false,
-    "horizontalAlignment": "Left",
-    "verticalAlignment": "Center",
-    "headerHorizontalAlignment": "Center",
-    "headerVerticalAlignment": "Center",
-    "ignoreEscapeSequences": false,
-    "autoFocusOut": true,
-    "autoSelectText": false
-  },
-  {
-    "name": "linspeed",
-    "label": "Estimated Linear Speed (m/s)",
-    "control": "NumericInput",
-    "width": 34,
-    "widthUnit": "%",
-    "resize": false,
-    "sortable": false,
-    "minWidth": 100,
-    "minWidthUnit": "px",
-    "editable": false,
-    "horizontalAlignment": "Left",
-    "verticalAlignment": "Center",
-    "headerHorizontalAlignment": "Center",
-    "headerVerticalAlignment": "Center",
-    "ignoreEscapeSequences": false,
-    "autoFocusOut": true,
-    "autoSelectText": false
-  }
-]
-</script>
-
-<script data-tchmi-target-attribute="data-tchmi-cell-content-padding" type="application/json">
-{
-  "left": 3,
-  "leftUnit": "px",
-  "right": 3,
-  "rightUnit": "px",
-  "top": 0,
-  "topUnit": "px",
-  "bottom": 0,
-  "bottomUnit": "px"
-}
-</script>
-
-
-<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
-[
-  {
-    "event": "TcHmiDatagrid_overview_outputs.onDataChanged",
-    "actions": [
-      {
-        "objectType": "WriteToSymbol",
-        "active": true,
-        "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%",
-        "value": {
-          "objectType": "Symbol",
-          "valueType": "tchmi:general#/definitions/String",
-          "symbolExpression": "%ctrl%TcHmiDatagrid_general_input::SrcData%/ctrl%"
-        },
-        "asyncWait": true
-      }
-    ]
-  }
-]
-</script>
-
-<script data-tchmi-target-attribute="data-tchmi-table-border-style" type="application/json">
-{
-  "left": "None",
-  "right": "None",
-  "top": "None",
-  "bottom": "None"
-}
-</script>
-</div>
-</div>
 <div id="TcHmiContainer" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="81.8" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width="49" data-tchmi-width-unit="%">
 <div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_16" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="%" data-tchmi-right="59.5" data-tchmi-width="49.5" data-tchmi-left="0" data-tchmi-bottom-unit="%" data-tchmi-height="49">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
@@ -1125,7 +1001,7 @@
           ]
         </script>
       </div>
-<div id="TcHmiDatagrid_general_input_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="40" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="20" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%" data-tchmi-bottom="43" data-tchmi-background-image-vertical-alignment="Bottom" data-tchmi-row-numbers-vertical-alignment="Bottom" data-tchmi-row-numbers-horizontal-alignment="Left" data-tchmi-right="16">
+<div id="TcHmiDatagrid_general_input_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="40" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="20" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%" data-tchmi-bottom="10" data-tchmi-background-image-vertical-alignment="Bottom" data-tchmi-row-numbers-vertical-alignment="Bottom" data-tchmi-row-numbers-horizontal-alignment="Left" data-tchmi-right="16">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
@@ -1233,7 +1109,7 @@
 </script>
 </div>
 </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_21" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top="-1" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="%" data-tchmi-right="0" data-tchmi-width="49.5" data-tchmi-bottom-unit="%" data-tchmi-height="49">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_21" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="%" data-tchmi-right="0" data-tchmi-width="49.5" data-tchmi-bottom-unit="%" data-tchmi-height="49">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
@@ -1375,7 +1251,7 @@
 ]
 </script>
 </div>
-<div id="TcHmiToggleButtonReset_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="40" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top-unit="px" data-tchmi-width="45" data-tchmi-width-unit="%" data-tchmi-word-wrap="true" data-tchmi-text="%i%reset%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.resetUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-bottom="10">
+<div id="TcHmiToggleButtonReset_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="40" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top-unit="px" data-tchmi-width="45" data-tchmi-width-unit="%" data-tchmi-word-wrap="true" data-tchmi-text="%i%reset%/i%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-bottom="10" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.resetUI%/s%">
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
@@ -1501,6 +1377,173 @@
   }
 ]
 </script>
+</div>
+</div>
+</div>
+<div id="TcHmiContainer_10" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="81.6" data-tchmi-height-unit="%" data-tchmi-left-unit="px" data-tchmi-top="59" data-tchmi-top-unit="px" data-tchmi-width="49" data-tchmi-width-unit="%" data-tchmi-right="10">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_15" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-height="49" data-tchmi-right="0" data-tchmi-width="100" data-tchmi-bottom="0">
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+        [
+        "background-container"
+        ]
+      </script>
+<div id="TcHmiDatagrid_overview_outputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="50" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="14" data-tchmi-bottom="10" data-tchmi-background-image-vertical-alignment="Bottom" data-tchmi-row-numbers-vertical-alignment="Bottom" data-tchmi-row-numbers-horizontal-alignment="Left" data-tchmi-right="10" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.overview_outputs_datagrid_list%/s%">
+<script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
+[
+  {
+    "name": "pickupTurnCount",
+    "label": "Pickup Turn Count",
+    "control": "NumericInput",
+    "width": 33,
+    "widthUnit": "%",
+    "resize": false,
+    "sortable": false,
+    "minWidth": 100,
+    "minWidthUnit": "px",
+    "editable": false,
+    "horizontalAlignment": "Center",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false
+  },
+  {
+    "name": "tension",
+    "label": "Estimated Tension (N)",
+    "control": "NumericInput",
+    "width": 33,
+    "widthUnit": "%",
+    "resize": false,
+    "sortable": false,
+    "minWidth": 100,
+    "minWidthUnit": "px",
+    "editable": false,
+    "horizontalAlignment": "Left",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false
+  },
+  {
+    "name": "linspeed",
+    "label": "Estimated Linear Speed (m/s)",
+    "control": "NumericInput",
+    "width": 34,
+    "widthUnit": "%",
+    "resize": false,
+    "sortable": false,
+    "minWidth": 100,
+    "minWidthUnit": "px",
+    "editable": false,
+    "horizontalAlignment": "Left",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false
+  }
+]
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-cell-content-padding" type="application/json">
+{
+  "left": 3,
+  "leftUnit": "px",
+  "right": 3,
+  "rightUnit": "px",
+  "top": 0,
+  "topUnit": "px",
+  "bottom": 0,
+  "bottomUnit": "px"
+}
+</script>
+
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "TcHmiDatagrid_overview_outputs.onDataChanged",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%",
+        "value": {
+          "objectType": "Symbol",
+          "valueType": "tchmi:general#/definitions/String",
+          "symbolExpression": "%ctrl%TcHmiDatagrid_general_input::SrcData%/ctrl%"
+        },
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-table-border-style" type="application/json">
+{
+  "left": "None",
+  "right": "None",
+  "top": "None",
+  "bottom": "None"
+}
+</script>
+</div>
+<div id="TcHmiTextblock_MiscSettings_Localization_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="268" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Motor Info">
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+          [
+          "headline-3"
+          ]
+        </script>
+      </div>
+</div>
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_Outputs_11" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-bottom-unit="px" data-tchmi-height="49.5" data-tchmi-left="0" data-tchmi-right="0">
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+        [
+        "background-container"
+        ]
+      </script>
+<div id="TcHmiTextblock_Outputs_10" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="20" data-tchmi-left-unit="px" data-tchmi-top="19" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="48" data-tchmi-text="General Outputs">
+<script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
+      [
+      "headline-2"
+      ]
+    </script>
+  </div>
+<div id="TcHmiLinearGauge_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="1000" data-tchmi-height-unit="px" data-tchmi-label-range="20" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-show-labels="true" data-tchmi-show-ticks="false" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-bottom="0" data-tchmi-right="10" data-tchmi-height="100" data-tchmi-set-point="%s%PLC1.MAIN.FB_WindingControl.progressPercent%/s%" data-tchmi-value="%s%PLC1.MAIN.FB_WindingControl.progressPercent%/s%" data-tchmi-ignore-invalid-values="true" data-tchmi-unit-orientation="Theme">
+
+<script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
+{
+  "objectType": "Function",
+  "fn": "GaugeValueFormatter",
+  "fnParams": []
+}
+</script>
+<script data-tchmi-target-attribute="data-tchmi-tick-definition" type="application/json">
+{
+  "mainTickRange": 20,
+  "subTickRange": 5
+}
+</script>
+
+
+
+</div>
+<div id="TcHmiTextbox_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="48" data-tchmi-height-unit="px" data-tchmi-left="20" data-tchmi-left-unit="px" data-tchmi-top-unit="px" data-tchmi-width="230" data-tchmi-width-unit="px" data-tchmi-text="%s%PLC1.MAIN.FB_WindingControl.etaFormattedString%/s%" data-tchmi-text-font-size="24" data-tchmi-bottom="120">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
 </div>
 </div>
 </div>

@@ -462,40 +462,13 @@ CASE state OF
 	
 	//get status updates
 	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
-	// to do not sure why this isn't working. in my head it should be. going to just remove it for now
-	//IF (cnt MOD 10 =0) THEN
-	etaFormattedString:=find_eta();
+	IF (cnt MOD 10 =0) THEN
+		etaFormattedString:=find_eta();
 		progressPercent :=get_current_progress();
-	
-	
-	//END_IF
-	tape_thicnes:=0;
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-		IF payoff_axis_list[i].enabled THEN
-			tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info.tape_depth/1000;
-		END_IF
-	END_FOR
-	
-
-	
-	
-	
-	total_circum:=2*pi*desiredTurnCountPickup*pickup_axis_list[1].pancake.radius/1000 + tape_thicnes*EXPT(desiredTurnCountPickup,2)*pi;
-	
-	currentTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
-	
-	currentCircum:=2*pi*currentTurnCount*pickup_axis_list[1].pancake.radius/1000 +tape_thicnes*EXPT(currentTurnCount,2)*pi;
-	
-	
-	eta:=(total_circum-currentCircum)/desiredLinspeed;
-	
-	
-	//test
-	progressPercent := get_current_progress();
+	END_IF
 	
 	winding_tension();
-	
-	
+
 	//check for exit conditions 
 	IF winding_exit_check() THEN
 		hmiConnection^.startUI:=FALSE;
@@ -605,7 +578,25 @@ CASE pickup_axis_list[1].coilShapeID OF
 	//formulas are a function of circumfrence given turn count. we take the intergral of this, with respect to turn count, with the upper bound being our target turn count 
 	0:
 	
+	tape_thicnes:=0;
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info.tape_depth/1000;
+	END_IF
+END_FOR
 	
+
+	
+	
+	
+	total_circum:=2*pi*desiredTurnCountPickup*pickup_axis_list[1].pancake.radius/1000 + tape_thicnes*EXPT(desiredTurnCountPickup,2)*pi;
+	
+	currentTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+	
+	currentCircum:=2*pi*currentTurnCount*pickup_axis_list[1].pancake.radius/1000 +tape_thicnes*EXPT(currentTurnCount,2)*pi;
+	
+	
+	eta:=(total_circum-currentCircum)/desiredLinspeed;
 
 	
 	
@@ -1044,7 +1035,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[state := 10;]]></ST>
+        <ST><![CDATA[state := 10;
+progressPercent:=0;
+//TO DO . need to find out out to clear position to 0
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="standstill_tension" Id="{2810c0a6-5d8e-4e25-8bef-5c7267116cff}" FolderPath="Methods\Motor Control\">
@@ -1498,16 +1492,15 @@ END_IF
       <LineId Id="46" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="224" Count="0" />
-      <LineId Id="749" Count="5" />
-      <LineId Id="789" Count="0" />
-      <LineId Id="767" Count="0" />
-      <LineId Id="747" Count="0" />
-      <LineId Id="790" Count="18" />
-      <LineId Id="748" Count="0" />
-      <LineId Id="755" Count="2" />
-      <LineId Id="225" Count="0" />
+      <LineId Id="749" Count="1" />
+      <LineId Id="752" Count="0" />
+      <LineId Id="817" Count="0" />
+      <LineId Id="819" Count="0" />
+      <LineId Id="818" Count="0" />
+      <LineId Id="753" Count="0" />
       <LineId Id="94" Count="0" />
-      <LineId Id="109" Count="2" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="111" Count="0" />
       <LineId Id="113" Count="0" />
       <LineId Id="737" Count="0" />
       <LineId Id="114" Count="0" />
@@ -1557,6 +1550,11 @@ END_IF
     <LineIds Name="FB_WindingControl.find_eta">
       <LineId Id="22" Count="9" />
       <LineId Id="74" Count="0" />
+      <LineId Id="143" Count="2" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="149" Count="11" />
       <LineId Id="77" Count="0" />
       <LineId Id="124" Count="0" />
       <LineId Id="33" Count="0" />
@@ -1718,6 +1716,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.reset">
       <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension">
       <LineId Id="80" Count="2" />

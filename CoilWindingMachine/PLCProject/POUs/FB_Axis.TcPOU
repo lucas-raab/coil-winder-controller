@@ -336,13 +336,13 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF powerEnable := TRUE THEN
+        <ST><![CDATA[IF powerEnable OR haltEnable OR stopEnable THEN
 	state:=1;
 END_IF
 IF NOT enabled THEN
 	state:=2;
 END_IF
-IF torqueEnable OR velocityEnable OR posEnable OR haltEnable OR stopEnable THEN
+IF torqueEnable OR velocityEnable OR posEnable   THEN
 	state:=3;
 END_IF
 IF AXIS.Status.Error THEN
