@@ -108,6 +108,7 @@
     <Folder Include="Fonts\" />
     <Folder Include="Images" />
     <Folder Include="Images\Manifest" />
+    <Folder Include="Images\CME Images" />
     <Folder Include="Images\PLC\" />
     <Folder Include="Images\TwinCAT\" />
     <Folder Include="Imports" />
@@ -129,6 +130,7 @@
     <Folder Include="Themes" />
     <Folder Include="Themes\Base-Dark\Images\" />
     <Folder Include="Themes\Base-Dark\Images\Events\" />
+    <Folder Include="Themes\Base-Dark\Images\Overview" />
     <Folder Include="Themes\Base-Dark\Images\Placeholder\" />
     <Folder Include="Themes\Base-Dark\Images\Settings\" />
     <Folder Include="Themes\Base\" />
@@ -139,6 +141,15 @@
     <Folder Include="Properties" />
     <Content Include=".eslintrc.json">
       <Visible>false</Visible>
+    </Content>
+    <Content Include="Images\CME Images\cme-logo-nogreen.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Images\CME Images\cme-logo.png">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Images\CME Images\cme_logo.jpg">
+      <SubType>Content</SubType>
     </Content>
     <Content Include="Pages\Coil Params\pancake.content">
       <SubType>Content</SubType>
@@ -270,6 +281,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Events\message_pressed.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Overview\overview_active.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Overview\overview_normal.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Overview\overview_pressed.svg">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Placeholder\placeholder_active.svg">

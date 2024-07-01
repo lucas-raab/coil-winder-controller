@@ -10,13 +10,6 @@ END_VAR
 
 VAR
 //temporay testing vars
-dist : LREAL ;
-	errorStatus : BOOL :=FALSE;
-	errorOutput : BOOL :=FALSE; //if true we wont output a new log message in case of error. meant to stop repeats
-	tape_thicnes: LREAL;
-	total_circum: LREAL;
-	currentTurnCount: LREAL;
-	currentCircum: LREAL;
 
 
 //Function Blocks
@@ -30,16 +23,16 @@ desiredTurnCountPickup : DINT:=0;
 target_turn_count : DINT :=0;
 
 //STATUS VARS
-state : INT:=0;
-cnt : INT :=0;
+state : INT:=0; //state for state machine
+cnt : INT :=0; //plc cycle counter.
 
 
-eta : LREAL :=0;
-etaFormattedString : STRING(255);
-progressPercent : LREAL :=0;
+eta : LREAL :=0; //time till completion in seconds
+etaFormattedString : STRING(255);// formated eta in format ETA: M:S
+progressPercent : LREAL :=0; //0 to 100 progress percentage based on turn count.
 
-
-tensioned : BOOL:=FALSE;
+//state vars. not sure if needed. to do 
+tensioned : BOOL:=FALSE; 
 winding : BOOL:=FALSE;
 
 
@@ -64,7 +57,7 @@ VAR CONSTANT
 	MAX_COIL_TYPE_COUNT : INT :=1; //number of coil types. counts from 0
 	MAX_SIZE_COIL_MODEL : INT :=1205;
 	TARGET_PICKUP_FORCE: LREAL :=10;
-	pi : LREAL := 4 * ATAN(1);
+	pi : LREAL := 4 * ATAN(1); //pi for math reasons. might be built in but couldn't find it.
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -751,7 +744,7 @@ update_velocity();
 
 
 hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
-hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=payoff_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
+hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].getDistToAxis();
 ]]></ST>
       </Implementation>
