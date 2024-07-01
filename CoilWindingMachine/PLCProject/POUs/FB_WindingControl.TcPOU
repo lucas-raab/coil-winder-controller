@@ -120,7 +120,7 @@ hmiConnection^.state:=state;
 		END_IF
 	
 		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
 				 strArg:= '');
 			hmiConnection^.startUI:=FALSE;
@@ -185,7 +185,7 @@ hmiConnection^.state:=state;
 		END_IF
 		
 		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
@@ -198,7 +198,7 @@ hmiConnection^.state:=state;
 		
 		//tension button
 		IF hmiConnection^.resetUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to reset during winding. Please pause winding.',
 				 strArg:= '');
 			hmiConnection^.resetUI:=FALSE;
@@ -230,7 +230,7 @@ hmiConnection^.state:=state;
 			
 		END_IF
 		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
@@ -258,7 +258,7 @@ hmiConnection^.state:=state;
 	
 		//start button
 		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to start while finished. Please reset first.',
 				 strArg:= '');
 			hmiConnection^.resetUI:=FALSE;
@@ -279,7 +279,7 @@ hmiConnection^.state:=state;
 		END_IF
 		
 		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
@@ -301,7 +301,7 @@ hmiConnection^.state:=state;
 	
 		//start button
 		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to start while in error state. Please reset first, and resolve error.',
 				 strArg:= '');
 			hmiConnection^.resetUI:=FALSE;
@@ -322,7 +322,7 @@ hmiConnection^.state:=state;
 		END_IF
 		
 		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
@@ -332,7 +332,7 @@ hmiConnection^.state:=state;
 		// =======================================50========================================
 		50:
 		IF  hmiConnection^.tensionUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to tension while in homing sdtate. Please stop homing.',
 				 strArg:= '');
 			hmiConnection^.resetUI:=FALSE;
@@ -349,7 +349,7 @@ hmiConnection^.state:=state;
 	
 		//start button
 		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_LOG,
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to start while in homing sdtate. Please stop homing.',
 				 strArg:= '');
 			hmiConnection^.resetUI:=FALSE;
@@ -408,8 +408,6 @@ CASE state OF
 	00: //INIT STATE
 	
 	
-	
-	
 	state:=10;
 	
 	// ========================================10========================================
@@ -451,6 +449,7 @@ CASE state OF
 		state:=20;
 		hmiConnection^.startUI:=FALSE;
 	ELSE
+		eventLogger^.fbMessage[1].Send(0);
 		state:=31;
 		
 	END_IF
@@ -471,6 +470,7 @@ CASE state OF
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
+		eventLogger^.fbMessage[2].Send(0);
 		hmiConnection^.startUI:=FALSE;
 		state:=40;
 		
@@ -1227,7 +1227,7 @@ END_VAR
 IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= desiredTurnCountPickup THEN
 	winding_exit_check :=TRUE;
 		
-	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
 END_IF
 ]]></ST>
       </Implementation>
@@ -1249,7 +1249,7 @@ VAR CONSTANT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
-	//to do 
+	//to do update with unwinding feature
 	//seg fault to exit program :D remove when implmenting 
 	i:=0;
 	pickup_axis_list[i].acceleration:=0;
@@ -1456,7 +1456,7 @@ END_IF
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="555" Count="2" />
+      <LineId Id="555" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="505" Count="1" />
       <LineId Id="11" Count="0" />
@@ -1485,7 +1485,9 @@ END_IF
       <LineId Id="33" Count="0" />
       <LineId Id="215" Count="0" />
       <LineId Id="220" Count="0" />
-      <LineId Id="78" Count="6" />
+      <LineId Id="78" Count="4" />
+      <LineId Id="820" Count="0" />
+      <LineId Id="83" Count="1" />
       <LineId Id="77" Count="0" />
       <LineId Id="45" Count="0" />
       <LineId Id="513" Count="1" />
@@ -1502,6 +1504,7 @@ END_IF
       <LineId Id="109" Count="0" />
       <LineId Id="111" Count="0" />
       <LineId Id="113" Count="0" />
+      <LineId Id="821" Count="0" />
       <LineId Id="737" Count="0" />
       <LineId Id="114" Count="0" />
       <LineId Id="116" Count="2" />
