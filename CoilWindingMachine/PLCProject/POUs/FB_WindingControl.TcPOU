@@ -1206,8 +1206,11 @@ VAR
 	errorTemp : BOOL := FALSE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-//turn power off on all axies. 
+        <ST><![CDATA[//to do . bug where after a failed winding attemp, users need to press button one more time inorder for command to run. coming back to this later
+
+//function to set pos of all motors to 0
+
+//turn power off on all axies. need for set pos function
 pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=FALSE);
 
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
@@ -1228,7 +1231,6 @@ REPEAT
 	busy:= busy AND busytemp;
 	error:= error AND errorTemp;
 
-//to do . bug where after a failed winding attemp, users need to press button one more time inorder for command to run. coming back to this later
 
 //set pos of payoff
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
@@ -1247,9 +1249,9 @@ UNTIL
 NOT BUSY
 END_REPEAT
 
-pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis,
-		Execute:=TRUE,Position:=0,mode:=FALSE);
+pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis, Execute:=TRUE,Position:=0,mode:=FALSE);
 
+//to do error catching. 
 set_pos_all:=TRUE;
 
 //turn power off on all axies. 
@@ -2001,6 +2003,9 @@ END_IF
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.set_pos_all">
+      <LineId Id="122" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="123" Count="0" />
       <LineId Id="21" Count="3" />
       <LineId Id="52" Count="4" />
       <LineId Id="25" Count="0" />
@@ -2010,7 +2015,6 @@ END_IF
       <LineId Id="59" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="85" Count="0" />
-      <LineId Id="81" Count="0" />
       <LineId Id="120" Count="1" />
       <LineId Id="76" Count="0" />
       <LineId Id="64" Count="2" />
@@ -2024,7 +2028,7 @@ END_IF
       <LineId Id="32" Count="1" />
       <LineId Id="93" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="94" Count="0" />
+      <LineId Id="125" Count="0" />
       <LineId Id="92" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="97" Count="3" />
