@@ -125,8 +125,6 @@ MCPOWER(Axis:=Axis,
 		Enable_Positive:=powerEnable,
 		Enable_Negative:=powerEnable);
 		
-
-		
 MCSTOP(Axis:=Axis,
 		Execute:=stopEnable,
 		Deceleration:=deceleration,
@@ -158,8 +156,6 @@ MCVELOCITY(Axis:=Axis,
 
 
 		
-
-	 
 //to do . not quite sure of these units
 MCGETVELOCITY(Axis:=AXIS,
 			Enable:=TRUE,
@@ -167,6 +163,20 @@ MCGETVELOCITY(Axis:=AXIS,
 	 
 getTorque();
 stateUpdate();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="findinertia" Id="{1c478d19-00ea-4701-b3cf-13a0a384da78}" FolderPath="Methods\">
+      <Declaration><![CDATA[METHOD findinertia : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	cableMassKG: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[momentInertia:=(0.5)*(emptyMassKG+cableMassKG)*EXPT(getDistToAxis(),2);
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="getDistToAxis" Id="{6b2436af-4b54-4ed0-a9cd-4034ab7bf577}" FolderPath="Methods\">
@@ -272,15 +282,17 @@ posEnable:=FALSE;]]></ST>
     <Method Name="setPos" Id="{c270b1b3-4e96-4a7e-92d9-23393108ef68}" FolderPath="Methods\">
       <Declaration><![CDATA[METHOD setPos : BOOL
 VAR_INPUT
+	
 END_VAR
-]]></Declaration>
+
+VAR
+	
+	Done: BOOL;
+	i: INT;
+	busy: BOOL;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[velocityEnable:=FALSE;
-stopEnable:=FALSE;
-haltEnable:=FALSE;
-homeEnable:= FALSE;
-torqueEnable:= FALSE;
-posEnable:=TRUE;]]></ST>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="setReset" Id="{704b19ac-a526-4b1d-961a-2b6ba452c168}" FolderPath="Methods\">
@@ -364,9 +376,7 @@ END_IF]]></ST>
       <LineId Id="98" Count="0" />
       <LineId Id="78" Count="0" />
       <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="3" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="7" Count="4" />
       <LineId Id="22" Count="2" />
       <LineId Id="41" Count="0" />
       <LineId Id="43" Count="3" />
@@ -381,14 +391,17 @@ END_IF]]></ST>
       <LineId Id="130" Count="0" />
       <LineId Id="136" Count="0" />
       <LineId Id="129" Count="0" />
-      <LineId Id="118" Count="0" />
-      <LineId Id="86" Count="0" />
       <LineId Id="88" Count="0" />
       <LineId Id="87" Count="0" />
       <LineId Id="89" Count="1" />
       <LineId Id="67" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="68" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.findinertia">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.getDistToAxis">
       <LineId Id="5" Count="0" />
@@ -432,8 +445,7 @@ END_IF]]></ST>
       <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setPos">
-      <LineId Id="6" Count="4" />
-      <LineId Id="5" Count="0" />
+      <LineId Id="47" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setReset">
       <LineId Id="5" Count="0" />
