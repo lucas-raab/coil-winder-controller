@@ -6,6 +6,7 @@ TYPE tape_info :
 STRUCT
 	tape_width: LREAL:=4.0;
 	tape_depth: LREAL:=0.1;
+	mass_per_cm_g : LREAL :=10;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

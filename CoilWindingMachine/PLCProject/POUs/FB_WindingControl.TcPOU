@@ -73,6 +73,15 @@ END_VAR]]></Declaration>
       <Folder Name="Motor Control" Id="{4367b06a-8be7-4cee-a828-1c414585ef9d}" />
       <Folder Name="Status Updates" Id="{912579cd-d079-4ec8-869a-781310624225}" />
     </Folder>
+    <Method Name="accelerating_tension" Id="{51b0940c-2da9-428b-aa7c-7aa4bc946ef3}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD accelerating_tension : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="all_check" Id="{3616b09d-79ac-4d4e-a9a8-9c800c9db7f0}" FolderPath="Methods\Input Checks\">
       <Declaration><![CDATA[METHOD all_check : BOOL
 VAR_INPUT
@@ -94,6 +103,8 @@ VAR
 	
 
 	intital: BOOL;
+	errorOutput: BOOL;
+	errorStatus: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -383,6 +394,7 @@ END_FOR
 
 general_error_check(errorStatus=>errorStatus,errorOutput:=errorOutput);
 
+
 //if no error, but currently in error state set winding to standby
 //if none of the above state is unmodified
 IF errorStatus THEN
@@ -441,6 +453,14 @@ CASE state OF
 		//if error then revert to standby
 		state:=20;
 		hmiConnection^.startUI:=FALSE;
+		
+		
+		
+		
+		
+		
+		
+		
 	ELSE
 		eventLogger^.fbMessage[1].Send(0);
 		state:=31;
@@ -449,8 +469,20 @@ CASE state OF
 	// ========================================30========================================
 	
 	// ========================================31========================================
-	31: //WINDING TENSION 
-	//cable currently being wound with set tension. Can not edit params
+	31: //WINDING TENSION, ACCELERATION
+	//coil is currently ramping speed. can not edit params.
+	
+	//get status updates
+	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
+	
+	
+	
+	
+	// ========================================31========================================
+	
+	// ========================================32========================================
+	32: //WINDING TENSION, STEADY STATE
+	//coil is in steady state. moving at constant velo with set tension. Can not edit params
 	
 	//get status updates
 	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
@@ -471,10 +503,30 @@ CASE state OF
 		state:=31;
 	END_IF
 	
-
+	
 	
 	// ========================================31========================================
+	33: //WINDING TENSION, DEACCELERATION
+	//coil currently decreasing speed, while maintaining. Can not edit params
 	
+	//get status updates
+	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
+	IF (cnt MOD 10 =0) THEN
+		etaFormattedString:=find_eta();
+		progressPercent :=get_current_progress();
+	END_IF
+	
+	winding_tension();
+
+	//check for exit conditions 
+	IF winding_exit_check() THEN
+		eventLogger^.fbMessage[2].Send(0);
+		hmiConnection^.startUI:=FALSE;
+		state:=40;
+		
+	ELSE
+		state:=31;
+	END_IF
 	
 	// ========================================40========================================
 	40: //FINISHED HOLD STANDSTILL TENSION
@@ -537,6 +589,32 @@ END_FOR
 
 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="decelerating_tension" Id="{c76da513-9eeb-4494-921e-e9d30e1467af}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD decelerating_tension : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="determine_motor_state" Id="{e8b4b006-30e0-4934-923d-a97aac10b32d}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD determine_motor_state : BOOL
+VAR_INPUT
+END_VAR
+
+
+
+
+
+VAR
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
@@ -1236,6 +1314,7 @@ VAR
 	desiredVelocity : LREAL;
 	pickupLinspeed: LREAL;
 	adjustedVelocity: LREAL;
+	dist: LREAL;
 END_VAR
 VAR CONSTANT
 	PERCENT_DIFFERENCE: LREAL := 1.1;
@@ -1272,6 +1351,7 @@ ELSE
 			payoff_axis_list[i].setVelocity();
 			dist:=payoff_axis_list[i].getDistToAxis();
 			
+			
 			desiredVelocity:=(desiredLinspeed/dist)*57.29578;
 			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
 			
@@ -1291,6 +1371,9 @@ END_IF
     </Method>
     <LineIds Name="FB_WindingControl">
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.accelerating_tension">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.all_check">
       <LineId Id="5" Count="0" />
@@ -1436,6 +1519,7 @@ END_IF
       <LineId Id="528" Count="0" />
       <LineId Id="552" Count="0" />
       <LineId Id="529" Count="1" />
+      <LineId Id="830" Count="0" />
       <LineId Id="554" Count="0" />
       <LineId Id="553" Count="0" />
       <LineId Id="534" Count="4" />
@@ -1478,7 +1562,9 @@ END_IF
       <LineId Id="33" Count="0" />
       <LineId Id="215" Count="0" />
       <LineId Id="220" Count="0" />
-      <LineId Id="78" Count="4" />
+      <LineId Id="78" Count="3" />
+      <LineId Id="890" Count="7" />
+      <LineId Id="82" Count="0" />
       <LineId Id="820" Count="0" />
       <LineId Id="83" Count="1" />
       <LineId Id="77" Count="0" />
@@ -1488,25 +1574,15 @@ END_IF
       <LineId Id="36" Count="0" />
       <LineId Id="224" Count="0" />
       <LineId Id="749" Count="1" />
-      <LineId Id="752" Count="0" />
-      <LineId Id="817" Count="0" />
-      <LineId Id="819" Count="0" />
-      <LineId Id="818" Count="0" />
-      <LineId Id="753" Count="0" />
-      <LineId Id="94" Count="0" />
-      <LineId Id="109" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="821" Count="0" />
-      <LineId Id="737" Count="0" />
-      <LineId Id="114" Count="0" />
-      <LineId Id="116" Count="2" />
       <LineId Id="115" Count="0" />
       <LineId Id="120" Count="0" />
       <LineId Id="176" Count="0" />
       <LineId Id="519" Count="0" />
       <LineId Id="174" Count="0" />
+      <LineId Id="858" Count="0" />
+      <LineId Id="833" Count="24" />
       <LineId Id="173" Count="0" />
+      <LineId Id="859" Count="20" />
       <LineId Id="37" Count="0" />
       <LineId Id="510" Count="0" />
       <LineId Id="17" Count="0" />
@@ -1542,6 +1618,12 @@ END_IF
       <LineId Id="547" Count="4" />
       <LineId Id="545" Count="1" />
       <LineId Id="544" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.decelerating_tension">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.determine_motor_state">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.find_eta">
       <LineId Id="22" Count="9" />
@@ -1811,6 +1893,7 @@ END_IF
       <LineId Id="77" Count="3" />
       <LineId Id="103" Count="1" />
       <LineId Id="81" Count="1" />
+      <LineId Id="162" Count="0" />
       <LineId Id="113" Count="1" />
       <LineId Id="132" Count="0" />
       <LineId Id="115" Count="0" />

@@ -5,7 +5,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiTrendLineChart_6" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTrendLineChart" data-tchmi-end="Latest" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-start="First" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-x-axis-name="x-axis 1" data-tchmi-x-sub-tick-steps="4" data-tchmi-y-sub-tick-steps="4" data-tchmi-right="10" data-tchmi-bottom="10" data-tchmi-show-menu-bar="true" data-tchmi-is-enabled="true">
+<div id="TcHmiTrendLineChart_6" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTrendLineChart" data-tchmi-end="Latest" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-start="First" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-x-axis-name="x-axis 1" data-tchmi-x-sub-tick-steps="4" data-tchmi-y-sub-tick-steps="4" data-tchmi-right="10" data-tchmi-bottom="10" data-tchmi-show-menu-bar="true" data-tchmi-is-enabled="true" data-tchmi-subgrid-show-horizontal-lines="false" data-tchmi-subgrid-show-vertical-lines="false">
 <script data-tchmi-target-attribute="data-tchmi-y-axis" type="application/json">
 [
   {
@@ -47,7 +47,9 @@
     "pointDot": false,
     "pointDotRadius": 3,
     "pointDotStrokeWidth": 1,
-    "lineColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionLineColor%/tr%",
+    "lineColor": {
+      "color": "rgba(0, 27, 255, 1)"
+    },
     "pointDotFillColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotFillColor%/tr%",
     "pointDotStrokeColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotStrokeColor%/tr%",
     "pointDotInStopMode": true,
@@ -65,7 +67,9 @@
     "pointDot": false,
     "pointDotRadius": 3,
     "pointDotStrokeWidth": 1,
-    "lineColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionLineColor%/tr%",
+    "lineColor": {
+      "color": "rgba(62, 255, 0, 1)"
+    },
     "pointDotFillColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotFillColor%/tr%",
     "pointDotStrokeColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotStrokeColor%/tr%",
     "pointDotInStopMode": true,
@@ -83,7 +87,9 @@
     "pointDot": false,
     "pointDotRadius": 3,
     "pointDotStrokeWidth": 1,
-    "lineColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionLineColor%/tr%",
+    "lineColor": {
+      "color": "rgba(255, 236, 0, 1)"
+    },
     "pointDotFillColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotFillColor%/tr%",
     "pointDotStrokeColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotStrokeColor%/tr%",
     "pointDotInStopMode": true,
@@ -101,7 +107,9 @@
     "pointDot": false,
     "pointDotRadius": 3,
     "pointDotStrokeWidth": 1,
-    "lineColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionLineColor%/tr%",
+    "lineColor": {
+      "color": "rgba(0, 255, 238, 1)"
+    },
     "pointDotFillColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotFillColor%/tr%",
     "pointDotStrokeColor": "%tr%Control::TcHmi.Controls.Beckhoff.TcHmiLineChart::LineGraphDescriptionPointDotStrokeColor%/tr%",
     "pointDotInStopMode": true,

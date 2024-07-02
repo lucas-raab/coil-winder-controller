@@ -478,6 +478,7 @@
       },
       "TR_Icon_Settings_active": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Settings/settings_active.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"
@@ -485,6 +486,7 @@
       },
       "TR_Icon_Settings_normal": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Settings/settings_normal.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_normal.svg"
@@ -492,6 +494,7 @@
       },
       "TR_Icon_Settings_pressed": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Settings/settings_pressed.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
@@ -499,6 +502,7 @@
       },
       "TR_Icon_Overview_active": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_active.svg",
           "Base": null
@@ -506,6 +510,7 @@
       },
       "TR_Icon_Overview_pressed": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_pressed.svg",
           "Base": null
@@ -513,6 +518,7 @@
       },
       "TR_Icon_Overview_normal": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_normal.svg",
           "Base": null
