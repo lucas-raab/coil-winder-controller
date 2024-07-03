@@ -70,7 +70,8 @@ VAR_INPUT
 	
 	state : INT;
 	
-	
+	adsError: BOOL;
+	adsErrorID: UDINT;
 	
 	//========================================================AXIS PARAMS========================================================
 	
@@ -103,6 +104,8 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Folder Name="Methods" Id="{a176b26e-e67a-42bd-94f4-2f0b6113d4b7}">
+      <Folder Name="Error Checks" Id="{5e84902a-c5c6-4038-a6b5-6ad92834b0c4}" />
+      <Folder Name="Misc" Id="{154da71a-12a3-4387-8f76-6b557dc01298}" />
       <Folder Name="sets" Id="{31fae47e-262c-4f32-a922-a3f514e3e406}" />
     </Folder>
     <Method Name="CYLIC" Id="{7c186ae0-44c4-4808-9e23-1f18de41fa53}">
@@ -165,7 +168,37 @@ stateUpdate();
 findinertia();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="findinertia" Id="{1c478d19-00ea-4701-b3cf-13a0a384da78}" FolderPath="Methods\">
+    <Method Name="error_check_all" Id="{d0c59f3f-f6b6-4fd0-853c-e3534ca6d5d0}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD error_check_all : BOOL
+VAR_OUTPUT
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//to do . if statements might not be needed
+
+IF powerEnable THEN
+	power_error_check(Error=>adsError,error=>adsErrorID);
+END_IF
+
+IF torqueEnable THEN
+	torque_error_check(Error=>adsError,error=>adsErrorID);
+END_IF
+
+IF velocityEnable THEN
+	velocity_error_check(Error=>adsError,error=>adsErrorID);
+END_IF
+
+IF stopEnable THEN
+	stop_error_check(Error=>adsError,error=>adsErrorID);
+END_IF
+
+IF haltEnable THEN
+	stop_error_check(Error=>adsError,error=>adsErrorID);
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="findinertia" Id="{1c478d19-00ea-4701-b3cf-13a0a384da78}" FolderPath="Methods\Misc\">
       <Declaration><![CDATA[METHOD findinertia : BOOL
 VAR_INPUT
 END_VAR
@@ -179,7 +212,7 @@ END_VAR]]></Declaration>
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="getDistToAxis" Id="{6b2436af-4b54-4ed0-a9cd-4034ab7bf577}" FolderPath="Methods\">
+    <Method Name="getDistToAxis" Id="{6b2436af-4b54-4ed0-a9cd-4034ab7bf577}" FolderPath="Methods\Misc\">
       <Declaration><![CDATA[METHOD getDistToAxis : LREAL
 VAR_INPUT
 END_VAR
@@ -214,13 +247,27 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="getTorque" Id="{6c5c5c23-bebe-4cf8-bf3b-ff120224285b}" FolderPath="Methods\">
+    <Method Name="getTorque" Id="{6c5c5c23-bebe-4cf8-bf3b-ff120224285b}" FolderPath="Methods\Misc\">
       <Declaration><![CDATA[METHOD getTorque : BOOL
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqaueConstrant;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="halt_error_check" Id="{2ca5f59d-5312-4450-b836-ed2e20c6ea56}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD halt_error_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_OUTPUT
+	Error: BOOL;
+	errorID: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCHALT(Axis:=Axis,Error=>Error,ErrorID=>errorID);
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="INIT" Id="{cb6cd0a9-c647-4489-a174-b70a666913ba}">
@@ -233,6 +280,16 @@ END_VAR
 
 ST_SetPositionOptions.ClearPositionLag:=TRUE;
 MCRESET(Axis:=AXIS,Execute:=TRUE);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="power_error_check" Id="{3a006f0e-5221-4ae0-9860-3fc9c0782ddb}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD power_error_check : BOOL
+VAR_OUTPUT
+	error :BOOL;
+	errorID : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCPOWER(Axis:=Axis,Error=>Error,ErrorID=>errorID);]]></ST>
       </Implementation>
     </Method>
     <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\sets\">
@@ -346,7 +403,7 @@ torqueEnable:= FALSE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="stateUpdate" Id="{47b61579-401b-4a3b-b130-c999b128bc7b}" FolderPath="Methods\">
+    <Method Name="stateUpdate" Id="{47b61579-401b-4a3b-b130-c999b128bc7b}" FolderPath="Methods\Misc\">
       <Declaration><![CDATA[METHOD stateUpdate : BOOL
 VAR_INPUT
 END_VAR
@@ -364,6 +421,49 @@ END_IF
 IF AXIS.Status.Error THEN
 	state:=4;
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="stop_error_check" Id="{ef513f0a-80f4-4bef-9122-655fb37b4b98}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD stop_error_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_OUTPUT
+	errorID: UDINT;
+	Error: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCSTOP(Axis:=Axis,Error=>Error,ErrorID=>errorID);
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="torque_error_check" Id="{f0391d66-cdcc-462c-8289-6666080e8d59}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD torque_error_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_OUTPUT
+	Error: BOOL;
+	errorID: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCTORQUECONTROL(Axis:=Axis,Error=>Error,ErrorID=>errorID);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="velocity_error_check" Id="{828667ad-f097-444c-a024-b05a7b520e5b}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD velocity_error_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR_OUTPUT
+	Error: BOOL;
+	errorID: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCVELOCITY(Axis:=Axis,Error=>Error,ErrorID=>errorID);
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Axis">
@@ -396,6 +496,20 @@ END_IF]]></ST>
       <LineId Id="68" Count="0" />
       <LineId Id="155" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Axis.error_check_all">
+      <LineId Id="41" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="5" Count="2" />
+      <LineId Id="18" Count="3" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="2" />
+    </LineIds>
     <LineIds Name="FB_Axis.findinertia">
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
@@ -420,11 +534,17 @@ END_IF]]></ST>
     <LineIds Name="FB_Axis.getTorque">
       <LineId Id="5" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Axis.halt_error_check">
+      <LineId Id="5" Count="1" />
+    </LineIds>
     <LineIds Name="FB_Axis.INIT">
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.power_error_check">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setClear">
       <LineId Id="6" Count="3" />
@@ -466,6 +586,19 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="FB_Axis.stateUpdate">
       <LineId Id="5" Count="11" />
+    </LineIds>
+    <LineIds Name="FB_Axis.stop_error_check">
+      <LineId Id="6" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.torque_error_check">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.velocity_error_check">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

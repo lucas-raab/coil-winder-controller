@@ -796,6 +796,7 @@ find_eta := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
 VAR
 	i: INT;
 	pickup_motor_count: INT;
+	adsError : BOOL;
 END_VAR
 VAR_OUTPUT
 	errorStatus : BOOL ;
@@ -806,22 +807,27 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//Checks to see if there are any errors in a enabled axis.
 
-IF pickup_axis_list[1].AXIS.Status.Error THEN
-		errorStatus:=TRUE;
+
+pickup_axis_list[1].error_check_all();
+
+
+errorStatus:=pickup_axis_list[1].AXIS.Status.Error OR pickup_axis_list[1].adsError ;
 		
-	
-END_IF
+
 
 
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
-	IF payoff_axis_list[i].AXIS.Status.Error AND payoff_axis_list[i].enabled THEN
-		errorStatus:=TRUE;
+	
+	payoff_axis_list[i].error_check_all();
+
+	
+		errorStatus:=errorStatus OR ((payoff_axis_list[i].AXIS.Status.Error OR payoff_axis_list[i].adsError) AND payoff_axis_list[i].enabled);
 		
-		IF NOT errorOutput THEN
+		IF errorOutput THEN
 			
 			ADSLOGSTR(
         		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-        		msgFmtStr := 'Error occurred. At least one payoff motor needs to be enabled',
+        		msgFmtStr := 'Error occurred. ',
         		strArg := ''
    			 );
 		
@@ -832,7 +838,7 @@ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 		
 		
 	
-	END_IF
+	
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -1876,9 +1882,15 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_error_check">
-      <LineId Id="20" Count="1" />
-      <LineId Id="31" Count="3" />
-      <LineId Id="22" Count="5" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="66" Count="2" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="31" Count="2" />
+      <LineId Id="22" Count="3" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="26" Count="1" />
       <LineId Id="29" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="46" Count="0" />
