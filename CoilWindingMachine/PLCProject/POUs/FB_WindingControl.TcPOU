@@ -528,7 +528,22 @@ CASE state OF
 	//get status updates
 	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
 	
+	IF (cnt MOD 10 =0) THEN
+		etaFormattedString:=find_eta();
+		progressPercent :=get_current_progress();
+	END_IF
 	
+	accelerating_tension();
+	determine_motor_state();
+	
+	IF winding_exit_check() THEN
+		eventLogger^.fbMessage[2].Send(0);
+		hmiConnection^.startUI:=FALSE;
+		state:=40;
+		
+	ELSE
+		state:=31;
+	END_IF
 	
 	
 	// ========================================31========================================
@@ -545,6 +560,7 @@ CASE state OF
 	END_IF
 	
 	winding_tension();
+	determine_motor_state();
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
@@ -553,7 +569,7 @@ CASE state OF
 		state:=40;
 		
 	ELSE
-		state:=31;
+		state:=32;
 	END_IF
 	
 	
@@ -564,12 +580,13 @@ CASE state OF
 	
 	//get status updates
 	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
-	IF (cnt MOD 10 =0) THEN
+		IF (cnt MOD 10 =0) THEN
 		etaFormattedString:=find_eta();
 		progressPercent :=get_current_progress();
 	END_IF
 	
-	winding_tension();
+	decelerating_tension();
+	determine_motor_state();
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
@@ -578,7 +595,7 @@ CASE state OF
 		state:=40;
 		
 	ELSE
-		state:=31;
+		state:=33;
 	END_IF
 	
 	// ========================================40========================================
@@ -1760,14 +1777,22 @@ END_IF
       <LineId Id="224" Count="0" />
       <LineId Id="749" Count="1" />
       <LineId Id="115" Count="0" />
+      <LineId Id="931" Count="2" />
+      <LineId Id="929" Count="1" />
+      <LineId Id="919" Count="1" />
       <LineId Id="120" Count="0" />
+      <LineId Id="921" Count="7" />
       <LineId Id="176" Count="0" />
       <LineId Id="519" Count="0" />
       <LineId Id="174" Count="0" />
       <LineId Id="858" Count="0" />
-      <LineId Id="833" Count="24" />
+      <LineId Id="833" Count="11" />
+      <LineId Id="934" Count="0" />
+      <LineId Id="845" Count="12" />
       <LineId Id="173" Count="0" />
-      <LineId Id="859" Count="20" />
+      <LineId Id="859" Count="4" />
+      <LineId Id="935" Count="15" />
+      <LineId Id="879" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="510" Count="0" />
       <LineId Id="17" Count="0" />

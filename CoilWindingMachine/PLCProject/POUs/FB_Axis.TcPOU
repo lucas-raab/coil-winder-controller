@@ -102,7 +102,9 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Folder Name="Methods" Id="{a176b26e-e67a-42bd-94f4-2f0b6113d4b7}" />
+    <Folder Name="Methods" Id="{a176b26e-e67a-42bd-94f4-2f0b6113d4b7}">
+      <Folder Name="sets" Id="{31fae47e-262c-4f32-a922-a3f514e3e406}" />
+    </Folder>
     <Method Name="CYLIC" Id="{7c186ae0-44c4-4808-9e23-1f18de41fa53}">
       <Declaration><![CDATA[METHOD CYLIC : BOOL
 VAR_INPUT
@@ -152,17 +154,15 @@ MCVELOCITY(Axis:=Axis,
 			Jerk:=jerk,
 			Direction:=direction,
 			Velocity:=velocity);
-
-
-
-		
+			
 //to do . not quite sure of these units
 MCGETVELOCITY(Axis:=AXIS,
 			Enable:=TRUE,
 			ActualVelocity=>actualVelocity);
 	 
 getTorque();
-stateUpdate();]]></ST>
+stateUpdate();
+findinertia();]]></ST>
       </Implementation>
     </Method>
     <Method Name="findinertia" Id="{1c478d19-00ea-4701-b3cf-13a0a384da78}" FolderPath="Methods\">
@@ -235,7 +235,7 @@ ST_SetPositionOptions.ClearPositionLag:=TRUE;
 MCRESET(Axis:=AXIS,Execute:=TRUE);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\">
+    <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setClear : BOOL
 VAR_INPUT
 END_VAR
@@ -251,7 +251,7 @@ modmoveEnable:=FALSE;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setHalt" Id="{2d8b8748-a52f-4cd2-900f-26056fd38ca1}" FolderPath="Methods\">
+    <Method Name="setHalt" Id="{2d8b8748-a52f-4cd2-900f-26056fd38ca1}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setHalt : BOOL
 VAR_INPUT
 END_VAR
@@ -265,7 +265,7 @@ torqueEnable:= FALSE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setHome" Id="{4b055be3-c329-44b4-84a9-fb655fd8c656}" FolderPath="Methods\">
+    <Method Name="setHome" Id="{4b055be3-c329-44b4-84a9-fb655fd8c656}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setHome : BOOL
 VAR_INPUT
 END_VAR
@@ -279,7 +279,7 @@ torqueEnable:= FALSE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setPos" Id="{c270b1b3-4e96-4a7e-92d9-23393108ef68}" FolderPath="Methods\">
+    <Method Name="setPos" Id="{c270b1b3-4e96-4a7e-92d9-23393108ef68}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setPos : BOOL
 VAR_INPUT
 	
@@ -295,7 +295,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setReset" Id="{704b19ac-a526-4b1d-961a-2b6ba452c168}" FolderPath="Methods\">
+    <Method Name="setReset" Id="{704b19ac-a526-4b1d-961a-2b6ba452c168}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setReset : BOOL
 VAR_INPUT
 END_VAR
@@ -304,7 +304,7 @@ END_VAR
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setStop" Id="{612bcacf-3053-4295-8be1-bb716811093b}" FolderPath="Methods\">
+    <Method Name="setStop" Id="{612bcacf-3053-4295-8be1-bb716811093b}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setStop : BOOL
 VAR_INPUT
 END_VAR
@@ -318,7 +318,7 @@ torqueEnable:= FALSE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setTorque" Id="{37fa63df-8844-4715-be14-1d1e190c6f35}" FolderPath="Methods\">
+    <Method Name="setTorque" Id="{37fa63df-8844-4715-be14-1d1e190c6f35}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setTorque : BOOL
 VAR_INPUT
 END_VAR
@@ -332,7 +332,7 @@ torqueEnable:= TRUE;
 posEnable:=FALSE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setVelocity" Id="{2e422cbc-a452-44f9-b242-0ddad3731936}" FolderPath="Methods\">
+    <Method Name="setVelocity" Id="{2e422cbc-a452-44f9-b242-0ddad3731936}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setVelocity : BOOL
 VAR_INPUT
 END_VAR
@@ -358,7 +358,7 @@ END_IF
 IF NOT enabled THEN
 	state:=2;
 END_IF
-IF torqueEnable OR velocityEnable OR posEnable   THEN
+IF torqueEnable OR velocityEnable OR posEnable THEN
 	state:=3;
 END_IF
 IF AXIS.Status.Error THEN
@@ -387,16 +387,14 @@ END_IF]]></ST>
       <LineId Id="47" Count="1" />
       <LineId Id="29" Count="2" />
       <LineId Id="33" Count="6" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="130" Count="0" />
-      <LineId Id="136" Count="0" />
-      <LineId Id="129" Count="0" />
+      <LineId Id="154" Count="0" />
       <LineId Id="88" Count="0" />
       <LineId Id="87" Count="0" />
       <LineId Id="89" Count="1" />
       <LineId Id="67" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="68" Count="0" />
+      <LineId Id="155" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.findinertia">
       <LineId Id="5" Count="0" />
