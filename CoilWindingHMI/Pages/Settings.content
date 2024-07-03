@@ -1,7 +1,7 @@
 <div id="Settings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-height="100" data-tchmi-width-unit="%" data-tchmi-height-unit="%">
 
 <div id="MainSettings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-height-mode="Content">
-<div id="TcHmiTextblock_MainSettings_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="32" data-tchmi-left-unit="px" data-tchmi-text="Main Settings" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="16">
+<div id="TcHmiTextblock_MainSettings_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="Main Settings" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="16">
 
 
     <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
@@ -10,7 +10,7 @@
       ]
     </script>
   </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_6" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left="32" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right-unit="px" data-tchmi-width="920" data-tchmi-height="325">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_6" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-width="49" data-tchmi-height="325">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
@@ -23,7 +23,7 @@
           ]
         </script>
       </div>
-<div id="TcHmiDatagrid_pickup_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="82.8" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="14.2" data-tchmi-top-unit="%" data-tchmi-width="97.8" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="24" data-tchmi-grid-font-size="20" data-tchmi-grid-font-size-unit="px" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list%/s%">
+<div id="TcHmiDatagrid_pickup_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="82.8" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="14.2" data-tchmi-top-unit="%" data-tchmi-width="97.8" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="16" data-tchmi-grid-font-size="20" data-tchmi-grid-font-size-unit="px" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list%/s%">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
@@ -228,7 +228,7 @@
 </script>
 </div>
 </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_9" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left="32" data-tchmi-left-unit="px" data-tchmi-top="402" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right-unit="px" data-tchmi-width="435" data-tchmi-height="325">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_9" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-width="24.5" data-tchmi-height="45" data-tchmi-bottom="0">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
@@ -241,9 +241,9 @@
           ]
         </script>
       </div>
-<div id="TcHmiRegion" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="46" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right="10" data-tchmi-bottom="24" data-tchmi-target-content="Pages/Coil Params/pancake.content">
+<div id="TcHmiRegion" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="40" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right="10" data-tchmi-bottom="10" data-tchmi-target-content="Pages/Coil Params/pancake.content">
 </div>
-<div id="TcHmiTextblock_MainSettings_coilshape" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="246" data-tchmi-left-unit="px" data-tchmi-top="12" data-tchmi-top-unit="px" data-tchmi-width="174" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="%i%coilname%/i%">
+<div id="TcHmiTextblock_MainSettings_coilshape" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="174" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="%i%coilname%/i%" data-tchmi-right="10">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -251,13 +251,13 @@
         </script>
       </div>
 </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_10" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left="483" data-tchmi-left-unit="px" data-tchmi-top="402" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right-unit="px" data-tchmi-width="469" data-tchmi-height="325">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_10" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left="25.5" data-tchmi-left-unit="%" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-width="24" data-tchmi-height="45" data-tchmi-bottom="0">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
         ]
       </script>
-<div id="TcHmiDatagrid_general_input" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="255" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="46" data-tchmi-top-unit="px" data-tchmi-width="449" data-tchmi-width-unit="px" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="20" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%">
+<div id="TcHmiDatagrid_general_input" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="46" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-show-row-numbers="false" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="16" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list%/s%" data-tchmi-bottom="10" data-tchmi-right="10">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
@@ -367,7 +367,7 @@
         </script>
       </div>
 </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_11" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left="983" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right-unit="px" data-tchmi-width="920" data-tchmi-height="667">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_11" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-width="49" data-tchmi-height="667" data-tchmi-right="10">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
@@ -383,7 +383,7 @@
           ]
         </script>
       </div>
-<div id="TcHmiDatagrid_payoff_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="89.8" data-tchmi-height-unit="%" data-tchmi-left="17" data-tchmi-left-unit="px" data-tchmi-top="6.9" data-tchmi-top-unit="%" data-tchmi-width="97.8" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="24" data-tchmi-grid-font-size="20" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list%/s%">
+<div id="TcHmiDatagrid_payoff_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height="89.8" data-tchmi-height-unit="%" data-tchmi-left="17" data-tchmi-left-unit="px" data-tchmi-top="6.9" data-tchmi-top-unit="%" data-tchmi-width="97.8" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="16" data-tchmi-grid-font-size="20" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list%/s%">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
