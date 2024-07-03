@@ -1439,7 +1439,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   },
   {
     "name": "tension",
@@ -1458,7 +1461,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   },
   {
     "name": "linspeed",
@@ -1477,7 +1483,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   }
 ]
 </script>

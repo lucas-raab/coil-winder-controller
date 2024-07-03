@@ -238,7 +238,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   },
   {
     "name": "payoffTc1",
@@ -257,7 +260,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   },
   {
     "name": "payoffTc2",
@@ -276,7 +282,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   },
   {
     "name": "payoffTc3",
@@ -295,7 +304,10 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 2.0
+    }
   }
 ]
 </script>
