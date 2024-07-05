@@ -1424,7 +1424,7 @@ External Setpoint Generation:
 			</Relations>
 		</DataType>
 		<DataType>
-			<Name GUID="{01B5B929-3591-4DC6-9004-D919902D976D}" PersistentType="true">PLC_Events</Name>
+			<Name GUID="{432B3953-8BB4-4D69-AE67-CDC5A9141EDA}" PersistentType="true">PLC_Events</Name>
 			<DisplayName TxtId=""><![CDATA[PLC Events]]></DisplayName>
 			<Comment TxtId=""><![CDATA[Events related to motor functionality, and winding status.]]></Comment>
 			<EventId>
@@ -1492,6 +1492,7 @@ External Setpoint Generation:
 				<Hide GUID="{34D32F42-1986-4D9D-BB3D-D389797CFF3A}"/>
 				<Hide GUID="{ADA45122-D5A2-485D-8B48-A1D708485300}"/>
 				<Hide GUID="{8A433B69-B89F-4B08-AB8D-13C09E307057}"/>
+				<Hide GUID="{01B5B929-3591-4DC6-9004-D919902D976D}"/>
 			</Hides>
 		</DataType>
 	</DataTypes>
@@ -2144,7 +2145,7 @@ External Setpoint Generation:
 		</Motion>
 		<Plc>
 			<Project GUID="{C6BF6199-BF83-4ACE-9260-E74E397BB48B}" Name="PLCProject" PrjFilePath="PLCProject\PLCProject.plcproj" TmcFilePath="PLCProject\PLCProject.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{4C5125A9-8BA6-7AAD-91E8-859D3B9A8539}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{76F4BA08-9ABB-BA81-87E5-F0BFA871D4DC}">
 					<Name>PLCProject Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

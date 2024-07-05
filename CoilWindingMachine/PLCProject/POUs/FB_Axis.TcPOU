@@ -177,23 +177,23 @@ END_VAR]]></Declaration>
         <ST><![CDATA[//to do . if statements might not be needed
 
 IF powerEnable THEN
-	power_error_check(Error=>adsError,error=>adsErrorID);
+	power_error_check(Error=>adsError,errorID=>adsErrorID);
 END_IF
 
 IF torqueEnable THEN
-	torque_error_check(Error=>adsError,error=>adsErrorID);
+	torque_error_check(Error=>adsError,errorID=>adsErrorID);
 END_IF
 
 IF velocityEnable THEN
-	velocity_error_check(Error=>adsError,error=>adsErrorID);
+	velocity_error_check(Error=>adsError,errorID=>adsErrorID);
 END_IF
 
 IF stopEnable THEN
-	stop_error_check(Error=>adsError,error=>adsErrorID);
+	stop_error_check(Error=>adsError,errorID=>adsErrorID);
 END_IF
 
 IF haltEnable THEN
-	stop_error_check(Error=>adsError,error=>adsErrorID);
+	stop_error_check(Error=>adsError,errorID=>adsErrorID);
 END_IF
 ]]></ST>
       </Implementation>

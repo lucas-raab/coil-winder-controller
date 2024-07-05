@@ -185,6 +185,7 @@ hmiConnection^.state:=state;
 		END_IF
 		IF hmiConnection^.tensionUI THEN
 		state:=20;
+		errorOutput:=TRUE;
 		END_IF
 	
 		//check inputs button
@@ -203,6 +204,7 @@ hmiConnection^.state:=state;
 		
 		IF hmiConnection^.homeUI THEN
 			state:=50;
+			errorOutput:=TRUE;
 		END_IF
 		
 		
@@ -220,12 +222,13 @@ hmiConnection^.state:=state;
 		//start button
 		IF hmiConnection^.startUI THEN
 			state:=30;
-			
+			errorOutput:=TRUE;
 		END_IF
 		
 		//tension button
 		IF NOT hmiConnection^.tensionUI THEN
 		state:=10;
+		errorOutput:=TRUE;
 		END_IF
 	
 		//check inputs button
@@ -265,19 +268,21 @@ hmiConnection^.state:=state;
 		//start button
 		IF NOT hmiConnection^.startUI THEN
 			state:=20;
-			
+			errorOutput:=TRUE;
 		END_IF
 		
 		//tension button
 		IF NOT hmiConnection^.tensionUI THEN
 			hmiConnection^.startUI:=FALSE;
 			state:=10;
+			errorOutput:=TRUE;
 		END_IF
 	
 		//check inputs button
 		IF hmiConnection^.checkInputsUI THEN
 			all_check(write:=FALSE);
 			hmiConnection^.checkInputsUI:=FALSE;
+			errorOutput:=TRUE;
 		END_IF
 		
 		//update inputs button
@@ -300,7 +305,7 @@ hmiConnection^.state:=state;
 		//tension button
 		IF  hmiConnection^.tensionUI THEN
 			state:=40;
-			
+			errorOutput:=TRUE;
 		ELSE
 			state:=41;
 			
@@ -353,7 +358,7 @@ hmiConnection^.state:=state;
 			reset();
 			state:=10;
 			hmiConnection^.resetUI:=FALSE;
-			
+			errorOutput:=TRUE;
 		END_IF
 	
 		//start button
@@ -401,7 +406,7 @@ hmiConnection^.state:=state;
 			reset();
 			state:=10;
 			hmiConnection^.resetUI:=FALSE;
-			
+			errorOutput:=TRUE;
 		END_IF
 	
 		//start button
@@ -430,6 +435,7 @@ hmiConnection^.state:=state;
 			
 			hmiConnection^.homeUI:=FALSE;
 			state:=10;
+			errorOutput:=TRUE;
 		END_IF
 		// ========================================50========================================
 	END_CASE
@@ -810,9 +816,31 @@ END_VAR]]></Declaration>
 
 pickup_axis_list[1].error_check_all();
 
-
 errorStatus:=pickup_axis_list[1].AXIS.Status.Error OR pickup_axis_list[1].adsError ;
 		
+IF errorOutput AND pickup_axis_list[1].AXIS.Status.Error THEN
+			
+			ADSLOGSTR(
+        		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        		msgFmtStr := 'Error occurred. Error on Pickup Axis with ID: %S',
+        		strArg := UDINT_TO_STRING(pickup_axis_list[1].AXIS.Status.ErrorID)
+   			 );
+		
+			errorOutput:=FALSE;
+		
+END_IF
+		
+IF errorOutput AND pickup_axis_list[1].adsError THEN
+			
+			ADSLOGSTR(
+        		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        		msgFmtStr := 'Error occurred. Error in Pickup Axis FB with ID: %S ',
+        		strArg := UDINT_TO_STRING(pickup_axis_list[1].adsErrorID)
+   			 );
+		
+			errorOutput:=FALSE;
+		
+END_IF
 
 
 
@@ -823,22 +851,30 @@ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	
 		errorStatus:=errorStatus OR ((payoff_axis_list[i].AXIS.Status.Error OR payoff_axis_list[i].adsError) AND payoff_axis_list[i].enabled);
 		
-		IF errorOutput THEN
+		IF errorOutput AND payoff_axis_list[i].AXIS.Status.Error THEN
 			
 			ADSLOGSTR(
         		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-        		msgFmtStr := 'Error occurred. ',
-        		strArg := ''
+        		msgFmtStr := 'Error occurred. Error on Pickup Axis with ID: %S',
+        		strArg := UDINT_TO_STRING(payoff_axis_list[i].AXIS.Status.ErrorID)
    			 );
 		
+			errorOutput:=FALSE;
 		
+END_IF
 		
-		END_IF
+IF errorOutput AND payoff_axis_list[i].adsError THEN
+			
+			ADSLOGSTR(
+        		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        		msgFmtStr := 'Error occurred. Error in Pickup Axis FB with ID: %S ',
+        		strArg := UDINT_TO_STRING(payoff_axis_list[i].adsErrorID)
+   			 );
 		
+			errorOutput:=FALSE;
 		
+END_IF
 		
-	
-	
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -1605,7 +1641,9 @@ END_IF
       <LineId Id="308" Count="0" />
       <LineId Id="304" Count="2" />
       <LineId Id="294" Count="0" />
-      <LineId Id="296" Count="3" />
+      <LineId Id="296" Count="1" />
+      <LineId Id="961" Count="0" />
+      <LineId Id="298" Count="1" />
       <LineId Id="586" Count="0" />
       <LineId Id="300" Count="1" />
       <LineId Id="567" Count="0" />
@@ -1617,7 +1655,9 @@ END_IF
       <LineId Id="463" Count="0" />
       <LineId Id="584" Count="0" />
       <LineId Id="615" Count="0" />
-      <LineId Id="618" Count="1" />
+      <LineId Id="618" Count="0" />
+      <LineId Id="962" Count="0" />
+      <LineId Id="619" Count="0" />
       <LineId Id="616" Count="1" />
       <LineId Id="286" Count="0" />
       <LineId Id="309" Count="1" />
@@ -1630,7 +1670,9 @@ END_IF
       <LineId Id="317" Count="0" />
       <LineId Id="321" Count="2" />
       <LineId Id="336" Count="1" />
-      <LineId Id="324" Count="3" />
+      <LineId Id="324" Count="1" />
+      <LineId Id="963" Count="0" />
+      <LineId Id="326" Count="1" />
       <LineId Id="338" Count="0" />
       <LineId Id="328" Count="1" />
       <LineId Id="568" Count="0" />
@@ -1655,8 +1697,11 @@ END_IF
       <LineId Id="368" Count="0" />
       <LineId Id="348" Count="9" />
       <LineId Id="369" Count="0" />
-      <LineId Id="358" Count="5" />
+      <LineId Id="358" Count="0" />
+      <LineId Id="964" Count="0" />
+      <LineId Id="359" Count="4" />
       <LineId Id="576" Count="0" />
+      <LineId Id="965" Count="0" />
       <LineId Id="364" Count="0" />
       <LineId Id="481" Count="0" />
       <LineId Id="581" Count="0" />
@@ -1714,6 +1759,7 @@ END_IF
       <LineId Id="651" Count="32" />
       <LineId Id="686" Count="1" />
       <LineId Id="700" Count="0" />
+      <LineId Id="966" Count="0" />
       <LineId Id="688" Count="0" />
       <LineId Id="648" Count="0" />
       <LineId Id="285" Count="0" />
@@ -1884,22 +1930,21 @@ END_IF
     <LineIds Name="FB_WindingControl.general_error_check">
       <LineId Id="20" Count="0" />
       <LineId Id="66" Count="2" />
-      <LineId Id="21" Count="0" />
       <LineId Id="31" Count="2" />
-      <LineId Id="22" Count="3" />
+      <LineId Id="84" Count="9" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="106" Count="10" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="23" Count="2" />
       <LineId Id="70" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="26" Count="1" />
       <LineId Id="29" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="52" Count="3" />
-      <LineId Id="48" Count="3" />
+      <LineId Id="117" Count="21" />
       <LineId Id="47" Count="0" />
-      <LineId Id="43" Count="2" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="28" Count="0" />
+      <LineId Id="43" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_input_check">

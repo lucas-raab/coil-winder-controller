@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <TcEventSources Version="2">
 	<Source>
-		<GUID>{01B5B929-3591-4DC6-9004-D919902D976D}</GUID>
+		<GUID>{432B3953-8BB4-4D69-AE67-CDC5A9141EDA}</GUID>
 		<Name LcId="1033">PLC Events</Name>
 		<Event>
 			<Id>1</Id>
