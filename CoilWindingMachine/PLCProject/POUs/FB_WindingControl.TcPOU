@@ -19,7 +19,7 @@ desiredTension : LREAL:=0;
 desiredLinspeed : LREAL:=0;
 unwinding : BOOL := FALSE;
 desiredTurnCountPickup : DINT:=0;
-//exit conditions
+//exit conditions'
 target_turn_count : DINT :=0;
 
 //STATUS VARS
@@ -49,7 +49,8 @@ coil_model_rot_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_M
 payoff_axis_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;
 pickup_axis_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;
 
-
+//MISC
+numOfEnabledPayoff : INT :=0;
 
 END_VAR
 VAR CONSTANT
@@ -146,6 +147,26 @@ END_VAR
 all_check:= all_check OR payoff_input_check(write:=write);
 all_check:=all_check OR pickup_input_check(write:=write);
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="count_enabled_motors" Id="{4a842378-88e5-40ee-b5f2-32e4ab95fb86}" FolderPath="Methods\Axis Control\">
+      <Declaration><![CDATA[METHOD count_enabled_motors : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ //updates status of all axises, pickup and payoff
+
+numOfEnabledPayoff:=0;
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+IF	payoff_axis_list[i].enabled THEN
+	numOfEnabledPayoff:=numOfEnabledPayoff+1;
+END_IF
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="CYCLIC" Id="{66242b1c-4d63-4218-b0e7-5f4fc34ce9db}">
@@ -527,7 +548,6 @@ hmiConnection^.state:=state;
 //clear status vars for axis. we will update them depending on our current state.
 pickup_axis_list[1].setClear();
 
-
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].setClear();
 END_FOR
@@ -556,17 +576,16 @@ CASE state OF
 	
 	
 	state:=10;
-	
 	// ========================================10========================================
 	10: //STANDBY STATE. 
 	//wait for user inputs to transition to tension state. All motors are idle. Can edit params
 	
 	stop_all();
-	
 	// ========================================20========================================
 	20: //STANDBY WITH STANDSTILL TENSION INITAL
 	//inital error check for standstill tension state
 	
+	count_enabled_motors();
 	//check inputs for standstill tension
 	IF standstill_tension_check() THEN
 		//if error then revert to standby
@@ -590,6 +609,7 @@ CASE state OF
 	30: //WINDING TENSION INITAL
 	//inital error check for winding tension state.
 	
+	count_enabled_motors();
 	// INPUT VALIDATION
 	IF winding_check() THEN
 		//if error then revert to standby
@@ -646,7 +666,9 @@ CASE state OF
 	
 	
 	
-	// ========================================31========================================
+	// ========================================32========================================
+	
+	// ========================================33========================================
 	33: //WINDING TENSION, DEACCELERATION
 	//coil currently decreasing speed, while maintaining. Can not edit params
 	
@@ -664,6 +686,7 @@ CASE state OF
 	ELSE
 		state:=33;
 	END_IF
+	// ========================================33========================================
 	
 	// ========================================40========================================
 	40: //FINISHED HOLD STANDSTILL TENSION
@@ -682,8 +705,9 @@ CASE state OF
 	// ========================================40========================================
 	
 	// ========================================41========================================
-	41: //FINISHED TENSION
+	41: //FINISHED NO TENSION
 	//cable winding finished, waiting on user reset to transition to standby state. Can edit params
+	//do not control tension
 	
 	// ========================================41========================================
 	
@@ -708,8 +732,7 @@ CASE state OF
 	// ========================================51========================================
 	
 	400: //ERROR STATE
-	//error on a axis preventing motor movement, or winding start.
-	
+	//error on a axis preventing motor movement, or winding start. //do nothing 'till resolved
 	500: //ESTOP STATE
 	//triggered on estop press. can be cleared with reset
 		estop_routine();
@@ -1451,10 +1474,7 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[winding_tension();
-
-
-(*
+        <ST><![CDATA[
 IF unwinding THEN
 	
 //to do. add unwinding functionality
@@ -1477,8 +1497,7 @@ ELSE
 		END_IF
 	END_FOR 
 END_IF
-
-*)]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="standstill_tension_check" Id="{4514199c-9af5-4a98-ad75-0298298ebf12}" FolderPath="Methods\Input Checks\">
@@ -1673,19 +1692,19 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
 	//to do update with unwinding feature
-	//seg fault to exit program :D remove when implmenting 
-	i:=0;
-	pickup_axis_list[i].acceleration:=0;
+	
+	//do nothing, not implemneted yet. 
 ELSE
 	
 
 
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis();
+	pickup_axis_list[1].torque:=desiredTension*numOfEnabledPayoff*	pickup_axis_list[1].getDistToAxis();
 	
-	//TO DO need to find what to set these to. 
-	// to do . velo limits do not function how I thought they would need to ask beckhoff how they work.
-	pickup_axis_list[1].velocityLimitLow:=(desiredLinspeed/pickup_axis_list[1].getDistToAxis())*57.29578;
-	pickup_axis_list[1].velocityLimitHigh:=1000000 ;
+	//TO DO . need to confirm these are correct
+	//how i envison the limits to function is that the pickup side will gradually ramp up speed until we hit the upper velocity limit. we could maybe have no limits and just have only torque control
+	//will need testing. 
+	pickup_axis_list[1].velocityLimitLow:=0;
+	pickup_axis_list[1].velocityLimitHigh:=(desiredLinspeed/pickup_axis_list[1].getDistToAxis())*57.29578 ;
 	
 	pickup_axis_list[1].setTorque();
 	
@@ -1702,13 +1721,15 @@ ELSE
 			payoff_axis_list[i].setVelocity();
 			dist:=payoff_axis_list[i].getDistToAxis();
 			
-			
+			//find the velocity (degree/s) to acheive our desired linear speed, and the linear speed at pickup motor. 
 			desiredVelocity:=(desiredLinspeed/dist)*57.29578;
 			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
 			
 			
 			//sets payoff axis to half way point between target linspeed and the actual linspeed.
-			//i hope that this will give the pickup motor time to ramp up, while not giving too much speed to these motors.
+			//how i envison this to function, is that while pickup side is at a low speed, the payoff side will also work at a lower speed,
+			//which gives the pickup time to catch up in speed. right now i do this by just averaging desired speed and actual speed,
+			//this could maybe he handled in a better way, so i will leave a TO DO 
 			payoff_axis_list[i].velocity:=(desiredVelocity+adjustedVelocity)/2;
 			
 			
@@ -1732,6 +1753,13 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.count_enabled_motors">
+      <LineId Id="6" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.CYCLIC">
       <LineId Id="170" Count="0" />
@@ -1902,7 +1930,6 @@ END_IF
       <LineId Id="458" Count="0" />
       <LineId Id="283" Count="0" />
       <LineId Id="179" Count="1" />
-      <LineId Id="728" Count="0" />
       <LineId Id="523" Count="0" />
       <LineId Id="526" Count="1" />
       <LineId Id="524" Count="0" />
@@ -1925,13 +1952,15 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="555" Count="0" />
       <LineId Id="29" Count="0" />
-      <LineId Id="505" Count="1" />
+      <LineId Id="506" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="12" Count="0" />
-      <LineId Id="516" Count="2" />
+      <LineId Id="516" Count="0" />
+      <LineId Id="518" Count="0" />
       <LineId Id="13" Count="1" />
       <LineId Id="203" Count="0" />
+      <LineId Id="1077" Count="0" />
       <LineId Id="503" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="57" Count="0" />
@@ -1950,6 +1979,7 @@ END_IF
       <LineId Id="48" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="33" Count="0" />
+      <LineId Id="1078" Count="0" />
       <LineId Id="215" Count="0" />
       <LineId Id="220" Count="0" />
       <LineId Id="78" Count="3" />
@@ -1977,10 +2007,12 @@ END_IF
       <LineId Id="934" Count="0" />
       <LineId Id="845" Count="12" />
       <LineId Id="173" Count="0" />
+      <LineId Id="1074" Count="1" />
       <LineId Id="859" Count="2" />
       <LineId Id="938" Count="12" />
       <LineId Id="879" Count="0" />
       <LineId Id="37" Count="0" />
+      <LineId Id="1076" Count="0" />
       <LineId Id="510" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="34" Count="0" />
@@ -1993,6 +2025,7 @@ END_IF
       <LineId Id="19" Count="0" />
       <LineId Id="38" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="1073" Count="0" />
       <LineId Id="512" Count="0" />
       <LineId Id="161" Count="1" />
       <LineId Id="142" Count="1" />
@@ -2007,7 +2040,7 @@ END_IF
       <LineId Id="144" Count="2" />
       <LineId Id="28" Count="0" />
       <LineId Id="39" Count="0" />
-      <LineId Id="41" Count="2" />
+      <LineId Id="42" Count="1" />
       <LineId Id="1071" Count="1" />
       <LineId Id="40" Count="0" />
       <LineId Id="9" Count="0" />
@@ -2280,7 +2313,6 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension">
-      <LineId Id="80" Count="2" />
       <LineId Id="23" Count="1" />
       <LineId Id="26" Count="0" />
       <LineId Id="30" Count="0" />
@@ -2290,7 +2322,6 @@ END_IF
       <LineId Id="73" Count="0" />
       <LineId Id="65" Count="1" />
       <LineId Id="51" Count="1" />
-      <LineId Id="89" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension_check">
@@ -2365,15 +2396,15 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_tension">
       <LineId Id="31" Count="0" />
-      <LineId Id="59" Count="1" />
-      <LineId Id="106" Count="0" />
+      <LineId Id="59" Count="0" />
       <LineId Id="105" Count="0" />
+      <LineId Id="177" Count="0" />
       <LineId Id="35" Count="0" />
       <LineId Id="94" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="95" Count="0" />
       <LineId Id="69" Count="2" />
-      <LineId Id="148" Count="0" />
+      <LineId Id="178" Count="1" />
       <LineId Id="72" Count="4" />
       <LineId Id="121" Count="0" />
       <LineId Id="124" Count="0" />
@@ -2387,6 +2418,7 @@ END_IF
       <LineId Id="115" Count="0" />
       <LineId Id="119" Count="1" />
       <LineId Id="134" Count="0" />
+      <LineId Id="180" Count="1" />
       <LineId Id="131" Count="0" />
       <LineId Id="83" Count="3" />
       <LineId Id="67" Count="1" />

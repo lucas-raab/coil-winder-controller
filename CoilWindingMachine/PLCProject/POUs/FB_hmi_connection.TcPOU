@@ -24,7 +24,6 @@ VAR_INPUT
 	
 	
 	//HARDWARE INPUTS
-	
 	estopHW AT %I* : BOOL := FALSE;
 	
 	//CONTROL PAGE
