@@ -207,6 +207,11 @@ hmiConnection^.state:=state;
 			errorOutput:=TRUE;
 		END_IF
 		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
+		
 		
 		// ========================================10========================================
 		
@@ -251,6 +256,11 @@ hmiConnection^.state:=state;
 			hmiConnection^.homeUI:=FALSE;
 		END_IF
 		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
+		
 		// ========================================20========================================
 		
 		30,31,32,33:
@@ -291,11 +301,17 @@ hmiConnection^.state:=state;
 			hmiConnection^.updateInputsUI:=FALSE;
 			
 		END_IF
+		
 		IF hmiConnection^.homeUI THEN
 			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
 		END_IF
 		// ========================================30========================================
 		
@@ -347,6 +363,10 @@ hmiConnection^.state:=state;
 			hmiConnection^.homeUI:=FALSE;
 		END_IF
 		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
 		// ========================================40========================================
 
 		// ========================================400========================================
@@ -388,6 +408,11 @@ hmiConnection^.state:=state;
 				 msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
 				 strArg:= '');
 			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
 		END_IF
 		// ========================================400========================================
 		
@@ -437,7 +462,65 @@ hmiConnection^.state:=state;
 			state:=10;
 			errorOutput:=TRUE;
 		END_IF
+		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
 		// ========================================50========================================
+		
+		// =======================================500========================================
+		500:
+		IF  hmiConnection^.tensionUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to tension while in ESTOP state. Please reset first.',
+				 strArg:= '');
+			hmiConnection^.tensionUI:=FALSE;
+			
+		END_IF
+		
+		//reset button
+		IF hmiConnection^.resetUI THEN
+			reset();
+			state:=10;
+			hmiConnection^.resetUI:=FALSE;
+			errorOutput:=TRUE;
+		END_IF
+	
+		//start button
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start while in ESTOP state. Please reset first.',
+				 strArg:= '');
+			hmiConnection^.startUI:=FALSE;
+			
+		END_IF
+		
+		//check inputs button
+		IF hmiConnection^.checkInputsUI THEN
+			all_check(write:=FALSE);
+			hmiConnection^.checkInputsUI:=FALSE;
+		END_IF
+		
+		//update inputs button
+		IF hmiConnection^.updateInputsUI THEN
+			all_check(write:=TRUE);
+			hmiConnection^.updateInputsUI:= FALSE;
+			
+		END_IF
+		
+		IF hmiConnection^.homeUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+			msgFmtStr := 'Error Occured. Unable to home while in ESTOP state. Please reset first.',
+			strArg:= '');
+			hmiConnection^.homeUI:=FALSE;
+		END_IF
+		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
+		// ========================================500========================================
 	END_CASE
 //-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
 	
@@ -513,13 +596,6 @@ CASE state OF
 		state:=20;
 		hmiConnection^.startUI:=FALSE;
 		
-		
-		
-		
-		
-		
-		
-		
 	ELSE
 		eventLogger^.fbMessage[1].Send(0);
 		state:=31;
@@ -531,13 +607,8 @@ CASE state OF
 	31: //WINDING TENSION, ACCELERATION
 	//coil is currently ramping speed. can not edit params.
 	
-	//get status updates
-	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
 	
-	IF (cnt MOD 10 =0) THEN
-		etaFormattedString:=find_eta();
-		progressPercent :=get_current_progress();
-	END_IF
+
 	
 	accelerating_tension();
 	determine_motor_state();
@@ -558,12 +629,7 @@ CASE state OF
 	32: //WINDING TENSION, STEADY STATE
 	//coil is in steady state. moving at constant velo with set tension. Can not edit params
 	
-	//get status updates
-	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
-	IF (cnt MOD 10 =0) THEN
-		etaFormattedString:=find_eta();
-		progressPercent :=get_current_progress();
-	END_IF
+	
 	
 	winding_tension();
 	determine_motor_state();
@@ -584,12 +650,7 @@ CASE state OF
 	33: //WINDING TENSION, DEACCELERATION
 	//coil currently decreasing speed, while maintaining. Can not edit params
 	
-	//get status updates
-	//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
-		IF (cnt MOD 10 =0) THEN
-		etaFormattedString:=find_eta();
-		progressPercent :=get_current_progress();
-	END_IF
+
 	
 	decelerating_tension();
 	determine_motor_state();
@@ -651,10 +712,19 @@ CASE state OF
 	
 	500: //ESTOP STATE
 	//triggered on estop press. can be cleared with reset
+		estop_routine();
+		
 	
 END_CASE
 //-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
 
+//get status updates
+//only calculate once very N turns in order to save resources. there also shouldnt be need to run eveyr plc cycle
+	
+IF (cnt MOD 10 =0) and  NOT(desiredLinspeed = 0) THEN
+	etaFormattedString:=find_eta();
+	progressPercent :=get_current_progress();
+END_IF
 
 
 //Call cyclic methods of all axies 
@@ -720,6 +790,40 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="estop_routine" Id="{e370fdf5-060a-481a-8925-f8c00351b401}" FolderPath="Methods\Motor Control\">
+      <Declaration><![CDATA[METHOD estop_routine : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//during estop, cut power to motors.
+
+//turn power off on all axies. 
+pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=FALSE);
+
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		payoff_axis_list[i].MCPOWER(Axis:=payoff_axis_list[i].AXIS,ENABLE:=FALSE);
+END_FOR
+	
+			
+	
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
       <Declaration><![CDATA[//updates eta var
 METHOD find_eta : STRING(255)
@@ -769,8 +873,12 @@ END_FOR
 	
 	currentCircum:=2*pi*currentTurnCount*pickup_axis_list[1].pancake.radius/1000 +tape_thicnes*EXPT(currentTurnCount,2)*pi;
 	
+	IF NOT(desiredLinspeed =0) THEN
+		eta:=(total_circum-currentCircum)/desiredLinspeed;
+	ELSE
+		eta:=0;
+	END_IF
 	
-	eta:=(total_circum-currentCircum)/desiredLinspeed;
 
 	
 	
@@ -1658,7 +1766,12 @@ END_IF
       <LineId Id="618" Count="0" />
       <LineId Id="962" Count="0" />
       <LineId Id="619" Count="0" />
-      <LineId Id="616" Count="1" />
+      <LineId Id="616" Count="0" />
+      <LineId Id="985" Count="1" />
+      <LineId Id="988" Count="0" />
+      <LineId Id="987" Count="0" />
+      <LineId Id="984" Count="0" />
+      <LineId Id="617" Count="0" />
       <LineId Id="286" Count="0" />
       <LineId Id="309" Count="1" />
       <LineId Id="312" Count="0" />
@@ -1688,6 +1801,9 @@ END_IF
       <LineId Id="624" Count="2" />
       <LineId Id="623" Count="0" />
       <LineId Id="621" Count="0" />
+      <LineId Id="989" Count="0" />
+      <LineId Id="991" Count="2" />
+      <LineId Id="990" Count="0" />
       <LineId Id="474" Count="0" />
       <LineId Id="311" Count="0" />
       <LineId Id="339" Count="1" />
@@ -1709,8 +1825,12 @@ END_IF
       <LineId Id="492" Count="0" />
       <LineId Id="487" Count="1" />
       <LineId Id="482" Count="0" />
+      <LineId Id="999" Count="0" />
       <LineId Id="628" Count="4" />
       <LineId Id="627" Count="0" />
+      <LineId Id="994" Count="0" />
+      <LineId Id="996" Count="2" />
+      <LineId Id="995" Count="0" />
       <LineId Id="341" Count="0" />
       <LineId Id="370" Count="0" />
       <LineId Id="404" Count="0" />
@@ -1733,6 +1853,8 @@ END_IF
       <LineId Id="633" Count="0" />
       <LineId Id="635" Count="4" />
       <LineId Id="634" Count="0" />
+      <LineId Id="1003" Count="0" />
+      <LineId Id="1000" Count="2" />
       <LineId Id="493" Count="0" />
       <LineId Id="372" Count="0" />
       <LineId Id="502" Count="0" />
@@ -1750,6 +1872,9 @@ END_IF
       <LineId Id="640" Count="0" />
       <LineId Id="642" Count="4" />
       <LineId Id="641" Count="0" />
+      <LineId Id="1004" Count="0" />
+      <LineId Id="1006" Count="2" />
+      <LineId Id="1005" Count="0" />
       <LineId Id="371" Count="0" />
       <LineId Id="647" Count="0" />
       <LineId Id="695" Count="1" />
@@ -1761,7 +1886,18 @@ END_IF
       <LineId Id="700" Count="0" />
       <LineId Id="966" Count="0" />
       <LineId Id="688" Count="0" />
+      <LineId Id="1009" Count="0" />
+      <LineId Id="1011" Count="2" />
+      <LineId Id="1010" Count="0" />
       <LineId Id="648" Count="0" />
+      <LineId Id="1014" Count="0" />
+      <LineId Id="1016" Count="19" />
+      <LineId Id="1067" Count="1" />
+      <LineId Id="1038" Count="18" />
+      <LineId Id="1069" Count="1" />
+      <LineId Id="1057" Count="1" />
+      <LineId Id="1061" Count="5" />
+      <LineId Id="1015" Count="0" />
       <LineId Id="285" Count="0" />
       <LineId Id="458" Count="0" />
       <LineId Id="283" Count="0" />
@@ -1817,7 +1953,7 @@ END_IF
       <LineId Id="215" Count="0" />
       <LineId Id="220" Count="0" />
       <LineId Id="78" Count="3" />
-      <LineId Id="890" Count="7" />
+      <LineId Id="890" Count="0" />
       <LineId Id="82" Count="0" />
       <LineId Id="820" Count="0" />
       <LineId Id="83" Count="1" />
@@ -1827,9 +1963,7 @@ END_IF
       <LineId Id="46" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="224" Count="0" />
-      <LineId Id="749" Count="1" />
       <LineId Id="115" Count="0" />
-      <LineId Id="931" Count="2" />
       <LineId Id="929" Count="1" />
       <LineId Id="919" Count="1" />
       <LineId Id="120" Count="0" />
@@ -1838,12 +1972,13 @@ END_IF
       <LineId Id="519" Count="0" />
       <LineId Id="174" Count="0" />
       <LineId Id="858" Count="0" />
-      <LineId Id="833" Count="11" />
+      <LineId Id="833" Count="3" />
+      <LineId Id="842" Count="2" />
       <LineId Id="934" Count="0" />
       <LineId Id="845" Count="12" />
       <LineId Id="173" Count="0" />
-      <LineId Id="859" Count="4" />
-      <LineId Id="935" Count="15" />
+      <LineId Id="859" Count="2" />
+      <LineId Id="938" Count="12" />
       <LineId Id="879" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="510" Count="0" />
@@ -1873,9 +2008,12 @@ END_IF
       <LineId Id="28" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="41" Count="2" />
+      <LineId Id="1071" Count="1" />
       <LineId Id="40" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="515" Count="0" />
+      <LineId Id="971" Count="2" />
+      <LineId Id="967" Count="3" />
       <LineId Id="541" Count="2" />
       <LineId Id="540" Count="0" />
       <LineId Id="547" Count="4" />
@@ -1907,6 +2045,17 @@ END_IF
       <LineId Id="28" Count="0" />
       <LineId Id="23" Count="0" />
     </LineIds>
+    <LineIds Name="FB_WindingControl.estop_routine">
+      <LineId Id="8" Count="4" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="77" Count="1" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="63" Count="8" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_WindingControl.find_eta">
       <LineId Id="22" Count="9" />
       <LineId Id="74" Count="0" />
@@ -1915,6 +2064,9 @@ END_IF
       <LineId Id="147" Count="0" />
       <LineId Id="161" Count="0" />
       <LineId Id="149" Count="11" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="185" Count="1" />
+      <LineId Id="182" Count="0" />
       <LineId Id="77" Count="0" />
       <LineId Id="124" Count="0" />
       <LineId Id="33" Count="0" />

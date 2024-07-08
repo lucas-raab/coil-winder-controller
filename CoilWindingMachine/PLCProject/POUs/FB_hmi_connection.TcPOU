@@ -23,7 +23,9 @@ VAR_INPUT
 	
 	
 	
-	//buttons
+	//HARDWARE INPUTS
+	
+	estopHW AT %I* : BOOL := FALSE;
 	
 	//CONTROL PAGE
 	resetUI : BOOL ;
