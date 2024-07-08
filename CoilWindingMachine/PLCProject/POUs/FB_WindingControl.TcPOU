@@ -1474,29 +1474,29 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-IF unwinding THEN
-	
-//to do. add unwinding functionality
+        <ST><![CDATA[//creates tension in tape, but does not move the tape.
 
-ELSE
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis()/2;
+//set torque to force times number of payoff motors enabled. 
+pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff*	pickup_axis_list[1].getDistToAxis())/2;
 	
-	//TO DO need to find what to set these to. 
-	pickup_axis_list[1].velocityLimitLow:=0;
-	pickup_axis_list[1].velocityLimitHigh:=1;
-	
-	
-	pickup_axis_list[1].setTorque();
+//TO DO need to find what to set these to. might be too low. 
+pickup_axis_list[1].velocityLimitLow:=0;
+pickup_axis_list[1].velocityLimitHigh:=1;
 	
 	
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-		IF payoff_axis_list[i].enabled THEN
-			payoff_axis_list[i].setTorque();
-			payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2;
-		END_IF
-	END_FOR 
-END_IF
+pickup_axis_list[1].setTorque();
+	
+	
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		payoff_axis_list[i].setTorque();
+		
+		payoff_axis_list[1].velocityLimitLow:=0;
+		payoff_axis_list[1].velocityLimitHigh:=1;
+		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2;
+			
+	END_IF
+END_FOR 
 ]]></ST>
       </Implementation>
     </Method>
@@ -2313,15 +2313,16 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension">
-      <LineId Id="23" Count="1" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="28" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="25" Count="0" />
+      <LineId Id="100" Count="0" />
       <LineId Id="53" Count="11" />
       <LineId Id="73" Count="0" />
-      <LineId Id="65" Count="1" />
-      <LineId Id="51" Count="1" />
+      <LineId Id="96" Count="2" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="51" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.standstill_tension_check">
