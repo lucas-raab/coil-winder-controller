@@ -2145,11 +2145,16 @@ External Setpoint Generation:
 		</Motion>
 		<Plc>
 			<Project GUID="{C6BF6199-BF83-4ACE-9260-E74E397BB48B}" Name="PLCProject" PrjFilePath="PLCProject\PLCProject.plcproj" TmcFilePath="PLCProject\PLCProject.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{806EA052-F442-FB8F-01DE-186716F424D2}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{08DA691C-4595-5331-A030-02087F2141A0}">
 					<Name>PLCProject Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
 						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>MAIN.FB_hmi_connection.estopHW</Name>
+							<Comment><![CDATA[HARDWARE INPUTS]]></Comment>
+							<Type>BOOL</Type>
+						</Var>
 						<Var>
 							<Name>MAIN.FB_WindingControl.payoff_axis_list[1].AXIS.NcToPlc</Name>
 							<Type GUID="{25521FAA-EA5F-4C7F-8864-BBCCDACD2E98}" Namespace="MC">NCTOPLC_AXIS_REF</Type>

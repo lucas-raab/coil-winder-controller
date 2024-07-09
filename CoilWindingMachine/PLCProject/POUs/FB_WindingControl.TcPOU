@@ -880,11 +880,11 @@ CASE pickup_axis_list[1].coilShapeID OF
 	0:
 	
 	tape_thicnes:=0;
-FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-	IF payoff_axis_list[i].enabled THEN
-		tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info.tape_depth/1000;
-	END_IF
-END_FOR
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+		tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info[payoff_axis_list[i].tapeType].tape_depth/1000;
+		END_IF
+	END_FOR
 	
 
 	
@@ -1159,15 +1159,17 @@ pickup_axis_list[1].torqaueConstrant:=GVL.PICKUP_TORQUE_CONSTANT;
 pickup_axis_list[1].ratedCurrent:=GVL.PICKUP_RATED_CURRENT;
 pickup_axis_list[1].enabled:=TRUE;
 
-
-
+pickup_axis_list[1].gearRatioDen:=10;
+pickup_axis_list[1].gearRatioDen:=1;
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].INIT();
-	payoff_axis_list[1].torqaueConstrant:=GVL.PAYOFF_TORQUE_CONSTANT;
-	payoff_axis_list[1].ratedCurrent:=GVL.PAYOFF_RATED_CURRENT;
-	
+	payoff_axis_list[i].torqaueConstrant:=GVL.PAYOFF_TORQUE_CONSTANT;
+	payoff_axis_list[i].ratedCurrent:=GVL.PAYOFF_RATED_CURRENT;
+	payoff_axis_list[i].gearRatioNum:=60;
+	payoff_axis_list[i].gearRatioDen:=1;
 END_FOR
-]]></ST>
+
+etaFormattedString := CONCAT(CONCAT('ETA: ', '0'), CONCAT(':', '0'));]]></ST>
       </Implementation>
     </Method>
     <Method Name="init_coil_model" Id="{90edf354-a001-4a69-9922-1b60f25b1548}" FolderPath="Methods\Init Methods\">
@@ -1295,6 +1297,7 @@ END_VAR]]></Declaration>
 	
 	IF write THEN
 		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+		payoff_axis_list[i].tapeType:=hmiConnection^.payoff_input_datagrid_params_list[i].tape_type;
 	END_IF
 
 	IF hmiConnection^.payoff_input_datagrid_params_list[i].enabled THEN
@@ -2199,7 +2202,9 @@ END_IF
       <LineId Id="12" Count="2" />
       <LineId Id="32" Count="1" />
       <LineId Id="30" Count="0" />
+      <LineId Id="48" Count="0" />
       <LineId Id="15" Count="0" />
+      <LineId Id="47" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.init_coil_model">
@@ -2237,7 +2242,9 @@ END_IF
     <LineIds Name="FB_WindingControl.payoff_input_check">
       <LineId Id="35" Count="1" />
       <LineId Id="59" Count="0" />
-      <LineId Id="66" Count="1" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="67" Count="0" />
       <LineId Id="60" Count="1" />
       <LineId Id="68" Count="0" />
       <LineId Id="70" Count="0" />

@@ -10,11 +10,14 @@ VAR_INPUT
 	pancake : pancake_params_0; //ID 0
 	racetrack : racetrack_params_1;//ID 1
 	
+	
+	
 	//========================================================AXIS DIMENSIONS========================================================
 	outerRadiusCurrent : LREAL; //outer radius of coil
 	
 	//========================================================AXIS TAPE========================================================
-	tape_info : tape_info;
+	tape_info : ARRAY[0..10] OF tape_info;
+	tapeType : INT ;
 	
 	//========================================================MASS========================================================
 	emptyMassKG : LREAL:=20;
@@ -77,7 +80,8 @@ VAR_INPUT
 	
 	ratedCurrent : LREAL;
 	torqaueConstrant : LREAL;
-	
+	gearRatioNum : INT ;
+	gearRatioDen : INT;
 	//========================================================AXIS CONTROL FB========================================================
 	//instiantes fb's for various axis control functions
 	MCPOWER: MC_Power;
@@ -145,7 +149,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
 				Relative:=FALSE,
-				Torque:=torque,
+				Torque:=torque*(gearRatioNum/gearRatioDen),
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
@@ -156,7 +160,7 @@ MCVELOCITY(Axis:=Axis,
 			Deceleration:=deceleration,
 			Jerk:=jerk,
 			Direction:=direction,
-			Velocity:=velocity);
+			Velocity:=velocity/(gearRatioNum/gearRatioDen));
 			
 //to do . not quite sure of these units
 MCGETVELOCITY(Axis:=AXIS,
@@ -207,7 +211,9 @@ VAR
 	cableMassKG: LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[momentInertia:=(0.5)*(emptyMassKG+cableMassKG)*EXPT(getDistToAxis(),2);
+        <ST><![CDATA[//to do , find mass from cable.
+
+momentInertia:=(0.5)*(emptyMassKG+cableMassKG)*EXPT(getDistToAxis(),2);
 
 ]]></ST>
       </Implementation>
@@ -229,11 +235,11 @@ CASE coilShapeID OF
 		
 	0: //Finds direction if motor is being unwound
 	
-	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth)/1000; 
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info[tapeType].tape_depth)/1000; 
 	
 	1: //Finds direction if motor is being wound
 	
-	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info.tape_depth)/1000;
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info[tapeType].tape_depth)/1000;
 	
 	
 	END_CASE
@@ -274,12 +280,25 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[METHOD INIT : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[powerEnable:=TRUE;
 
 ST_SetPositionOptions.ClearPositionLag:=TRUE;
-MCRESET(Axis:=AXIS,Execute:=TRUE);]]></ST>
+MCRESET(Axis:=AXIS,Execute:=TRUE);
+
+//this is ugly :( it gets the job done though
+tape_info[0].tape_width:=GVL.TAPE1_WIDTH;
+tape_info[0].tape_depth:=GVL.TAPE1_DEPTH;
+tape_info[0].mass_per_cm_g:=GVL.TAPE1_MASS_PER_CM_G;
+
+tape_info[1].tape_width:=GVL.TAPE2_WIDTH;
+tape_info[1].tape_depth:=GVL.TAPE2_DEPTH;
+tape_info[1].mass_per_cm_g:=GVL.TAPE2_MASS_PER_CM_G;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="power_error_check" Id="{3a006f0e-5221-4ae0-9860-3fc9c0782ddb}" FolderPath="Methods\Error Checks\">
@@ -511,6 +530,7 @@ END_VAR]]></Declaration>
       <LineId Id="14" Count="2" />
     </LineIds>
     <LineIds Name="FB_Axis.findinertia">
+      <LineId Id="17" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="6" Count="0" />
@@ -542,6 +562,13 @@ END_VAR]]></Declaration>
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="29" Count="2" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.power_error_check">
       <LineId Id="5" Count="0" />
