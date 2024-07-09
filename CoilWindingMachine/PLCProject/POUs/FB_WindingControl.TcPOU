@@ -1159,7 +1159,7 @@ pickup_axis_list[1].torqaueConstrant:=GVL.PICKUP_TORQUE_CONSTANT;
 pickup_axis_list[1].ratedCurrent:=GVL.PICKUP_RATED_CURRENT;
 pickup_axis_list[1].enabled:=TRUE;
 
-pickup_axis_list[1].gearRatioDen:=10;
+pickup_axis_list[1].gearRatioNum:=10;
 pickup_axis_list[1].gearRatioDen:=1;
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].INIT();

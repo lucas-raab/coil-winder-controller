@@ -149,7 +149,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
 				Relative:=FALSE,
-				Torque:=torque*(gearRatioNum/gearRatioDen),
+				Torque:=torque*(gearRatioDen/gearRatioNum),
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
@@ -160,7 +160,7 @@ MCVELOCITY(Axis:=Axis,
 			Deceleration:=deceleration,
 			Jerk:=jerk,
 			Direction:=direction,
-			Velocity:=velocity/(gearRatioNum/gearRatioDen));
+			Velocity:=velocity/(gearRatioDen/gearRatioNum));
 			
 //to do . not quite sure of these units
 MCGETVELOCITY(Axis:=AXIS,
