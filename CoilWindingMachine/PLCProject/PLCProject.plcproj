@@ -24,31 +24,34 @@
     <Compile Include="DUTs\Coil Shapes\racetrack_params_1.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\general_input_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Inputs\general_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\misc_settings_input_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Inputs\misc_settings_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\motor_state_datagrid.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Inputs\payoff_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\output_error_datagrid.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Inputs\pickup_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\overview_outputs_datagrid.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Outputs\motor_state_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\payoff_input_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Outputs\output_error_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\payoff_output_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Outputs\overview_outputs_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\pickup_input_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Outputs\payoff_output_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\HMI Datagrids\pickup_output_datagrid_params.TcDUT">
+    <Compile Include="DUTs\HMI Datagrids\Outputs\pickup_output_datagrid_params.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DUTs\HMI Datagrids\Outputs\turncount_output_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\Input Bounds\input_bounds.TcDUT">
@@ -90,6 +93,8 @@
     <Folder Include="DUTs" />
     <Folder Include="DUTs\HMI Datagrids" />
     <Folder Include="DUTs\Coil Shapes" />
+    <Folder Include="DUTs\HMI Datagrids\Inputs" />
+    <Folder Include="DUTs\HMI Datagrids\Outputs" />
     <Folder Include="DUTs\Input Bounds" />
     <Folder Include="GVLs" />
     <Folder Include="VISUs" />

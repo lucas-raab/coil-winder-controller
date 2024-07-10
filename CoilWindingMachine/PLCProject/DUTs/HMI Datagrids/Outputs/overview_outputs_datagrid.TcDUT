@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="overview_outputs_datagrid" Id="{e6246681-c8bb-433b-9ca0-dfb70caf6722}">
+    <Declaration><![CDATA[TYPE overview_outputs_datagrid :
+STRUCT
+	pickupTurnCount : LREAL;
+	linspeed : LREAL;
+	torque : LREAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

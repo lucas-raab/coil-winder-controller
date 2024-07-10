@@ -329,6 +329,38 @@
         "type": "tchmi:general#/definitions/INT",
         "persist": false,
         "readonly": false
+      },
+      "PickupTrendLineColor": {
+        "value": {
+          "color": "rgba(30, 30, 255, 0.9411764)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "Payoff1TrendLineColor": {
+        "value": {
+          "color": "rgba(19, 242, 178, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "Payoff2TrendLineColor": {
+        "value": {
+          "color": "rgba(85, 252, 0, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "Payoff3TrendLineColor": {
+        "value": {
+          "color": "rgba(231, 72, 220, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
       }
     },
     "themedResources": {

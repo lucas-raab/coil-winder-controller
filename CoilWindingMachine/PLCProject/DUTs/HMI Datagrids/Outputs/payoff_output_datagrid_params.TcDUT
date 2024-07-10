@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="payoff_output_datagrid_params" Id="{3911083c-e207-404c-9ae4-d0b3566b7c88}">
+    <Declaration><![CDATA[TYPE payoff_output_datagrid_params :
+STRUCT
+	motor_name: STRING;
+	rpm : LREAL;
+	linear_speed : LREAL;
+	turn_count : LREAL;
+	enabled : BOOL ;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

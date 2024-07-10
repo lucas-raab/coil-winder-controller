@@ -15,6 +15,7 @@ VAR_INPUT
 	output_error_datagrid_list : ARRAY[0..3] OF output_error_datagrid;
 	motor_state_datagrid_list : ARRAY[0..3] OF motor_state_datagrid;
 	overview_outputs_datagrid_list :ARRAY[1..1] OF overview_outputs_datagrid;
+	turncount_output_datagrid_list : ARRAY[1..1] OF turncount_output_datagrid;
 	
 	color_list :ARRAY[0..3] OF DWORD;
 	//Outputs

@@ -125,10 +125,6 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[powerEnable:=enabled; 
 
-// to do . when switching from torqueEnable true->false, the motor contuines with the last torque update. 
-// need to find a way to clear set torque value when torque enable is set to 0.
-
-
 MCPOWER(Axis:=Axis,
 		Enable:=powerEnable,
 		Enable_Positive:=powerEnable,
@@ -149,7 +145,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
 				Relative:=FALSE,
-				Torque:=torque*(gearRatioDen/gearRatioNum),
+				Torque:=torque,
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
@@ -160,9 +156,27 @@ MCVELOCITY(Axis:=Axis,
 			Deceleration:=deceleration,
 			Jerk:=jerk,
 			Direction:=direction,
-			Velocity:=velocity/(gearRatioDen/gearRatioNum));
+			Velocity:=velocity);		
+(* 
+MCTORQUECONTROL(Axis:=Axis,
+				Execute:=torqueEnable,
+				ContinuousUpdate:=TRUE,
+				Relative:=FALSE,
+				Torque:=torque*(gearRatioDen/gearRatioNum),
+				TorqueRamp:=torqueRamp,
+				VelocityLimitHigh:=velocityLimitHigh*(gearRatioNum/gearRatioDen),
+				VelocityLimitLow:=velocityLimitLow*(gearRatioNum/gearRatioDen));
+				
+MCVELOCITY(Axis:=Axis,
+			Execute:=velocityEnable,
+			Acceleration:=acceleration,
+			Deceleration:=deceleration,
+			Jerk:=jerk,
+			Direction:=direction,
+			Velocity:=velocity*(gearRatioNum/gearRatioDen));
 			
-//to do . not quite sure of these units
+*)
+
 MCGETVELOCITY(Axis:=AXIS,
 			Enable:=TRUE,
 			ActualVelocity=>actualVelocity);
@@ -178,27 +192,25 @@ VAR_OUTPUT
 	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//to do . if statements might not be needed
+        <ST><![CDATA[
 
-IF powerEnable THEN
-	power_error_check(Error=>adsError,errorID=>adsErrorID);
-END_IF
+power_error_check(Error=>adsError,errorID=>adsErrorID);
 
-IF torqueEnable THEN
-	torque_error_check(Error=>adsError,errorID=>adsErrorID);
-END_IF
 
-IF velocityEnable THEN
-	velocity_error_check(Error=>adsError,errorID=>adsErrorID);
-END_IF
 
-IF stopEnable THEN
-	stop_error_check(Error=>adsError,errorID=>adsErrorID);
-END_IF
+torque_error_check(Error=>adsError,errorID=>adsErrorID);
 
-IF haltEnable THEN
-	stop_error_check(Error=>adsError,errorID=>adsErrorID);
-END_IF
+
+
+velocity_error_check(Error=>adsError,errorID=>adsErrorID);
+
+
+
+stop_error_check(Error=>adsError,errorID=>adsErrorID);
+
+setpos_error_check(Error=>adsError,errorID=>adsErrorID);
+	
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -371,6 +383,21 @@ END_VAR]]></Declaration>
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
+    <Method Name="setpos_error_check" Id="{c1d7af26-a40a-4448-a273-3c6a04d53912}" FolderPath="Methods\Error Checks\">
+      <Declaration><![CDATA[METHOD setpos_error_check : BOOL
+VAR_INPUT
+END_VAR
+
+
+VAR_OUTPUT
+	Error: BOOL;
+	errorID: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCPOS(Axis:=Axis,Error=>Error,ErrorID=>errorID);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="setReset" Id="{704b19ac-a526-4b1d-961a-2b6ba452c168}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setReset : BOOL
 VAR_INPUT
@@ -489,24 +516,24 @@ END_VAR]]></Declaration>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.CYLIC">
-      <LineId Id="77" Count="0" />
-      <LineId Id="92" Count="1" />
-      <LineId Id="145" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="78" Count="0" />
+      <LineId Id="77" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="4" />
       <LineId Id="22" Count="2" />
       <LineId Id="41" Count="0" />
       <LineId Id="43" Count="3" />
       <LineId Id="95" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="167" Count="14" />
       <LineId Id="25" Count="0" />
+      <LineId Id="165" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="26" Count="2" />
       <LineId Id="47" Count="1" />
       <LineId Id="29" Count="2" />
       <LineId Id="33" Count="6" />
       <LineId Id="154" Count="0" />
+      <LineId Id="166" Count="0" />
       <LineId Id="88" Count="0" />
       <LineId Id="87" Count="0" />
       <LineId Id="89" Count="1" />
@@ -516,7 +543,7 @@ END_VAR]]></Declaration>
       <LineId Id="155" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.error_check_all">
-      <LineId Id="41" Count="1" />
+      <LineId Id="42" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="35" Count="1" />
       <LineId Id="34" Count="0" />
@@ -524,9 +551,7 @@ END_VAR]]></Declaration>
       <LineId Id="18" Count="3" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="1" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="2" />
       <LineId Id="14" Count="2" />
     </LineIds>
     <LineIds Name="FB_Axis.findinertia">
@@ -591,6 +616,10 @@ END_VAR]]></Declaration>
     </LineIds>
     <LineIds Name="FB_Axis.setPos">
       <LineId Id="47" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setpos_error_check">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setReset">
       <LineId Id="5" Count="0" />

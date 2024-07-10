@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="turncount_output_datagrid" Id="{b6c7f37b-64d5-43c6-9505-07cc6d6a664c}">
+    <Declaration><![CDATA[TYPE turncount_output_datagrid :
+STRUCT
+	
+	pickupTC1 : LREAL;
+	payoffTC1 : LREAL;
+	payoffTC2 : LREAL;
+	payoffTC3 : LREAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

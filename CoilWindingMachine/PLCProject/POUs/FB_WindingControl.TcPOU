@@ -31,13 +31,6 @@ eta : LREAL :=0; //time till completion in seconds
 etaFormattedString : STRING(255);// formated eta in format ETA: M:S
 progressPercent : LREAL :=0; //0 to 100 progress percentage based on turn count.
 
-//state vars. not sure if needed. to do 
-tensioned : BOOL:=FALSE; 
-winding : BOOL:=FALSE;
-
-
-
-
 //COIL MODELS
 coil_model_base_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
 coil_model_base_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
@@ -184,9 +177,6 @@ END_VAR
       <Implementation>
         <ST><![CDATA[//cycle counter
 cnt := cnt +1;
-
-hmiConnection^.state:=state;
-
 
 //-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
 	CASE state OF
@@ -566,7 +556,7 @@ ELSIF state=400 AND NOT errorStatus THEN
 END_IF
 
 //update HMI with certain motor values. 
- hmi_update();
+hmi_update();
 
 
 
@@ -1085,6 +1075,8 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//collection of functions to update hmi vars. 
 
+hmiConnection^.state:=state;
+
 update_error_status();
 update_torque();
 update_velocity();
@@ -1094,7 +1086,11 @@ update_velocity();
 hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
 hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].actualVelocity*payoff_axis_list[1].getDistToAxis()/57.29578;
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].getDistToAxis();
-]]></ST>
+
+hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.turncount_output_datagrid_list[2].payoffTC1:=payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.turncount_output_datagrid_list[3].payoffTC1:=payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.turncount_output_datagrid_list[4].payoffTC1:=payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns;]]></ST>
       </Implementation>
     </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
@@ -1186,7 +1182,7 @@ VAR CONSTANT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//TO DO.
+        <ST><![CDATA[//TO DO this funciton was orginall made to create a model of a non circular pickup coil shape. i would like to redo it. 
 
 (*
 
@@ -1444,7 +1440,7 @@ END_REPEAT
 
 pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis, Execute:=TRUE,Position:=0,mode:=FALSE);
 
-//to do error catching. 
+
 set_pos_all:=TRUE;
 
 //turn power off on all axies. 
@@ -1767,9 +1763,6 @@ END_IF
     <LineIds Name="FB_WindingControl.CYCLIC">
       <LineId Id="170" Count="0" />
       <LineId Id="746" Count="0" />
-      <LineId Id="719" Count="0" />
-      <LineId Id="718" Count="0" />
-      <LineId Id="155" Count="0" />
       <LineId Id="182" Count="0" />
       <LineId Id="181" Count="0" />
       <LineId Id="457" Count="0" />
@@ -2160,13 +2153,18 @@ END_IF
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.hmi_update">
-      <LineId Id="8" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="34" Count="0" />
       <LineId Id="5" Count="2" />
       <LineId Id="14" Count="2" />
       <LineId Id="13" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="17" Count="0" />
+      <LineId Id="36" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="37" Count="2" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="56" Count="0" />
