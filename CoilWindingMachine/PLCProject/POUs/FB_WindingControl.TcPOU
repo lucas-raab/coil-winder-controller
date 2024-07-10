@@ -1088,9 +1088,9 @@ hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].a
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].getDistToAxis();
 
 hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
-hmiConnection^.turncount_output_datagrid_list[2].payoffTC1:=payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
-hmiConnection^.turncount_output_datagrid_list[3].payoffTC1:=payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns;
-hmiConnection^.turncount_output_datagrid_list[4].payoffTC1:=payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns;]]></ST>
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC1:=payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC2:=payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns;
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC3:=payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns;]]></ST>
       </Implementation>
     </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">

@@ -19,14 +19,17 @@ VAR
 	fbFileClose		: FB_FileClose;(* Closes file *)
 	fbFilePuts		: FB_FilePuts;(* Writes one record (line) *)
 	fbWriter		: FB_CSVMemBufferWriter;(* Helper function block used to create CSV data bytes (single record line) *)
-
-	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ (* Source PLC database *)
-	'0_0', '0_1', '0_2', '0_3', '0_4', '0_5',
-	'1_0', '1_1', '1_2', '1_3', '1_4', '1_5',
-	'2_0', '2_1', '2_2', '2_3', '2_4', '2_5',
-	'3_0', '3_1', '3_2', '3_3', '3_4', '3_5',
-	'4_0', '4_1', '4_2', '4_3', '4_4', '4_5',
-	'5_0', '5_1', '5_2', '5_3', '5_4', '5_5'];
+	bDone			: BOOL;
+	
+	
+	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ 
+	'User: ', 'TestUser',
+	'Time Started: ', 'May 1, 11:59 AM, 2024', 
+	'Time Completed: ', 'May 1, 11:59 AM',
+	'Time Elapsed: ', '0 Hours, 1 Minutes, 0 Seconds', 
+	'Number of coils: ', '2 ',
+	'Length of coil used: ', '1 meter',
+	'User Note: ', 'This is a note from the user. should be last'];
 
 END_VAR]]></Declaration>
     <Implementation>
@@ -41,7 +44,9 @@ VAR
 
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE step OF
+        <ST><![CDATA[fileWrite();
+(*
+CASE step OF
 	0:	(* Wait for rising edge at bWrite variable *)
 		IF bWrite THEN
 			bWrite 	:= FALSE;
@@ -140,15 +145,176 @@ END_VAR]]></Declaration>
 		END_IF
 
 END_CASE
-]]></ST>
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="fileWrite" Id="{7c220b82-3fe5-4faa-8bdb-22d8eb65c323}">
+      <Declaration><![CDATA[METHOD fileWrite : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE step OF
+	//Waiting for rising edge of writeFile Variable. standby state
+	0:
+		IF bWrite THEN
+			bDone	:= FALSE;
+			bWrite 	:= FALSE;
+			bBusy 	:= TRUE;
+			bError	:= FALSE;
+			nErrId	:= 0;
+			hFile	:= 0;
+			nRow	:= 0;
+			nColumn	:= 0;
+			step 	:= 1;
+		END_IF
+		
+	//open file
+	1:
+		fbFileOpen(bExecute:=FALSE);
+		fbFileOpen( sNetId := sNetId,
+					sPathName := sFileName, 
+					nMode := FOPEN_MODEWRITE OR FOPEN_MODETEXT,(* Open file in TEXT mode! *)
+					ePath := PATH_GENERIC,
+					bExecute := TRUE );
+		step := 2;
+	//wait untill we are finished opening the text file. 
+	2:
+		fbFileOpen( bExecute := FALSE, bError => bError, nErrID => nErrID, hFile => hFile );
+		IF NOT fbFileOpen.bBusy THEN
+			IF NOT fbFileOpen.bError THEN
+				step := 3;
+			ELSE(* Error: file not found? *)
+				step := 100;
+			END_IF
+		END_IF
+	
+	//write single text line.
+	3:(* Convert one PLC record to CSV format *)
+		sCSVLine := '';
+		fbWriter.eCmd := eEnumCmd_First;(* Write first field value *)
+		IF nRow <= GVL.MAX_CSV_ROWS THEN
+
+			FOR nColumn := 0 TO GVL.MAX_CSV_COLUMNS BY 1 DO
+
+				sCSVField := STRING_TO_CSVFIELD( database[ nRow, nColumn ], FALSE );(* TODO: Get field value from your application *)
+
+				(* Add new field to the record buffer *)
+				fbWriter( 	pBuffer := ADR( sCSVLine ), cbBuffer := SIZEOF( sCSVLine ) - 1, putValue := sCSVField, pValue := 0, cbValue := 0,
+							bCRLF := ( nColumn = GVL.MAX_CSV_COLUMNS ) );(* bCRLF == TRUE => Write CRLF after the last field value *)
+				IF fbWriter.bOk THEN
+					fbWriter.eCmd := eEnumCmd_Next;(* Write next field value *)
+				ELSE(* Error *)
+					step := 100;
+					RETURN;
+				END_IF
+
+			END_FOR(* FOR nColumn := 0... *)
+
+			(* FB_FilePuts adds allready CR (carriage return) to the written line.
+			We have to replace the $R$L characters with $L character to avoid double CR. *)
+			IF RIGHT( sCSVLine, 2 ) = '$R$L' THEN
+				sCSVLine := REPLACE( sCSVLine, '$L', 2, LEN( sCSVLine ) - 1 );
+			END_IF
+
+			nRow := nRow + 1;(* Increment number of created records (rows) *)
+			step := 4;(* Write record to the file *)
+
+		ELSE(* All rows written => Close file *)
+			step := 10;
+		END_IF
+
+	4:	(* Write single text line *)
+	
+		fbFilePuts( bExecute := FALSE );
+		fbFilePuts( sNetId := sNetId, hFile := hFile, sLine := sCSVLine, bExecute := TRUE );
+		step := 5;
+	
+	//waits for the line of text to finish
+	5:
+		fbFilePuts( bExecute := FALSE, bError => bError, nErrID => nErrID );
+		IF NOT fbFilePuts.bBusy THEN
+			IF NOT fbFilePuts.bError THEN
+				step := 3;(* Write next record *)
+			ELSE(* Error *)
+				step := 100;
+			END_IF
+		END_IF
+		
+	10:
+		fbFileClose( bExecute := FALSE );
+		fbFileClose( sNetId := sNetId, hFile := hFile, bExecute := TRUE );
+		step := 11;
+	
+	11:(* Wait until close not busy *)
+		fbFileClose( bExecute := FALSE, bError => bError, nErrID => nErrID );
+		IF ( NOT fbFileClose.bBusy ) THEN
+			hFile := 0;
+			step := 100;
+		END_IF
+		
+	100: (* Error or ready step => cleanup *)
+		bDone:=TRUE;
+		IF ( hFile <> 0 ) THEN
+			step := 10; (* Close the source file *)
+		ELSE
+			bBusy := FALSE;
+			step := 0;	(* Ready *)
+		END_IF
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_fileReadWrite">
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYLIC">
+      <LineId Id="111" Count="1" />
       <LineId Id="6" Count="98" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_fileReadWrite.fileWrite">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="36" Count="7" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="44" Count="3" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="48" Count="8" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="98" Count="34" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="133" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="65" Count="6" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="76" Count="1" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="80" Count="3" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="88" Count="4" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
