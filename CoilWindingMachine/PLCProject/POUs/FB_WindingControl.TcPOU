@@ -45,6 +45,11 @@ pickup_axis_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;
 //MISC
 numOfEnabledPayoff : INT :=0;
 
+//logging
+tStart :TIME;
+tEnd : TIME;
+tElapsed : TIME;
+
 END_VAR
 VAR CONSTANT
 	input_bounds : input_bounds;
@@ -564,7 +569,7 @@ hmi_update();
 CASE state OF
 	00: //INIT STATE
 	
-	
+	tstart:=TIME();
 	state:=10;
 	// ========================================10========================================
 	10: //STANDBY STATE. 
@@ -606,10 +611,12 @@ CASE state OF
 		state:=20;
 		hmiConnection^.startUI:=FALSE;
 		
+		
+		
 	ELSE
 		eventLogger^.fbMessage[1].Send(0);
 		state:=31;
-		
+		tStart:=TIME();
 	END_IF
 	// ========================================30========================================
 	
@@ -622,6 +629,7 @@ CASE state OF
 	
 	accelerating_tension();
 	determine_motor_state();
+	tElapsed:=TIME() -tStart;
 	
 	IF winding_exit_check() THEN
 		eventLogger^.fbMessage[2].Send(0);
@@ -643,6 +651,7 @@ CASE state OF
 	
 	winding_tension();
 	determine_motor_state();
+	tElapsed:=TIME() -tStart;
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
@@ -666,13 +675,15 @@ CASE state OF
 	
 	decelerating_tension();
 	determine_motor_state();
+	tElapsed:=TIME() -tStart;
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
 		eventLogger^.fbMessage[2].Send(0);
 		hmiConnection^.startUI:=FALSE;
 		state:=40;
-		
+		tEnd:=TIME();;
+		tElapsed:=tEnd -Tstart;
 	ELSE
 		state:=33;
 	END_IF
@@ -1980,6 +1991,7 @@ END_IF
       <LineId Id="220" Count="0" />
       <LineId Id="78" Count="3" />
       <LineId Id="890" Count="0" />
+      <LineId Id="1089" Count="1" />
       <LineId Id="82" Count="0" />
       <LineId Id="820" Count="0" />
       <LineId Id="83" Count="1" />
@@ -1993,6 +2005,7 @@ END_IF
       <LineId Id="929" Count="1" />
       <LineId Id="919" Count="1" />
       <LineId Id="120" Count="0" />
+      <LineId Id="1101" Count="0" />
       <LineId Id="921" Count="7" />
       <LineId Id="176" Count="0" />
       <LineId Id="519" Count="0" />
@@ -2001,11 +2014,17 @@ END_IF
       <LineId Id="833" Count="3" />
       <LineId Id="842" Count="2" />
       <LineId Id="934" Count="0" />
-      <LineId Id="845" Count="12" />
+      <LineId Id="845" Count="0" />
+      <LineId Id="1102" Count="0" />
+      <LineId Id="846" Count="11" />
       <LineId Id="173" Count="0" />
       <LineId Id="1074" Count="1" />
       <LineId Id="859" Count="2" />
-      <LineId Id="938" Count="12" />
+      <LineId Id="938" Count="4" />
+      <LineId Id="1103" Count="0" />
+      <LineId Id="943" Count="5" />
+      <LineId Id="1104" Count="0" />
+      <LineId Id="949" Count="1" />
       <LineId Id="879" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="1076" Count="0" />

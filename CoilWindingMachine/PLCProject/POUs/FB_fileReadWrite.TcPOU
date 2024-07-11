@@ -45,6 +45,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fileWrite();
+database[ 0, 1 ]:='TEMP';
 (*
 CASE step OF
 	0:	(* Wait for rising edge at bWrite variable *)
@@ -267,11 +268,31 @@ END_VAR]]></Declaration>
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="update_database" Id="{822f2f6a-ee12-4586-a471-9c4d67af88e7}">
+      <Declaration><![CDATA[METHOD update_database : BOOL
+VAR_INPUT
+	 
+	timeStarted : TIME;
+	timeCompleted : TIME;
+	timeElasped : TIME;
+	numOfCoil : INT;
+	lengtthOfCoil : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[database[ 0, 1 ]:='TEMP'; //user ID 
+database[ 1, 1 ]:='userID';
+
+]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_fileReadWrite">
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYLIC">
-      <LineId Id="111" Count="1" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="112" Count="0" />
       <LineId Id="6" Count="98" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -315,6 +336,11 @@ END_CASE]]></ST>
       <LineId Id="88" Count="4" />
       <LineId Id="86" Count="0" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_fileReadWrite.update_database">
+      <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

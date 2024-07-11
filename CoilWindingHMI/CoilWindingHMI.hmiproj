@@ -9,7 +9,7 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
     <AvailablePlatforms>TwinCAT HMI</AvailablePlatforms>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <HmiTitle>Please enter your Title...</HmiTitle>
+    <HmiTitle>Coil Winder HMI</HmiTitle>
     <HmiVerboseLevel>2</HmiVerboseLevel>
     <HmiVersion>1.0.0.0</HmiVersion>
     <HmiCommunicationServerPort>3002</HmiCommunicationServerPort>
@@ -22,11 +22,12 @@
     <TargetFramework>native1.12-tchmi</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
     <Name>CoilWindingHMI</Name>
-    <HmiCommunicationRouterPort>10106</HmiCommunicationRouterPort>
+    <HmiCommunicationRouterPort>10107</HmiCommunicationRouterPort>
     <HmiCommunicationServerAuthPort>13002</HmiCommunicationServerAuthPort>
     <HmiInitial>1.12.760.59</HmiInitial>
     <HmiRecent>1.12.760.59</HmiRecent>
     <HmiServerNodeAdvancedView>True</HmiServerNodeAdvancedView>
+    <HmiServerNodeAdvancedSettingsView>False</HmiServerNodeAdvancedSettingsView>
   </PropertyGroup>
   <PropertyGroup>
     <TwinCATHmi_Tasks>$(TcHmiDirectory)\MSBuild\Beckhoff.TwinCAT.HMI.tasks</TwinCATHmi_Tasks>
@@ -142,6 +143,13 @@
     <Content Include=".eslintrc.json">
       <Visible>false</Visible>
     </Content>
+    <Content Include="getUser.function.json">
+      <SubType>Content</SubType>
+      <DependentUpon>getUser.js</DependentUpon>
+    </Content>
+    <Content Include="getUser.js">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Images\CME Images\cme-logo-nogreen.png">
       <SubType>Content</SubType>
     </Content>
@@ -187,6 +195,9 @@
     <Content Include="Server\ADS\ADS.Config.remote.json">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Server\ADS\ADS.Config.test.json">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Server\ADS\ADS.Storage.json">
       <SubType>Content</SubType>
     </Content>
@@ -194,6 +205,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Config.remote.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Config.test.json">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Storage.json">
@@ -207,6 +221,10 @@
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>
+    <Content Include="Server\TcHmiLua\TcHmiLua.Config.test.json">
+      <SubType>Content</SubType>
+      <Visible>True</Visible>
+    </Content>
     <Content Include="Server\TcHmiLua\TcHmiLua.Storage.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
@@ -217,6 +235,9 @@
     <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.remote.json">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.test.json">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Storage.json">
       <SubType>Content</SubType>
     </Content>
@@ -224,6 +245,9 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.remote.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.test.json">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Storage.json">
@@ -237,6 +261,10 @@
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>
+    <Content Include="Server\TcHmiSqliteLogger\TcHmiSqliteLogger.Config.test.json">
+      <SubType>Content</SubType>
+      <Visible>True</Visible>
+    </Content>
     <Content Include="Server\TcHmiSqliteLogger\TcHmiSqliteLogger.Storage.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
@@ -247,6 +275,9 @@
     <Content Include="Server\TcHmiSrv\TcHmiSrv.Config.remote.json">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Server\TcHmiSrv\TcHmiSrv.Config.test.json">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Server\TcHmiSrv\TcHmiSrv.Storage.json">
       <SubType>Content</SubType>
     </Content>
@@ -255,6 +286,10 @@
       <Visible>True</Visible>
     </Content>
     <Content Include="Server\TcHmiUserManagement\TcHmiUserManagement.Config.remote.json">
+      <SubType>Content</SubType>
+      <Visible>True</Visible>
+    </Content>
+    <Content Include="Server\TcHmiUserManagement\TcHmiUserManagement.Config.test.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>

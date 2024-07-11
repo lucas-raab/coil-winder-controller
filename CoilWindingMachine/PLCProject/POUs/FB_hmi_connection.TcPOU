@@ -47,6 +47,11 @@ VAR_INPUT
 	//misc
 	state : INT:=0;
 	
+	
+	
+	//USER ID
+	user : STRING(255):='N/A';
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
