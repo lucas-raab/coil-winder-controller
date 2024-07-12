@@ -58,6 +58,7 @@ FB_EventLogger.INIT();
 
 FB_WindingControl.hmiConnection:=ADR(FB_hmi_connection);
 FB_WindingControl.eventLogger:=ADR(FB_EventLogger);
+FB_WindingControl.fileReadWrite:=ADR(FB_fileReadWrite);
 
 INIT:=TRUE;
 ]]></ST>
@@ -82,6 +83,7 @@ INIT:=TRUE;
       <LineId Id="18" Count="1" />
       <LineId Id="17" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="31" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="16" Count="0" />

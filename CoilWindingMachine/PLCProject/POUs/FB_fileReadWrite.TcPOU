@@ -2,10 +2,15 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_fileReadWrite" Id="{672718a4-3f7c-4568-983a-5be17c81c63b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_fileReadWrite
-VAR
+
+VAR_INPUT
 	bWrite			: BOOL := FALSE;(* Rising edge starts program execution *)
+END_VAR
+
+VAR
+	
 	sNetId			: T_AmsNetId := '';	(* TwinCAT system network address *)
-	sFileName		: T_MaxString := 'C:\Users\nbung\Downloads\file.csv';(* CSV destination file path and name *)
+	sFileName		: T_MaxString := 'C:\Users\nbung\Downloads\file.csv';(* CSV destination file path and name *) //to do probably should have a way for users to change this
 	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
 	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
 	bBusy			: BOOL;
@@ -24,11 +29,11 @@ VAR
 	
 	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ 
 	'User: ', 'TestUser',
-	'Time Started: ', 'May 1, 11:59 AM, 2024', 
-	'Time Completed: ', 'May 1, 11:59 AM',
-	'Time Elapsed: ', '0 Hours, 1 Minutes, 0 Seconds', 
-	'Number of coils: ', '2 ',
-	'Length of coil used: ', '1 meter',
+	'Time Started: ', 'N/A', 
+	'Time Completed: ', 'N/A',
+	'Time Elapsed: ', 'N/A', 
+	'Number OF coils: ', 'N/A',
+	'Length of coil used: ', 'N/A',
 	'User Note: ', 'This is a note from the user. should be last'];
 
 END_VAR]]></Declaration>
@@ -45,108 +50,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fileWrite();
-database[ 0, 1 ]:='TEMP';
-(*
-CASE step OF
-	0:	(* Wait for rising edge at bWrite variable *)
-		IF bWrite THEN
-			bWrite 	:= FALSE;
-			bBusy 	:= TRUE;
-			bError	:= FALSE;
-			nErrId	:= 0;
-			hFile	:= 0;
-			nRow	:= 0;
-			nColumn	:= 0;
-			step 	:= 1;
-		END_IF
-
-	1:	(* Open source file *)
-		fbFileOpen(  bExecute := FALSE  );
-		fbFileOpen( sNetId := sNetId, sPathName := sFileName, nMode := FOPEN_MODEWRITE OR FOPEN_MODETEXT,(* Open file in TEXT mode! *)
-					ePath := PATH_GENERIC, bExecute := TRUE );
-		step := 2;
-
-	2:(* Wait until open not busy *)
-		fbFileOpen( bExecute := FALSE, bError => bError, nErrID => nErrID, hFile => hFile );
-		IF NOT fbFileOpen.bBusy THEN
-			IF NOT fbFileOpen.bError THEN
-				step := 3;
-			ELSE(* Error: file not found? *)
-				step := 100;
-			END_IF
-		END_IF
-
-	3:(* Convert one PLC record to CSV format *)
-		sCSVLine := '';
-		fbWriter.eCmd := eEnumCmd_First;(* Write first field value *)
-		IF nRow <= GVL.MAX_CSV_ROWS THEN
-
-			FOR nColumn := 0 TO GVL.MAX_CSV_COLUMNS BY 1 DO
-
-				sCSVField := STRING_TO_CSVFIELD( database[ nRow, nColumn ], FALSE );(* TODO: Get field value from your application *)
-
-				(* Add new field to the record buffer *)
-				fbWriter( 	pBuffer := ADR( sCSVLine ), cbBuffer := SIZEOF( sCSVLine ) - 1, putValue := sCSVField, pValue := 0, cbValue := 0,
-							bCRLF := ( nColumn = GVL.MAX_CSV_COLUMNS ) );(* bCRLF == TRUE => Write CRLF after the last field value *)
-				IF fbWriter.bOk THEN
-					fbWriter.eCmd := eEnumCmd_Next;(* Write next field value *)
-				ELSE(* Error *)
-					step := 100;
-					RETURN;
-				END_IF
-
-			END_FOR(* FOR nColumn := 0... *)
-
-			(* FB_FilePuts adds allready CR (carriage return) to the written line.
-			We have to replace the $R$L characters with $L character to avoid double CR. *)
-			IF RIGHT( sCSVLine, 2 ) = '$R$L' THEN
-				sCSVLine := REPLACE( sCSVLine, '$L', 2, LEN( sCSVLine ) - 1 );
-			END_IF
-
-			nRow := nRow + 1;(* Increment number of created records (rows) *)
-			step := 4;(* Write record to the file *)
-
-		ELSE(* All rows written => Close file *)
-			step := 10;
-		END_IF
-
-	4:	(* Write single text line *)
-		fbFilePuts( bExecute := FALSE );
-		fbFilePuts( sNetId := sNetId, hFile := hFile, sLine := sCSVLine, bExecute := TRUE );
-		step := 5;
-
-	5:(* Wait until write not busy *)
-		fbFilePuts( bExecute := FALSE, bError => bError, nErrID => nErrID );
-		IF NOT fbFilePuts.bBusy THEN
-			IF NOT fbFilePuts.bError THEN
-				step := 3;(* Write next record *)
-			ELSE(* Error *)
-				step := 100;
-			END_IF
-		END_IF
-
-	10:	(* Close source file *)
-		fbFileClose( bExecute := FALSE );
-		fbFileClose( sNetId := sNetId, hFile := hFile, bExecute := TRUE );
-		step := 11;
-
-	11:(* Wait until close not busy *)
-		fbFileClose( bExecute := FALSE, bError => bError, nErrID => nErrID );
-		IF ( NOT fbFileClose.bBusy ) THEN
-			hFile := 0;
-			step := 100;
-		END_IF
-
-	100: (* Error or ready step => cleanup *)
-		IF ( hFile <> 0 ) THEN
-			step := 10; (* Close the source file *)
-		ELSE
-			bBusy := FALSE;
-			step := 0;	(* Ready *)
-		END_IF
-
-END_CASE
-*)]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="fileWrite" Id="{7c220b82-3fe5-4faa-8bdb-22d8eb65c323}">
@@ -272,16 +176,27 @@ END_CASE]]></ST>
       <Declaration><![CDATA[METHOD update_database : BOOL
 VAR_INPUT
 	 
+	user : STRING := 'N/A';
 	timeStarted : TIME;
 	timeCompleted : TIME;
 	timeElasped : TIME;
-	numOfCoil : INT;
-	lengtthOfCoil : INT;
+	numOfCoil : INT :=0;
+	lengthOCoil : INT :=0;
+	userNote : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[database[ 0, 1 ]:='TEMP'; //user ID 
-database[ 1, 1 ]:='userID';
+        <ST><![CDATA[database[ 0, 1 ]:=user; //user ID 
+database[ 1, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeStarted)); //TO DO this leaves a long in a vauge format. 
+database[ 2, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeCompleted));
+database[ 3, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeElasped));
+database[ 4, 1 ]:=INT_TO_STRING(numOfCoil);
+database[ 5, 1 ]:=INT_TO_STRING(lengthOCoil);
+database[ 6, 1 ]:=userNote;
+
+
+
+
 
 ]]></ST>
       </Implementation>
@@ -291,9 +206,6 @@ database[ 1, 1 ]:='userID';
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYLIC">
       <LineId Id="111" Count="0" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="6" Count="98" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.fileWrite">
@@ -339,7 +251,11 @@ database[ 1, 1 ]:='userID';
     </LineIds>
     <LineIds Name="FB_fileReadWrite.update_database">
       <LineId Id="5" Count="1" />
+      <LineId Id="35" Count="2" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="24" Count="3" />
       <LineId Id="13" Count="0" />
     </LineIds>
   </POU>

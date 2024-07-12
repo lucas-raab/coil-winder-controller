@@ -6,6 +6,7 @@ VAR_INPUT
 	//Input hmi connection from MAIN
 	hmiConnection: POINTER TO FB_hmi_connection;
 	eventLogger: POINTER TO FB_EventLogger;
+	fileReadWrite: POINTER TO FB_fileReadWrite;
 END_VAR
 
 VAR
@@ -177,6 +178,7 @@ VAR
 	intital: BOOL;
 	errorOutput: BOOL;
 	errorStatus: BOOL;
+	
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -632,9 +634,8 @@ CASE state OF
 	tElapsed:=TIME() -tStart;
 	
 	IF winding_exit_check() THEN
-		eventLogger^.fbMessage[2].Send(0);
-		hmiConnection^.startUI:=FALSE;
-		state:=40;
+	
+		state:=39;
 		
 	ELSE
 		state:=31;
@@ -655,9 +656,8 @@ CASE state OF
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
-		eventLogger^.fbMessage[2].Send(0);
-		hmiConnection^.startUI:=FALSE;
-		state:=40;
+		
+		state:=39;
 		
 	ELSE
 		state:=32;
@@ -679,15 +679,35 @@ CASE state OF
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
-		eventLogger^.fbMessage[2].Send(0);
-		hmiConnection^.startUI:=FALSE;
-		state:=40;
-		tEnd:=TIME();;
-		tElapsed:=tEnd -Tstart;
+		
+		state:=39;
+		
 	ELSE
 		state:=33;
 	END_IF
 	// ========================================33========================================
+	
+	// ========================================39========================================
+	39: // transition state from winding => finished
+		eventLogger^.fbMessage[2].Send(0);
+		hmiConnection^.startUI:=FALSE;
+		
+		tEnd:=TIME();
+		tElapsed:=tEnd -Tstart;
+		
+		fileReadWrite^.update_database(user:= 'RN',
+										timeStarted:=tStart,
+										timeCompleted:=tEnd,
+										timeElasped:=tElapsed,
+										numOfCoil:=numOfEnabledPayoff,
+										lengthOCoil:=numOfEnabledPayoff,
+										userNote:='TO DO need to add user logging feature');
+		fileReadWrite^.bWrite:=TRUE;			
+		
+	
+		state:=40;
+	// ========================================39========================================
+	
 	
 	// ========================================40========================================
 	40: //FINISHED HOLD STANDSTILL TENSION
@@ -2006,7 +2026,10 @@ END_IF
       <LineId Id="919" Count="1" />
       <LineId Id="120" Count="0" />
       <LineId Id="1101" Count="0" />
-      <LineId Id="921" Count="7" />
+      <LineId Id="921" Count="0" />
+      <LineId Id="924" Count="0" />
+      <LineId Id="1129" Count="0" />
+      <LineId Id="925" Count="3" />
       <LineId Id="176" Count="0" />
       <LineId Id="519" Count="0" />
       <LineId Id="174" Count="0" />
@@ -2016,18 +2039,34 @@ END_IF
       <LineId Id="934" Count="0" />
       <LineId Id="845" Count="0" />
       <LineId Id="1102" Count="0" />
-      <LineId Id="846" Count="11" />
+      <LineId Id="846" Count="1" />
+      <LineId Id="850" Count="0" />
+      <LineId Id="1130" Count="0" />
+      <LineId Id="851" Count="6" />
       <LineId Id="173" Count="0" />
       <LineId Id="1074" Count="1" />
       <LineId Id="859" Count="2" />
       <LineId Id="938" Count="4" />
       <LineId Id="1103" Count="0" />
-      <LineId Id="943" Count="5" />
+      <LineId Id="943" Count="1" />
+      <LineId Id="1115" Count="0" />
       <LineId Id="1104" Count="0" />
+      <LineId Id="1131" Count="0" />
       <LineId Id="949" Count="1" />
       <LineId Id="879" Count="0" />
       <LineId Id="37" Count="0" />
+      <LineId Id="1123" Count="0" />
+      <LineId Id="1119" Count="1" />
+      <LineId Id="1125" Count="1" />
+      <LineId Id="1146" Count="0" />
+      <LineId Id="1152" Count="0" />
+      <LineId Id="1147" Count="1" />
+      <LineId Id="1127" Count="0" />
+      <LineId Id="1139" Count="6" />
+      <LineId Id="1124" Count="0" />
+      <LineId Id="1121" Count="1" />
       <LineId Id="1076" Count="0" />
+      <LineId Id="1117" Count="1" />
       <LineId Id="510" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="34" Count="0" />
