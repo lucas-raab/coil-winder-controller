@@ -22,7 +22,7 @@
     <TargetFramework>native1.12-tchmi</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
     <Name>CoilWindingHMI</Name>
-    <HmiCommunicationRouterPort>10107</HmiCommunicationRouterPort>
+    <HmiCommunicationRouterPort>10108</HmiCommunicationRouterPort>
     <HmiCommunicationServerAuthPort>13002</HmiCommunicationServerAuthPort>
     <HmiInitial>1.12.760.59</HmiInitial>
     <HmiRecent>1.12.760.59</HmiRecent>
@@ -131,6 +131,7 @@
     <Folder Include="Themes" />
     <Folder Include="Themes\Base-Dark\Images\" />
     <Folder Include="Themes\Base-Dark\Images\Events\" />
+    <Folder Include="Themes\Base-Dark\Images\Ethercat" />
     <Folder Include="Themes\Base-Dark\Images\Overview" />
     <Folder Include="Themes\Base-Dark\Images\Placeholder\" />
     <Folder Include="Themes\Base-Dark\Images\Settings\" />
@@ -192,9 +193,6 @@
     <Content Include="Server\ADS\ADS.Config.default.json">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Server\ADS\ADS.Config.remote.json">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Server\ADS\ADS.Config.test.json">
       <SubType>Content</SubType>
     </Content>
@@ -204,9 +202,6 @@
     <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Config.default.json">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Config.remote.json">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Config.test.json">
       <SubType>Content</SubType>
     </Content>
@@ -214,10 +209,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiLua\TcHmiLua.Config.default.json">
-      <SubType>Content</SubType>
-      <Visible>True</Visible>
-    </Content>
-    <Content Include="Server\TcHmiLua\TcHmiLua.Config.remote.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>
@@ -232,9 +223,6 @@
     <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.default.json">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.remote.json">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Server\TcHmiRecipeManagement\TcHmiRecipeManagement.Config.test.json">
       <SubType>Content</SubType>
     </Content>
@@ -244,9 +232,6 @@
     <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.default.json">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.remote.json">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Server\TcHmiSqliteHistorize\TcHmiSqliteHistorize.Config.test.json">
       <SubType>Content</SubType>
     </Content>
@@ -254,10 +239,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiSqliteLogger\TcHmiSqliteLogger.Config.default.json">
-      <SubType>Content</SubType>
-      <Visible>True</Visible>
-    </Content>
-    <Content Include="Server\TcHmiSqliteLogger\TcHmiSqliteLogger.Config.remote.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>
@@ -272,9 +253,6 @@
     <Content Include="Server\TcHmiSrv\TcHmiSrv.Config.default.json">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Server\TcHmiSrv\TcHmiSrv.Config.remote.json">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Server\TcHmiSrv\TcHmiSrv.Config.test.json">
       <SubType>Content</SubType>
     </Content>
@@ -282,10 +260,6 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiUserManagement\TcHmiUserManagement.Config.default.json">
-      <SubType>Content</SubType>
-      <Visible>True</Visible>
-    </Content>
-    <Content Include="Server\TcHmiUserManagement\TcHmiUserManagement.Config.remote.json">
       <SubType>Content</SubType>
       <Visible>True</Visible>
     </Content>
@@ -307,6 +281,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Beckhoff_Logo.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Ethercat\ethercat_active.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Ethercat\ethercat_normal.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Ethercat\ethercat_pressed.svg">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Events\message_active.svg">

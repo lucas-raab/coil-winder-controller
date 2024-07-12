@@ -493,30 +493,6 @@
           "Base-Dark": "Themes/Base-Dark/Images/Events/message_active.svg"
         }
       },
-      "TR_Icon_EtherCATDiagnostics_normal": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Normal Icon of page: EtherCAT Diagnostics",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_normal.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_normal.svg"
-        }
-      },
-      "TR_Icon_EtherCATDiagnostics_pressed": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Pressed Icon of page: EtherCAT Diagnostics",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_pressed.svg"
-        }
-      },
-      "TR_Icon_EtherCATDiagnostics_active": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Active Icon of page: EtherCAT Diagnostics",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_active.svg"
-        }
-      },
       "TR_Icon_Settings_active": {
         "type": "tchmi:framework#/definitions/Path",
         "description": "",
@@ -563,6 +539,27 @@
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_normal.svg",
           "Base": null
+        }
+      },
+      "TR_Icon_EtherCATDiagnostics_pressed": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_active.svg",
+          "Base": "Themes/Base-Dark/Images/Ethercat Diag/ethercat_active.svg"
+        }
+      },
+      "TR_Icon_EtherCATDiagnostics_normal": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_normal.svg",
+          "Base": "Themes/Base-Dark/Images/Ethercat/ethercat_normal.svg"
+        }
+      },
+      "TR_Icon_EtherCATDiagnostics_active": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_pressed.svg",
+          "Base": "Themes/Base-Dark/Images/Ethercat/ethercat_active.svg"
         }
       }
     }
