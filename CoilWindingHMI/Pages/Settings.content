@@ -401,7 +401,7 @@
           ]
         </script>
       </div>
-<div id="TcHmiDatagrid_payoff_inputs_4" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="40" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="16" data-tchmi-grid-font-size="20" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list%/s%" data-tchmi-right="10" data-tchmi-bottom-unit="px" data-tchmi-bottom="14" data-tchmi-width-mode="Parent" data-tchmi-height-mode="Parent">
+<div id="TcHmiDatagrid_payoff_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="%" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="40" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-show-row-numbers="false" data-tchmi-header-font-size="16" data-tchmi-grid-font-size="20" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-right="10" data-tchmi-bottom-unit="px" data-tchmi-bottom="14" data-tchmi-width-mode="Parent" data-tchmi-height-mode="Parent" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list%/s%">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
@@ -512,10 +512,12 @@
 
 
 
+
+
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
-    "event": "TcHmiDatagrid_payoff_inputs_4.onDataChanged",
+    "event": "TcHmiDatagrid_payoff_inputs.onDataChanged",
     "actions": [
       {
         "objectType": "WriteToSymbol",

@@ -28,6 +28,14 @@
     "DEFAULTTIMEZONE": "client",
     "DEFAULTUSERGROUP": "__SystemUsers",
     "DEFINITIONS": {
+        "PLC1.ARRAY_0..3_OF-DWORD": {
+            "items": {
+                "$ref": "tchmi:general#/definitions/DWORD"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "type": "array"
+        },
         "PLC1.ARRAY_0..3_OF-motor_state_datagrid": {
             "items": {
                 "$ref": "#/definitions/PLC1.motor_state_datagrid"
@@ -36,9 +44,26 @@
             "minItems": 4,
             "type": "array"
         },
+        "PLC1.ARRAY_0..3_OF-output_error_datagrid": {
+            "items": {
+                "$ref": "#/definitions/PLC1.output_error_datagrid"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "type": "array"
+        },
         "PLC1.ARRAY_1..1_OF-general_input_datagrid_params": {
             "items": {
                 "$ref": "#/definitions/PLC1.general_input_datagrid_params"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..1_OF-misc_settings_input_datagrid_params": {
+            "items": {
+                "$ref": "#/definitions/PLC1.misc_settings_input_datagrid_params"
             },
             "maxItems": 1,
             "minItems": 1,
@@ -72,9 +97,27 @@
             "startOffset": 1,
             "type": "array"
         },
+        "PLC1.ARRAY_1..1_OF-pickup_output_datagrid_params": {
+            "items": {
+                "$ref": "#/definitions/PLC1.pickup_output_datagrid_params"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
         "PLC1.ARRAY_1..1_OF-racetrack_params_1": {
             "items": {
                 "$ref": "#/definitions/PLC1.racetrack_params_1"
+            },
+            "maxItems": 1,
+            "minItems": 1,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..1_OF-turncount_output_datagrid": {
+            "items": {
+                "$ref": "#/definitions/PLC1.turncount_output_datagrid"
             },
             "maxItems": 1,
             "minItems": 1,
@@ -90,6 +133,24 @@
             "startOffset": 1,
             "type": "array"
         },
+        "PLC1.ARRAY_1..3_OF-payoff_output_datagrid_params": {
+            "items": {
+                "$ref": "#/definitions/PLC1.payoff_output_datagrid_params"
+            },
+            "maxItems": 3,
+            "minItems": 3,
+            "startOffset": 1,
+            "type": "array"
+        },
+        "PLC1.ARRAY_1..4_OF-DINT": {
+            "items": {
+                "$ref": "tchmi:general#/definitions/DINT"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "startOffset": 1,
+            "type": "array"
+        },
         "PLC1.ARRAY_1..4_OF-LREAL": {
             "items": {
                 "$ref": "tchmi:general#/definitions/LREAL"
@@ -98,6 +159,284 @@
             "minItems": 4,
             "startOffset": 1,
             "type": "array"
+        },
+        "PLC1.FB_hmi_connection": {
+            "properties": {
+                "checkInputsUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "comment": "SETTINGS",
+                            "propertyOrder": 20
+                        }
+                    ]
+                },
+                "clearUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "comment": "OUTPUT",
+                            "propertyOrder": 22
+                        }
+                    ]
+                },
+                "color_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_0..3_OF-DWORD"
+                        },
+                        {
+                            "propertyOrder": 13
+                        }
+                    ]
+                },
+                "estopHW": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "attributes": {
+                                "TcAddressType": "Input"
+                            },
+                            "comment": "HARDWARE INPUTS",
+                            "propertyOrder": 15
+                        }
+                    ]
+                },
+                "general_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-general_input_datagrid_params"
+                        },
+                        {
+                            "propertyOrder": 5
+                        }
+                    ]
+                },
+                "homeUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 19
+                        }
+                    ]
+                },
+                "misc_settings_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-misc_settings_input_datagrid_params"
+                        },
+                        {
+                            "propertyOrder": 6
+                        }
+                    ]
+                },
+                "motor_state_datagrid_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_0..3_OF-motor_state_datagrid"
+                        },
+                        {
+                            "propertyOrder": 10
+                        }
+                    ]
+                },
+                "motor_turncount": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..4_OF-DINT"
+                        },
+                        {
+                            "comment": "Outputs",
+                            "propertyOrder": 14
+                        }
+                    ]
+                },
+                "output_error_datagrid_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_0..3_OF-output_error_datagrid"
+                        },
+                        {
+                            "propertyOrder": 9
+                        }
+                    ]
+                },
+                "overview_outputs_datagrid_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-overview_outputs_datagrid"
+                        },
+                        {
+                            "propertyOrder": 11
+                        }
+                    ]
+                },
+                "payoff_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..3_OF-payoff_input_datagrid_params"
+                        },
+                        {
+                            "comment": "Initlize datagrid params",
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "payoff_output_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..3_OF-payoff_output_datagrid_params"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "pickup_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-pickup_input_datagrid_params"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "pickup_output_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-pickup_output_datagrid_params"
+                        },
+                        {
+                            "propertyOrder": 4
+                        }
+                    ]
+                },
+                "pickup_pancake_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-pancake_params_0"
+                        },
+                        {
+                            "propertyOrder": 7
+                        }
+                    ]
+                },
+                "pickup_racetrack_input_datagrid_params_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-racetrack_params_1"
+                        },
+                        {
+                            "propertyOrder": 8
+                        }
+                    ]
+                },
+                "resetUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "comment": "CONTROL PAGE",
+                            "propertyOrder": 16
+                        }
+                    ]
+                },
+                "rpm": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..4_OF-LREAL"
+                        },
+                        {
+                            "propertyOrder": 24
+                        }
+                    ]
+                },
+                "startUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 17
+                        }
+                    ]
+                },
+                "state": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "comment": "misc",
+                            "propertyOrder": 25
+                        }
+                    ]
+                },
+                "tensionUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 18
+                        }
+                    ]
+                },
+                "torque": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..4_OF-LREAL"
+                        },
+                        {
+                            "comment": "HISTORYIZED VARS",
+                            "propertyOrder": 23
+                        }
+                    ]
+                },
+                "turncount_output_datagrid_list": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/PLC1.ARRAY_1..1_OF-turncount_output_datagrid"
+                        },
+                        {
+                            "propertyOrder": 12
+                        }
+                    ]
+                },
+                "updateInputsUI": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 21
+                        }
+                    ]
+                },
+                "user": {
+                    "allOf": [
+                        {
+                            "comment": "USER ID",
+                            "maxLength": 255,
+                            "propertyOrder": 26
+                        },
+                        {
+                            "$ref": "tchmi:general#/definitions/String"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
         },
         "PLC1.general_input_datagrid_params": {
             "properties": {
@@ -134,12 +473,82 @@
             },
             "type": "object"
         },
+        "PLC1.misc_settings_input_datagrid_params": {
+            "properties": {
+                "acceleration": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "decceleration": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "jerk": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 4
+                        }
+                    ]
+                },
+                "unwinding_mode": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
         "PLC1.motor_state_datagrid": {
             "properties": {
                 "state": {
                     "allOf": [
                         {
                             "$ref": "tchmi:general#/definitions/INT"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.output_error_datagrid": {
+            "properties": {
+                "errorID": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/UDINT"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "errorStatus": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
                         },
                         {
                             "propertyOrder": 1
@@ -164,7 +573,7 @@
                 "pickupTurnCount": {
                     "allOf": [
                         {
-                            "$ref": "tchmi:general#/definitions/DINT"
+                            "$ref": "tchmi:general#/definitions/LREAL"
                         },
                         {
                             "propertyOrder": 1
@@ -232,7 +641,7 @@
                         }
                     ]
                 },
-                "outer_dia": {
+                "radius": {
                     "allOf": [
                         {
                             "$ref": "tchmi:general#/definitions/LREAL"
@@ -249,6 +658,61 @@
                         },
                         {
                             "propertyOrder": 2
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.payoff_output_datagrid_params": {
+            "properties": {
+                "enabled": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/BOOL"
+                        },
+                        {
+                            "propertyOrder": 5
+                        }
+                    ]
+                },
+                "linear_speed": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "motor_name": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/STRING%2880%29"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "rpm": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "turn_count": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 4
                         }
                     ]
                 }
@@ -290,6 +754,51 @@
             },
             "type": "object"
         },
+        "PLC1.pickup_output_datagrid_params": {
+            "properties": {
+                "estimated_tension": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "motor_name": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/STRING%2880%29"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "torque": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "turn_count": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 4
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
         "PLC1.racetrack_params_1": {
             "properties": {
                 "length": {
@@ -311,6 +820,51 @@
                         {
                             "comment": "mm",
                             "propertyOrder": 2
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.turncount_output_datagrid": {
+            "properties": {
+                "payoffTC1": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
+                        }
+                    ]
+                },
+                "payoffTC2": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "payoffTC3": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 4
+                        }
+                    ]
+                },
+                "pickupTC1": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 1
                         }
                     ]
                 }
@@ -3052,6 +3606,23 @@
                     },
                     {
                         "propertyOrder": 5
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_hmi_connection": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "comment": "Function Block INIT"
+                    },
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.FB_hmi_connection"
                     }
                 ]
             },
@@ -5808,6 +6379,7 @@
                 "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID": 3,
                 "PLC1.MAIN.FB_WindingControl.progressPercent": 3,
                 "PLC1.MAIN.FB_WindingControl.unwinding": 3,
+                "PLC1.MAIN.FB_hmi_connection": 3,
                 "PLC1.MAIN.FB_hmi_connection.checkInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.color_list.0": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
