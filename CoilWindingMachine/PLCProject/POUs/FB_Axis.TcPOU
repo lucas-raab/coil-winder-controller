@@ -4,103 +4,94 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Axis
 
 VAR_INPUT
-	
-	//========================================================AXIS SHAPE========================================================
-	coilShapeID : INT :=0; //defines shape of coil attached to axis. 
-	pancake : pancake_params_0; //ID 0
-	racetrack : racetrack_params_1;//ID 1
-	
-	
-	
-	//========================================================AXIS DIMENSIONS========================================================
-	outerRadiusCurrent : LREAL; //outer radius of coil
-	
-	//========================================================AXIS TAPE========================================================
-	tape_info : ARRAY[0..10] OF tape_info;
-	tapeType : INT ;
-	
-	//========================================================MASS========================================================
-	emptyMassKG : LREAL:=20;
-	momentInertia : LREAL :=0;
-	
-	//========================================================AXIS CONTROL BOOL========================================================
-	//sets which FB's should be executed cyclicaly 
-	powerEnable : BOOL ;
-	resetEnable : BOOL ;
-	velocityEnable : BOOL ;
-	haltEnable : BOOL ;
-	homeEnable : BOOL ;
-	stopEnable: BOOL ;
-	torqueEnable: BOOL ;
-	posEnable: BOOL;
-	modmoveEnable : BOOL;
-	test: BOOL;
-	//NON FB RELATED
-	enabled :BOOL ; //sets whether axis is enabled
-	
-	//========================================================AXIS CONTROL MISC OPTIONS========================================================
-	//misc options for axis
-	directionB : INT :=0 ;
-	direction    : MC_Direction := MC_Positive_Direction; (* Direction of motion *)
-	buffermode : MC_BufferMode := MC_Aborting; (* Buffer mode *)
-	moveOptions      : ST_MoveOptions;
-	homeOptions : ST_HomingOptions;
-	
-	ST_SetPositionOptions: ST_SetPositionOptions;
-	
-	
-	
-	//========================================================AXIS CONTROL VALUES========================================================
-	//TORQUE CONTROL
-	torque : LREAL;
-	velocityLimitHigh : LREAL;
-	velocityLimitLow : LREAL; 
 
-	//SECONDARY TORQUE CONTROL SETTINGS
-	acceleration : LREAL:=1;
-	deceleration : LREAL:=1;
-	torqueRamp : LREAL:=1000;
+    //========================================================AXIS SHAPE========================================================
+    coilShapeID           : INT := 0;                 // defines shape of coil attached to axis.
+    pancake               : pancake_params_0;         // ID 0
+    racetrack             : racetrack_params_1;       // ID 1
 
-	jerk : LREAL:=1;
-	
-	//VELOCITY CONTROL
-	velocity : LREAL;
-	
-	//========================================================AXIS STATUS VARS========================================================
-	
-	actualTorque : LREAL ;
-	actualVelocity : LREAL;
-	
-	state : INT;
-	
-	adsError: BOOL;
-	adsErrorID: UDINT;
-	
-	//========================================================AXIS PARAMS========================================================
-	
-	ratedCurrent : LREAL;
-	torqaueConstrant : LREAL;
-	gearRatioNum : INT ;
-	gearRatioDen : INT;
-	//========================================================AXIS CONTROL FB========================================================
-	//instiantes fb's for various axis control functions
-	MCPOWER: MC_Power;
-	MCRESET : MC_Reset;
-	MCHOME : MC_Home;
-	MCVELOCITY : MC_MoveVelocity;
-	MCHALT : MC_Halt;
-	MCSTOP : MC_Stop;
-	MCGETVELOCITY : MC_ReadActualVelocity;
-	MCTORQUECONTROL : MC_TorqueControl;
-	MCPOS : MC_SetPosition;
-	MCJOG :MC_Jog;
-	MCMOVEMOD :MC_MoveModulo;
-	
-	//========================================================AXIS========================================================
-	AXIS : Axis_REF;
-	
+    //========================================================AXIS DIMENSIONS========================================================
+    outerRadiusCurrent    : LREAL;                    // outer radius of coil
 
+    //========================================================AXIS TAPE========================================================
+    tape_info             : ARRAY[0..10] OF tape_info;// array of tape information
+    tapeType              : INT;                      // type of tape
 
+    //========================================================MASS========================================================
+    emptyMassKG           : LREAL := 20;              // mass of the empty axis in KG
+    momentInertia         : LREAL := 0;               // moment of inertia
+
+    //========================================================AXIS CONTROL BOOL========================================================
+    // sets which FB's should be executed cyclically
+    powerEnable           : BOOL;                     // power enable
+    resetEnable           : BOOL;                     // reset enable
+    velocityEnable        : BOOL;                     // velocity enable
+    haltEnable            : BOOL;                     // halt enable
+    homeEnable            : BOOL;                     // home enable
+    stopEnable            : BOOL;                     // stop enable
+    torqueEnable          : BOOL;                     // torque enable
+    posEnable             : BOOL;                     // position enable
+    modmoveEnable         : BOOL;                     // move modulo enable
+    test                  : BOOL;                     // test enable
+    enabled               : BOOL;                     // sets whether axis is enabled
+
+    //========================================================AXIS CONTROL MISC OPTIONS========================================================
+    // misc options for axis
+    directionB            : INT := 0;                 // direction
+    direction             : MC_Direction := MC_Positive_Direction; // direction of motion
+    buffermode            : MC_BufferMode := MC_Aborting;           // buffer mode
+    moveOptions           : ST_MoveOptions;           // move options
+    homeOptions           : ST_HomingOptions;         // homing options
+
+    ST_SetPositionOptions : ST_SetPositionOptions;    // set position options
+
+    //========================================================AXIS CONTROL VALUES========================================================
+    // TORQUE CONTROL
+    torque                : LREAL;                    // torque value
+    velocityLimitHigh     : LREAL;                    // high velocity limit
+    velocityLimitLow      : LREAL;                    // low velocity limit
+
+    // SECONDARY TORQUE CONTROL SETTINGS
+    acceleration          : LREAL := 1;               // acceleration value
+    deceleration          : LREAL := 1;               // deceleration value
+    torqueRamp            : LREAL := 1000;            // torque ramp value
+
+    jerk                  : LREAL := 1;               // jerk value
+
+    // VELOCITY CONTROL
+    velocity              : LREAL;                    // velocity value
+
+    //========================================================AXIS STATUS VARS========================================================
+    actualTorque          : LREAL;                    // actual torque value
+    actualVelocity        : LREAL;                    // actual velocity value
+
+    state                 : INT;                      // state value
+
+    adsError              : BOOL;                     // ADS error flag
+    adsErrorID            : UDINT;                    // ADS error ID
+
+    //========================================================AXIS PARAMS========================================================
+    ratedCurrent          : LREAL;                    // rated current
+    torqaueConstrant      : LREAL;                    // torque constant
+    gearRatioNum          : INT;                      // gear ratio numerator
+    gearRatioDen          : INT;                      // gear ratio denominator
+
+    //========================================================AXIS CONTROL FB========================================================
+    // instantiates FB's for various axis control functions
+    MCPOWER               : MC_Power;                 // power control
+    MCRESET               : MC_Reset;                 // reset control
+    MCHOME                : MC_Home;                  // home control
+    MCVELOCITY            : MC_MoveVelocity;          // move velocity control
+    MCHALT                : MC_Halt;                  // halt control
+    MCSTOP                : MC_Stop;                  // stop control
+    MCGETVELOCITY         : MC_ReadActualVelocity;    // read actual velocity
+    MCTORQUECONTROL       : MC_TorqueControl;         // torque control
+    MCPOS                 : MC_SetPosition;           // set position
+    MCJOG                 : MC_Jog;                   // jog control
+    MCMOVEMOD             : MC_MoveModulo;            // move modulo control
+
+    //========================================================AXIS========================================================
+    AXIS                  : Axis_REF;                 // axis reference
 
 END_VAR
 ]]></Declaration>

@@ -3,62 +3,62 @@
   <POU Name="FB_WindingControl" Id="{2bf4d53e-3c0a-48b3-b562-160f25601b83}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_WindingControl
 VAR_INPUT
-	//Input hmi connection from MAIN
-	hmiConnection: POINTER TO FB_hmi_connection;
-	eventLogger: POINTER TO FB_EventLogger;
-	fileReadWrite: POINTER TO FB_fileReadWrite;
+	// Input hmi connection from MAIN
+	hmiConnection   : POINTER TO FB_hmi_connection;   // HMI connection
+	eventLogger     : POINTER TO FB_EventLogger;      // Event logger
+	fileReadWrite   : POINTER TO FB_fileReadWrite;    // File read/write
 END_VAR
 
 VAR
-//temporay testing vars
+	// Temporary testing vars
 
+	// Function Blocks
 
-//Function Blocks
-
-//CONTROL VARS
-desiredTension : LREAL:=0;
-desiredLinspeed : LREAL:=0;
-unwinding : BOOL := FALSE;
-desiredTurnCountPickup : DINT:=0;
-//exit conditions'
-target_turn_count : DINT :=0;
-
-//STATUS VARS
-state : INT:=0; //state for state machine
-cnt : INT :=0; //plc cycle counter.
-
-
-eta : LREAL :=0; //time till completion in seconds
-etaFormattedString : STRING(255);// formated eta in format ETA: M:S
-progressPercent : LREAL :=0; //0 to 100 progress percentage based on turn count.
-
-//COIL MODELS
-coil_model_base_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
-coil_model_base_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+	// CONTROL VARS
+	desiredTension          : LREAL := 0;         // Desired tension
+	desiredLinspeed         : LREAL := 0;         // Desired linear speed
+	unwinding               : BOOL  := FALSE;     // Unwinding flag
+	desiredTurnCountPickup  : DINT  := 0;         // Desired turn count for pickup
 	
-coil_model_rot_Xcords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
-coil_model_rot_Ycords: ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+	// Exit conditions
+	target_turn_count       : DINT  := 0;         // Target turn count
 
-//AXIS LIST
-payoff_axis_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;
-pickup_axis_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;
+	// STATUS VARS
+	state                   : INT   := 0;         // State for state machine
+	cnt                     : UINT  := 0;         // PLC cycle counter
+	eta                     : LREAL := 0;         // Time till completion in seconds
+	etaFormattedString      : STRING(255);        // Formatted ETA in format ETA: M:S
+	progressPercent         : LREAL := 0;         // Progress percentage (0 to 100) based on turn count
 
-//MISC
-numOfEnabledPayoff : INT :=0;
+	// COIL MODELS (currently not used)
+	// coil_model_base_Xcords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+	// coil_model_base_Ycords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
 
-//logging
-tStart :TIME;
-tEnd : TIME;
-tElapsed : TIME;
+	// coil_model_rot_Xcords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+	// coil_model_rot_Ycords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+
+	// AXIS LIST
+	payoff_axis_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;   // Payoff axis list
+	pickup_axis_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;   // Pickup axis list
+
+	// MISC
+	numOfEnabledPayoff      : INT := 0;           // Number of enabled payoffs
+	tStart                  : TIME;               // Start time
+	tEnd                    : TIME;               // End time
+	tElapsed                : TIME;               // Elapsed time
+	
+
 
 END_VAR
+
 VAR CONSTANT
-	input_bounds : input_bounds;
-	MAX_COIL_TYPE_COUNT : INT :=1; //number of coil types. counts from 0
-	MAX_SIZE_COIL_MODEL : INT :=1205;
-	TARGET_PICKUP_FORCE: LREAL :=10;
-	pi : LREAL := 4 * ATAN(1); //pi for math reasons. might be built in but couldn't find it.
-END_VAR]]></Declaration>
+	input_bounds            : input_bounds;       // Input bounds
+	MAX_COIL_TYPE_COUNT     : INT := 1;           // Number of coil types (counts from 0)
+	MAX_SIZE_COIL_MODEL     : INT := 1205;        // Maximum size of coil model
+	TARGET_PICKUP_FORCE     : LREAL := 10;        // Target pickup force
+	pi                      : LREAL := 4 * ATAN(1); // PI for math reasons (might be built-in but couldn't find it)
+END_VAR
+]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
