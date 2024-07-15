@@ -12,6 +12,7 @@ VAR
 	sNetId			: T_AmsNetId := '';	(* TwinCAT system network address *)
 	sFileRoot		: T_MaxString := 'C:\Users\nbung\Documents\TcXaeShell\CoilWindingMachine\CoilWindingHMI\LOG';
 	sFilePath		: T_MaxString := '\';
+	newsFilePath 	:  T_MaxString := '\';
 	sFileName		: T_MaxString := '';(* CSV destination file path and name *) //to do probably should have a way for users to change this
 	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
 	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
@@ -226,7 +227,7 @@ END_VAR
 
 VAR
  tempString   : STRING;
- newsFilePath : STRING;
+ 
 
  
  
@@ -260,10 +261,12 @@ END_VAR]]></Declaration>
 		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wHour));
 		tempString := CONCAT(tempString, '-');
 		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMinute));
-		sFileName := CONCAT('\',tempString);
-		findAndReplace(pSrcString:=ADR(sFilePath),pDeleteString:=ADR('/'),pInsertString:=ADR('\'),pDstString:=ADR(newsFilePath),nDstsize:=255);
-		sFilePath := CONCAT(sFileRoot,sFilePath);
-		sFileName := CONCAT(sFilePath, sFileName);
+		sFileName := tempString;
+		
+	//	findAndReplace(pSrcString:=ADR(sFilePath),pDeleteString:=ADR('/'),pInsertString:=ADR('\'),pDstString:=ADR(newsFilePath),nDstsize:=255);
+		newsFilePath := CONCAT(sFileRoot,sFilePath);
+		newsFilePath := CONCAT(newsFilePath,'\');
+		sFileName := CONCAT(newsFilePath, sFileName);
 		
 	
 		fbFileOpen(bExecute:=FALSE);
@@ -449,8 +452,10 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="26" Count="1" />
       <LineId Id="142" Count="0" />
       <LineId Id="146" Count="9" />
+      <LineId Id="163" Count="0" />
       <LineId Id="157" Count="0" />
       <LineId Id="156" Count="0" />
+      <LineId Id="164" Count="0" />
       <LineId Id="143" Count="2" />
       <LineId Id="29" Count="0" />
       <LineId Id="32" Count="0" />
