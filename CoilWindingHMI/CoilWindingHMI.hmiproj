@@ -184,6 +184,9 @@
     <Content Include="Pages\Settings.content">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Pages\Settings\LogSettings.content">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Pages\Settings\MiscellaneousSettings.content">
       <SubType>Content</SubType>
     </Content>

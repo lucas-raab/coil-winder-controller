@@ -128,6 +128,13 @@
       "keepAlive": false,
       "loadSync": false,
       "preloadBindings": false
+    },
+    {
+      "url": "Pages/Settings/LogSettings.content",
+      "preload": false,
+      "keepAlive": false,
+      "loadSync": false,
+      "preloadBindings": false
     }
   ],
   "views": [
@@ -543,6 +550,7 @@
       },
       "TR_Icon_EtherCATDiagnostics_pressed": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_active.svg",
           "Base": "Themes/Base-Dark/Images/Ethercat Diag/ethercat_active.svg"
@@ -550,6 +558,7 @@
       },
       "TR_Icon_EtherCATDiagnostics_normal": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_normal.svg",
           "Base": "Themes/Base-Dark/Images/Ethercat/ethercat_normal.svg"
@@ -557,6 +566,7 @@
       },
       "TR_Icon_EtherCATDiagnostics_active": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_pressed.svg",
           "Base": "Themes/Base-Dark/Images/Ethercat/ethercat_active.svg"

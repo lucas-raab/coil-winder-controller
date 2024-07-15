@@ -10,7 +10,9 @@ END_VAR
 VAR
 	
 	sNetId			: T_AmsNetId := '';	(* TwinCAT system network address *)
-	sFileName		: T_MaxString := 'C:\Users\nbung\Downloads\file.csv';(* CSV destination file path and name *) //to do probably should have a way for users to change this
+	sFileRoot		: T_MaxString := 'C:\Users\nbung\Documents\TcXaeShell\CoilWindingMachine\CoilWindingHMI\LOG';
+	sFilePath		: T_MaxString := '\';
+	sFileName		: T_MaxString := '';(* CSV destination file path and name *) //to do probably should have a way for users to change this
 	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
 	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
 	bBusy			: BOOL;
@@ -20,13 +22,18 @@ VAR
 	nColumn			: UDINT 	:= 0;(* Column number (record field) *)
 	hFile			: UINT		:= 0;(* File handle of the source file *)
 	step			: DWORD 	:= 0;
+	stepCheck		: DWORD 	:= 0;
+	stepDel: INT;
+	fbTimer   : FB_LocalSystemTime := ( bEnable := TRUE, dwCycle := 1 );
 	fbFileOpen		: FB_FileOpen;(* Opens file *)
 	fbFileClose		: FB_FileClose;(* Closes file *)
 	fbFilePuts		: FB_FilePuts;(* Writes one record (line) *)
+	fbFileDelete	: FB_FileDelete;(* deletes a file*)
 	fbWriter		: FB_CSVMemBufferWriter;(* Helper function block used to create CSV data bytes (single record line) *)
 	bDone			: BOOL;
-	
-	
+	bCheck          : BOOL;
+	bValidPath		: BOOL;
+	bDelete			: BOOL;
 	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ 
 	'User: ', 'TestUser',
 	'Time Started: ', 'N/A', 
@@ -35,11 +42,93 @@ VAR
 	'Number OF coils: ', 'N/A',
 	'Length of coil used: ', 'N/A',
 	'User Note: ', 'This is a note from the user. should be last'];
+	//system time
+	
+END_VAR
 
-END_VAR]]></Declaration>
+	]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="checkFile" Id="{10730966-3ca1-4b38-8b1e-b8f40c13e9c6}">
+      <Declaration><![CDATA[METHOD checkFile : BOOL
+VAR_INPUT
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE stepCheck OF
+	//Waiting for rising edge of writeFile Variable. standby state
+	0:
+		IF bCheck  THEN
+			bDone	:= FALSE;
+			bCheck 	:= FALSE;
+			bBusy 	:= TRUE;
+			bError	:= FALSE;
+			nErrId	:= 0;
+			hFile	:= 0;
+			nRow	:= 0;
+			nColumn	:= 0;
+			stepCheck 	:= 1;
+			
+		END_IF
+		
+	//open file
+	1:
+		fbFileOpen(bExecute:=FALSE);	
+		fbFileOpen(bExecute:=TRUE,
+					nmode:=FOPEN_MODEWRITE,
+					sPathName:=sFileName,
+					sNetId:='',
+					tTimeout:=T#5S,); 
+		
+		stepCheck := 2;
+		
+		
+	//wait untill we are finished opening the text file. 
+	2:
+		fbFileOpen( bExecute := FALSE, bError => bError, nErrID => nErrID, hFile => hFile );
+		IF NOT fbFileOpen.bBusy THEN
+			
+			IF NOT fbFileOpen.bError THEN
+				
+				stepCheck := 100;
+				bValidPath:=TRUE;
+				bDelete :=TRUE;
+				
+				
+			ELSE(* Error: could not create file *)
+				stepCheck := 100;
+				bValidPath:=FALSE;
+				bError:=TRUE;
+					
+			END_IF
+		END_IF
+
+		
+	//write single text line.
+		10:
+		fbFileClose( bExecute := FALSE );
+		fbFileClose( sNetId := sNetId, hFile := hFile, bExecute := TRUE );
+		stepCheck := 11;
+	
+	11:(* Wait until close not busy *)
+		fbFileClose( bExecute := FALSE, bError => bError, nErrID => nErrID );
+		IF ( NOT fbFileClose.bBusy ) THEN
+			hFile := 0;
+			stepCheck := 100;
+		END_IF
+	100: (* Error or ready step => cleanup *)
+		
+		IF ( hFile <> 0 ) THEN
+			stepCheck := 10; (* Close the source file *)
+		ELSE
+			bBusy := FALSE;
+			stepCheck := 0;	(* Ready *)
+		END_IF
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CYLIC" Id="{022d29b1-9207-44a1-a9b2-dae6b5311cdc}">
       <Declaration><![CDATA[METHOD CYLIC : BOOL
 VAR_INPUT
@@ -47,10 +136,87 @@ END_VAR
 
 VAR
 
+t : DATE_AND_TIME ;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fileWrite();
+checkFile();
+fileDelete();
+fbTimer();
+
+
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="fileDelete" Id="{03752aa4-024a-406f-99e7-ee6c7aa679f0}">
+      <Declaration><![CDATA[METHOD fileDelete : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE stepDel OF
+	//Waiting for rising edge of writeFile Variable. standby state
+	0:
+		IF bDelete AND NOT bBusy THEN
+			bDone	:= FALSE;
+			bDelete 	:= FALSE;
+			bBusy 	:= TRUE;
+			bError	:= FALSE;
+			nErrId	:= 0;
+			hFile	:= 0;
+			
+			stepDel 	:= 1;
+		END_IF
+		
+	//open file
+	1:
+		fbFileDelete(bExecute:=FALSE);
+			fbFileDelete(bExecute:=TRUE,	
+						sPathName:=sFileName,
+						sNetId:='',
+						tTimeout:=T#5S,);
+		stepDel := 2;
+	//wait untill we are finished opening the text file. 
+	2:
+			fbFileDelete( bExecute := FALSE, bError => bError, nErrID => nErrID );
+			IF NOT fbFileDelete.bBusy THEN
+			
+				IF NOT fbFileDelete.bError THEN
+					bDone:=TRUE;
+					stepDel :=100;
+					
+				ELSE(* Error: could not create file *)
+				stepDel := 100;
+				bValidPath:=FALSE;
+				bError:=TRUE;
+					
+				END_IF
+			END_IF
+	
+	10:
+		fbFileClose( bExecute := FALSE );
+		fbFileClose( sNetId := sNetId, hFile := hFile, bExecute := TRUE );
+		stepDel := 11;
+	
+	11:(* Wait until close not busy *)
+		fbFileClose( bExecute := FALSE, bError => bError, nErrID => nErrID );
+		IF ( NOT fbFileClose.bBusy ) THEN
+			hFile := 0;
+			stepDel := 100;
+		END_IF
+		
+	100: (* Error or ready step => cleanup *)
+		bDone:=TRUE;
+		IF ( hFile <> 0 ) THEN
+			stepDel := 10; (* Close the source file *)
+		ELSE
+			bBusy := FALSE;
+			stepDel := 0;	(* Ready *)
+		END_IF
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <Method Name="fileWrite" Id="{7c220b82-3fe5-4faa-8bdb-22d8eb65c323}">
@@ -59,13 +225,18 @@ VAR_INPUT
 END_VAR
 
 VAR
+ tempString   : STRING;
+ newsFilePath : STRING;
 
+ 
+ 
+ nDstsize : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE step OF
 	//Waiting for rising edge of writeFile Variable. standby state
 	0:
-		IF bWrite THEN
+		IF bWrite AND bValidPath THEN
 			bDone	:= FALSE;
 			bWrite 	:= FALSE;
 			bBusy 	:= TRUE;
@@ -79,6 +250,22 @@ END_VAR]]></Declaration>
 		
 	//open file
 	1:
+		
+		tempString := CONCAT('LOG-',WORD_TO_STRING(fbTimer.systemTime.wYear) );
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMonth));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wDay));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wHour));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMinute));
+		sFileName := CONCAT('\',tempString);
+		findAndReplace(pSrcString:=ADR(sFilePath),pDeleteString:=ADR('/'),pInsertString:=ADR('\'),pDstString:=ADR(newsFilePath),nDstsize:=255);
+		sFilePath := CONCAT(sFileRoot,sFilePath);
+		sFileName := CONCAT(sFilePath, sFileName);
+		
+	
 		fbFileOpen(bExecute:=FALSE);
 		fbFileOpen( sNetId := sNetId,
 					sPathName := sFileName, 
@@ -204,9 +391,51 @@ database[ 6, 1 ]:=userNote;
     <LineIds Name="FB_fileReadWrite">
       <LineId Id="9" Count="0" />
     </LineIds>
+    <LineIds Name="FB_fileReadWrite.checkFile">
+      <LineId Id="140" Count="12" />
+      <LineId Id="221" Count="0" />
+      <LineId Id="153" Count="3" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="222" Count="3" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="226" Count="1" />
+      <LineId Id="164" Count="1" />
+      <LineId Id="228" Count="0" />
+      <LineId Id="167" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="168" Count="2" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="216" Count="2" />
+      <LineId Id="171" Count="1" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="219" Count="1" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="248" Count="1" />
+      <LineId Id="176" Count="0" />
+      <LineId Id="229" Count="9" />
+      <LineId Id="177" Count="8" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_fileReadWrite.CYLIC">
       <LineId Id="111" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="120" Count="1" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="145" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_fileReadWrite.fileDelete">
+      <LineId Id="30" Count="0" />
+      <LineId Id="50" Count="9" />
+      <LineId Id="61" Count="4" />
+      <LineId Id="156" Count="3" />
+      <LineId Id="71" Count="3" />
+      <LineId Id="160" Count="12" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="135" Count="20" />
+      <LineId Id="48" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.fileWrite">
       <LineId Id="5" Count="0" />
@@ -218,6 +447,11 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="11" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="26" Count="1" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="146" Count="9" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="156" Count="0" />
+      <LineId Id="143" Count="2" />
       <LineId Id="29" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="44" Count="3" />
