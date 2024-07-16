@@ -4,10 +4,13 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_fileReadWrite
 
 VAR_INPUT
-	bWrite			: BOOL := FALSE;(* Rising edge starts program execution *)
+	bInitWrite		: BOOL := FALSE;(* Rising edge starts program execution *)
+	bwrite			: BOOL;
 END_VAR
 
 VAR
+	bTempb			:bool;
+	
 	
 	sNetId			: T_AmsNetId := '';	(* TwinCAT system network address *)
 	sFileRoot		: T_MaxString := 'C:\Users\nbung\Documents\TcXaeShell\CoilWindingMachine\CoilWindingHMI\LOG';
@@ -51,12 +54,16 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="checkFile" Id="{10730966-3ca1-4b38-8b1e-b8f40c13e9c6}">
+    <Folder Name="write database stack" Id="{f43a5332-43db-434a-baf7-4241caacfea3}" />
+    <Method Name="checkFile" Id="{10730966-3ca1-4b38-8b1e-b8f40c13e9c6}" FolderPath="write database stack\">
       <Declaration><![CDATA[METHOD checkFile : BOOL
 VAR_INPUT
 END_VAR
 
-]]></Declaration>
+
+VAR
+	tempString: STRING(255);
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE stepCheck OF
 	//Waiting for rising edge of writeFile Variable. standby state
@@ -76,10 +83,32 @@ END_VAR
 		
 	//open file
 	1:
+	
+		tempString := CONCAT('LOG-',WORD_TO_STRING(fbTimer.systemTime.wYear) );
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMonth));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wDay));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wHour));
+		tempString := CONCAT(tempString, '-');
+		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMinute));
+		sFileName := tempString;
+		
+	//	findAndReplace(pSrcString:=ADR(sFilePath),pDeleteString:=ADR('/'),pInsertString:=ADR('\'),pDstString:=ADR(newsFilePath),nDstsize:=255);
+		newsFilePath := CONCAT(sFileRoot,sFilePath);
+	
+		tempString := CONCAT(newsFilePath,'\'); 
+		sFileName := CONCAT(tempString,sFileName);
+		sFileName := CONCAT(sFileName, '.csv');
+		//sFileName:='C:\Users\nbung\Downloads\new.csv';
+	
+	
 		fbFileOpen(bExecute:=FALSE);	
 		fbFileOpen(bExecute:=TRUE,
 					nmode:=FOPEN_MODEWRITE,
 					sPathName:=sFileName,
+					ePath:=PATH_GENERIC,
 					sNetId:='',
 					tTimeout:=T#5S,); 
 		
@@ -98,7 +127,7 @@ END_VAR
 				bDelete :=TRUE;
 				
 				
-			ELSE(* Error: could not create file *)
+		ELSE(* Error: could not create file *)
 				stepCheck := 100;
 				bValidPath:=FALSE;
 				bError:=TRUE;
@@ -120,13 +149,13 @@ END_VAR
 			stepCheck := 100;
 		END_IF
 	100: (* Error or ready step => cleanup *)
-		
 		IF ( hFile <> 0 ) THEN
 			stepCheck := 10; (* Close the source file *)
 		ELSE
 			bBusy := FALSE;
 			stepCheck := 0;	(* Ready *)
 		END_IF
+		
 END_CASE]]></ST>
       </Implementation>
     </Method>
@@ -140,7 +169,12 @@ VAR
 t : DATE_AND_TIME ;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fileWrite();
+        <ST><![CDATA[IF bInitWrite THEN
+	bCheck:=TRUE;
+	bInitWrite:=FALSE;
+END_IF
+
+fileWrite();
 checkFile();
 fileDelete();
 fbTimer();
@@ -149,7 +183,7 @@ fbTimer();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="fileDelete" Id="{03752aa4-024a-406f-99e7-ee6c7aa679f0}">
+    <Method Name="fileDelete" Id="{03752aa4-024a-406f-99e7-ee6c7aa679f0}" FolderPath="write database stack\">
       <Declaration><![CDATA[METHOD fileDelete : BOOL
 VAR_INPUT
 END_VAR
@@ -215,12 +249,14 @@ END_VAR]]></Declaration>
 			stepDel := 10; (* Close the source file *)
 		ELSE
 			bBusy := FALSE;
+			
+			bwrite:= NOT berror;
 			stepDel := 0;	(* Ready *)
 		END_IF
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="fileWrite" Id="{7c220b82-3fe5-4faa-8bdb-22d8eb65c323}">
+    <Method Name="fileWrite" Id="{7c220b82-3fe5-4faa-8bdb-22d8eb65c323}" FolderPath="write database stack\">
       <Declaration><![CDATA[METHOD fileWrite : BOOL
 VAR_INPUT
 END_VAR
@@ -237,7 +273,9 @@ END_VAR]]></Declaration>
         <ST><![CDATA[CASE step OF
 	//Waiting for rising edge of writeFile Variable. standby state
 	0:
-		IF bWrite AND bValidPath THEN
+	
+		IF  bValidPath AND bWrite  THEN
+			bCheck	:= FALSE;
 			bDone	:= FALSE;
 			bWrite 	:= FALSE;
 			bBusy 	:= TRUE;
@@ -248,25 +286,12 @@ END_VAR]]></Declaration>
 			nColumn	:= 0;
 			step 	:= 1;
 		END_IF
+	
 		
 	//open file
 	1:
 		
-		tempString := CONCAT('LOG-',WORD_TO_STRING(fbTimer.systemTime.wYear) );
-		tempString := CONCAT(tempString, '-');
-		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMonth));
-		tempString := CONCAT(tempString, '-');
-		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wDay));
-		tempString := CONCAT(tempString, '-');
-		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wHour));
-		tempString := CONCAT(tempString, '-');
-		tempString := CONCAT(tempString, WORD_TO_STRING(fbTimer.systemTime.wMinute));
-		sFileName := tempString;
 		
-	//	findAndReplace(pSrcString:=ADR(sFilePath),pDeleteString:=ADR('/'),pInsertString:=ADR('\'),pDstString:=ADR(newsFilePath),nDstsize:=255);
-		newsFilePath := CONCAT(sFileRoot,sFilePath);
-		newsFilePath := CONCAT(newsFilePath,'\');
-		sFileName := CONCAT(newsFilePath, sFileName);
 		
 	
 		fbFileOpen(bExecute:=FALSE);
@@ -362,7 +387,7 @@ END_VAR]]></Declaration>
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="update_database" Id="{822f2f6a-ee12-4586-a471-9c4d67af88e7}">
+    <Method Name="update_database" Id="{822f2f6a-ee12-4586-a471-9c4d67af88e7}" FolderPath="write database stack\">
       <Declaration><![CDATA[METHOD update_database : BOOL
 VAR_INPUT
 	 
@@ -371,17 +396,23 @@ VAR_INPUT
 	timeCompleted : TIME;
 	timeElasped : TIME;
 	numOfCoil : INT :=0;
-	lengthOCoil : INT :=0;
+	lengthOCoil : LREAL :=0;
 	userNote : STRING;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[database[ 0, 1 ]:=user; //user ID 
+        <ST><![CDATA[
+
+
+
+
+
+database[ 0, 1 ]:=user; //user ID 
 database[ 1, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeStarted)); //TO DO this leaves a long in a vauge format. 
 database[ 2, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeCompleted));
 database[ 3, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeElasped));
 database[ 4, 1 ]:=INT_TO_STRING(numOfCoil);
-database[ 5, 1 ]:=INT_TO_STRING(lengthOCoil);
+database[ 5, 1 ]:=LREAL_TO_STRING(lengthOCoil);
 database[ 6, 1 ]:=userNote;
 
 
@@ -398,9 +429,18 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="140" Count="12" />
       <LineId Id="221" Count="0" />
       <LineId Id="153" Count="3" />
+      <LineId Id="250" Count="0" />
+      <LineId Id="255" Count="13" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="252" Count="0" />
+      <LineId Id="278" Count="0" />
+      <LineId Id="253" Count="1" />
       <LineId Id="204" Count="0" />
       <LineId Id="210" Count="0" />
-      <LineId Id="222" Count="3" />
+      <LineId Id="222" Count="1" />
+      <LineId Id="272" Count="0" />
+      <LineId Id="224" Count="1" />
       <LineId Id="212" Count="0" />
       <LineId Id="163" Count="0" />
       <LineId Id="226" Count="1" />
@@ -418,10 +458,18 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="248" Count="1" />
       <LineId Id="176" Count="0" />
       <LineId Id="229" Count="9" />
-      <LineId Id="177" Count="8" />
+      <LineId Id="177" Count="1" />
+      <LineId Id="273" Count="4" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="185" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYLIC">
+      <LineId Id="153" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="156" Count="0" />
+      <LineId Id="154" Count="0" />
       <LineId Id="111" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="118" Count="0" />
@@ -437,26 +485,25 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="71" Count="3" />
       <LineId Id="160" Count="12" />
       <LineId Id="82" Count="0" />
-      <LineId Id="135" Count="20" />
+      <LineId Id="135" Count="18" />
+      <LineId Id="179" Count="1" />
+      <LineId Id="154" Count="1" />
       <LineId Id="48" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.fileWrite">
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="6" Count="0" />
+      <LineId Id="182" Count="0" />
       <LineId Id="35" Count="0" />
+      <LineId Id="168" Count="0" />
       <LineId Id="97" Count="0" />
       <LineId Id="36" Count="7" />
       <LineId Id="11" Count="0" />
       <LineId Id="28" Count="0" />
+      <LineId Id="180" Count="0" />
       <LineId Id="26" Count="1" />
-      <LineId Id="142" Count="0" />
-      <LineId Id="146" Count="9" />
-      <LineId Id="163" Count="0" />
-      <LineId Id="157" Count="0" />
-      <LineId Id="156" Count="0" />
-      <LineId Id="164" Count="0" />
-      <LineId Id="143" Count="2" />
+      <LineId Id="142" Count="3" />
       <LineId Id="29" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="44" Count="3" />
@@ -489,6 +536,7 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.update_database">
+      <LineId Id="53" Count="5" />
       <LineId Id="5" Count="1" />
       <LineId Id="35" Count="2" />
       <LineId Id="41" Count="0" />

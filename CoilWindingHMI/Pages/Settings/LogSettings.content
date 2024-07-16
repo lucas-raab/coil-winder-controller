@@ -7,13 +7,13 @@
       ]
     </script>
   </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_Outputs_12" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-bottom-unit="px" data-tchmi-left="10" data-tchmi-right="10" data-tchmi-bottom="10">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_Outputs_12" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-bottom-unit="px" data-tchmi-left="10" data-tchmi-right="-27" data-tchmi-bottom="-65">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"
         ]
       </script>
-<div id="TcHmiFileExplorer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiFileExplorer" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-bottom="10" data-tchmi-right="10" data-tchmi-root="/LOG/" data-tchmi-path="%s%PLC1.MAIN.FB_FileReadWrite.sFilePath%/s%">
+<div id="TcHmiFileExplorer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiFileExplorer" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-bottom="10" data-tchmi-root="/LOG/" data-tchmi-path="%s%PLC1.MAIN.FB_FileReadWrite.sFilePath%/s%" data-tchmi-right-unit="%" data-tchmi-width="60">
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -35,6 +35,21 @@
   }
 ]
 </script>
+</div>
+<div id="TcHmiTextblock_7" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="Path Select" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true">
+</div>
+<div id="TcHmiTextblock_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="61" data-tchmi-left-unit="%" data-tchmi-text="User Log Note" data-tchmi-top="12" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true">
+</div>
+<div id="TcHmiTextbox_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="324" data-tchmi-height-unit="px" data-tchmi-left="1181" data-tchmi-left-unit="px" data-tchmi-text="%s%PLC1.MAIN.FB_hmi_connection::userNote%/s%" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width="717" data-tchmi-width-unit="px" data-tchmi-text-horizontal-alignment="Left" data-tchmi-multiline="true">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
 </div>
 </div>
 </div>

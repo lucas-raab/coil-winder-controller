@@ -695,14 +695,14 @@ CASE state OF
 		tEnd:=TIME();
 		tElapsed:=tEnd -Tstart;
 		
-		fileReadWrite^.update_database(user:= 'RN',
+		fileReadWrite^.update_database(user:= 'TO DO figure out how to get user information',
 										timeStarted:=tStart,
 										timeCompleted:=tEnd,
 										timeElasped:=tElapsed,
 										numOfCoil:=numOfEnabledPayoff,
-										lengthOCoil:=numOfEnabledPayoff,
-										userNote:='TO DO need to add user logging feature');
-		fileReadWrite^.bWrite:=TRUE;			
+										lengthOCoil:=find_tape_length_used(),
+										userNote:=hmiConnection^.userNote);
+		fileReadWrite^.bInitWrite:=TRUE;			
 		
 	
 		state:=40;
@@ -750,7 +750,7 @@ CASE state OF
 	
 	// ========================================50========================================
 	
-	// ========================================51========================================
+
 	
 	400: //ERROR STATE
 	//error on a axis preventing motor movement, or winding start. //do nothing 'till resolved
@@ -946,6 +946,57 @@ secondsString := DINT_TO_STRING(seconds);
 
 // Format the final output string
 find_eta := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="find_tape_length_used" Id="{7ea290bf-df4e-4690-9fae-b92992bd262d}" FolderPath="Methods\Status Updates\">
+      <Declaration><![CDATA[METHOD find_tape_length_used : LREAL
+VAR_INPUT
+END_VAR
+
+VAR
+	tape_thicnes: LREAL;
+	i: INT;
+	total_circum: LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//TO DO not sure how acurate this. i sort of stole this code from another function.
+
+CASE pickup_axis_list[1].coilShapeID OF
+	//finds eta given turn count
+	//formulas are a function of circumfrence given turn count. we take the intergral of this, with respect to turn count, with the upper bound being our target turn count 
+	0:
+	
+	tape_thicnes:=0;
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		IF payoff_axis_list[i].enabled THEN
+		tape_thicnes:=tape_thicnes+payoff_axis_list[i].tape_info[payoff_axis_list[i].tapeType].tape_depth/1000;
+		END_IF
+	END_FOR
+	
+
+	
+	
+	
+	total_circum:=2*pi*desiredTurnCountPickup*pickup_axis_list[1].pancake.radius/1000 + tape_thicnes*EXPT(desiredTurnCountPickup,2)*pi;
+	
+	
+	
+
+	
+	
+	
+	1:	
+	// to do. update this monster of a formula for the race track coil. derived through calculus, which is probably correct, just now cant figure it out because i decided to write a one liner instead of splitting up
+	(*
+	eta:=((2*pi*racetrack_params.radius*target_turn_count_pickup+pi*tape_info.tape_depth*target_turn_count_pickup*target_turn_count_pickup+2*racetrack_params.length*target_turn_count_pickup)
+		 -(2*pi*racetrack_params.radius*pickup_motor_list[1].turn_count+pi*tape_info.tape_depth*target_turn_count_pickup*pickup_motor_list[1].turn_count+2*racetrack_params.length*pickup_motor_list[1].turn_count));
+		 *)
+END_CASE
+
+
+
+find_tape_length_used:=total_circum;
 ]]></ST>
       </Implementation>
     </Method>
@@ -2164,6 +2215,12 @@ END_IF
       <LineId Id="35" Count="1" />
       <LineId Id="52" Count="0" />
       <LineId Id="37" Count="12" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.find_tape_length_used">
+      <LineId Id="10" Count="19" />
+      <LineId Id="38" Count="14" />
+      <LineId Id="61" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_error_check">

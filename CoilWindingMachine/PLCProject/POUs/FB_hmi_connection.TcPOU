@@ -22,7 +22,7 @@ VAR_INPUT
 	
 	motor_turncount : ARRAY[1..4] of DINT;
 	
-	
+	userNote		: T_MaxString := '';
 	
 	//HARDWARE INPUTS
 	estopHW AT %I* : BOOL := FALSE;
