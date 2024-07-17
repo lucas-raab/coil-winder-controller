@@ -3,8 +3,8 @@
   <DUT Name="general_input_datagrid_params" Id="{bde90c17-6b58-4868-83e2-051b3b1f7058}">
     <Declaration><![CDATA[TYPE general_input_datagrid_params :
 STRUCT
-	tension : LREAL;
-	linspeed : LREAL;
+	tension : LREAL :=1;
+	linspeed : LREAL:=1;
 	unwinding : BOOL;
 END_STRUCT
 END_TYPE

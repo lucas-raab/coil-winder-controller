@@ -1,6 +1,6 @@
-<div id="pancake" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="800" data-tchmi-height="640">
+<div id="pancake" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-width-unit="%">
 
-<div id="TcHmiDatagrid_pancake_input" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="24" data-tchmi-row-numbers-resizable="false" data-tchmi-show-row-numbers="false" data-tchmi-width-mode="Value" data-tchmi-height-mode="Value" data-tchmi-right-unit="px" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list%/s%" data-tchmi-width="45" data-tchmi-height="100">
+<div id="TcHmiDatagrid_pancake_input" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="24" data-tchmi-row-numbers-resizable="false" data-tchmi-show-row-numbers="false" data-tchmi-width-mode="Value" data-tchmi-height-mode="Value" data-tchmi-right-unit="px" data-tchmi-row-height="%i%datagrid_row_height%/i%" data-tchmi-header-height="%i%datagrid_header_heigh%/i%" data-tchmi-width="100" data-tchmi-height="100" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list%/s%">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {
@@ -20,7 +20,11 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "minValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_low%/s%",
+      "maxValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_high%/s%"
+    }
   }
 ]
 </script>
@@ -57,7 +61,7 @@
         "value": {
           "objectType": "Symbol",
           "valueType": "tchmi:general#/definitions/String",
-          "symbolExpression": "%ctrl%TcHmiDatagrid_pancake_input%/ctrl%"
+          "symbolExpression": "%ctrl%TcHmiDatagrid_pancake_input::SrcData%/ctrl%"
         },
         "asyncWait": true
       }

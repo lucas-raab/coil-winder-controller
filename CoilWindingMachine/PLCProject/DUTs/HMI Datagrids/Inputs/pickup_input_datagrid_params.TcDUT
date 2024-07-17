@@ -4,8 +4,8 @@
     <Declaration><![CDATA[TYPE pickup_input_datagrid_params :
 STRUCT
 	motor_name : STRING;
-	turn_count: INT;
-	coil_shape: INT;
+	turn_count: INT :=1;
+	coil_shape: INT :=0;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

@@ -3488,6 +3488,184 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_high": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::linear_speed_high",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(m/s)",
+                        "propertyOrder": 2
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_low": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::linear_speed_low",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(m/s)",
+                        "propertyOrder": 1
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_high": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::radius_payoff_high",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(mm)",
+                        "propertyOrder": 8
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_low": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::radius_payoff_low",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(mm)",
+                        "propertyOrder": 7
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_high": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::radius_pickup_pancake_high",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(mm)",
+                        "propertyOrder": 10
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_low": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::radius_pickup_pancake_low",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "((mm)",
+                        "propertyOrder": 9
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.tension_high": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::tension_high",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(N)",
+                        "propertyOrder": 4
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.tension_low": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::tension_low",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/LREAL"
+                    },
+                    {
+                        "comment": "(N)",
+                        "propertyOrder": 3
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_high": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::turn_count_pickup_high",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/INT"
+                    },
+                    {
+                        "propertyOrder": 6
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
+        "PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_low": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::input_bounds::turn_count_pickup_low",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/INT"
+                    },
+                    {
+                        "propertyOrder": 5
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -6409,6 +6587,16 @@
                 "PLC1.MAIN.FB_WindingControl.desiredTension": 3,
                 "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup": 3,
                 "PLC1.MAIN.FB_WindingControl.etaFormattedString": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_high": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_low": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_high": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_low": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_high": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.radius_pickup_pancake_low": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.tension_high": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.tension_low": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_high": 3,
+                "PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_low": 3,
                 "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled": 3,
                 "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.pancake.radius": 3,
                 "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.enabled": 3,

@@ -24,7 +24,7 @@
         </script>
       </div>
 <div id="TcHmiContainer_4" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="20.5" data-tchmi-height-unit="%" data-tchmi-left="7" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="%" data-tchmi-width="38.0" data-tchmi-width-unit="%" data-tchmi-creator-visibility="Visible">
-<div id="TcHmiEllipse_Status_Pickup1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%">
+<div id="TcHmiEllipse_Status_Pickup1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%" data-tchmi-stroke-color="%i%color_disabled_outline%/i%" data-tchmi-fill-color="%i%color_disabled%/i%">
 
 
 
@@ -54,11 +54,7 @@
 
 
 
-<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
-{
-  "color": "rgba(0, 0, 0, 1)"
-}
-</script>
+
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -97,6 +93,17 @@
                   "symbolExpression": "%i%color_powered%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Pickup1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_powered_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -126,6 +133,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_disabled%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Pickup1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_disabled_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -159,6 +177,17 @@
                   "symbolExpression": "%i%color_winding%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Pickup1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_winding_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -188,6 +217,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_error%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Pickup1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_error_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -222,7 +262,7 @@
 </div>
 </div>
 <div id="TcHmiContainer_7" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="20" data-tchmi-height-unit="%" data-tchmi-left="7" data-tchmi-left-unit="px" data-tchmi-top="31.2" data-tchmi-top-unit="%" data-tchmi-width="38.0" data-tchmi-width-unit="%" data-tchmi-creator-visibility="Visible">
-<div id="TcHmiEllipse_Status_Payoff1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%">
+<div id="TcHmiEllipse_Status_Payoff1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%" data-tchmi-stroke-color="%i%color_disabled_outline%/i%" data-tchmi-fill-color="%i%color_disabled%/i%">
 
 
 
@@ -252,11 +292,7 @@
 
 
 
-<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
-{
-  "color": "rgba(0, 0, 0, 1)"
-}
-</script>
+
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -295,6 +331,17 @@
                   "symbolExpression": "%i%color_powered%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_powered_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -324,6 +371,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_disabled%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_disabled_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -357,6 +415,17 @@
                   "symbolExpression": "%i%color_winding%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_winding_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -388,6 +457,17 @@
                   "symbolExpression": "%i%color_error%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff1::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_error_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -406,7 +486,7 @@
 </div>
 </div>
 <div id="TcHmiContainer_8" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="20" data-tchmi-height-unit="%" data-tchmi-left="7" data-tchmi-left-unit="px" data-tchmi-top="77.7" data-tchmi-top-unit="%" data-tchmi-width="38.0" data-tchmi-width-unit="%" data-tchmi-creator-visibility="Visible">
-<div id="TcHmiEllipse_Status_Payoff3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%">
+<div id="TcHmiEllipse_Status_Payoff3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%" data-tchmi-stroke-color="%i%color_disabled_outline%/i%" data-tchmi-fill-color="%i%color_disabled%/i%">
 
 
 
@@ -436,11 +516,7 @@
 
 
 
-<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
-{
-  "color": "rgba(0, 0, 0, 1)"
-}
-</script>
+
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -479,6 +555,17 @@
                   "symbolExpression": "%i%color_powered%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff3::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_powered_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -508,6 +595,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_disabled%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff3::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_disabled_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -541,6 +639,17 @@
                   "symbolExpression": "%i%color_winding%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff3::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_winding_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -572,6 +681,17 @@
                   "symbolExpression": "%i%color_error%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff3::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_error_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -590,7 +710,7 @@
 </div>
 </div>
 <div id="TcHmiContainer_9" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="20" data-tchmi-height-unit="%" data-tchmi-left="7" data-tchmi-left-unit="px" data-tchmi-top="53.6" data-tchmi-top-unit="%" data-tchmi-width="38.0" data-tchmi-width-unit="%" data-tchmi-creator-visibility="Visible">
-<div id="TcHmiEllipse_Status_Payoff2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%">
+<div id="TcHmiEllipse_Status_Payoff2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEllipse" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-left="0" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="35" data-tchmi-width-unit="%" data-tchmi-stroke-color="%i%color_disabled_outline%/i%" data-tchmi-fill-color="%i%color_disabled%/i%">
 
 
 
@@ -620,11 +740,7 @@
 
 
 
-<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
-{
-  "color": "rgba(0, 0, 0, 1)"
-}
-</script>
+
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -663,6 +779,17 @@
                   "symbolExpression": "%i%color_powered%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff2::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_powered_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -692,6 +819,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_disabled%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff2::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_disabled_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -725,6 +863,17 @@
                   "symbolExpression": "%i%color_winding%/i%"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff2::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_winding_outline%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -754,6 +903,17 @@
                   "objectType": "Symbol",
                   "valueType": "tchmi:general#/definitions/String",
                   "symbolExpression": "%i%color_error%/i%"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Payoff2::StrokeColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%color_error_outline%/i%"
                 },
                 "asyncWait": true
               }
@@ -1017,7 +1177,7 @@
 </script>
 </div>
 </div>
-<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_17" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-right="0" data-tchmi-width="100" data-tchmi-bottom="0" data-tchmi-bottom-unit="px" data-tchmi-left="0" data-tchmi-height="49">
+<div data-tchmi-grid-column-index="0" data-tchmi-grid-row-index="0" id="TcHmiContainer_MiscSettings_17" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height-unit="%" data-tchmi-left-unit="%" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-right-unit="px" data-tchmi-right="0" data-tchmi-width="100" data-tchmi-bottom="3" data-tchmi-bottom-unit="px" data-tchmi-left="0" data-tchmi-height="49">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
         [
         "background-container"

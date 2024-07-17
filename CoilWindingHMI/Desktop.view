@@ -200,15 +200,19 @@
     "icon_p": "%tr%TR_Icon_Settings_pressed%/tr%",
     "subItem": [
       {
-        "name": "%l%L_MiscellaneousSettings%/l%",
-        "content": "Pages/Settings/MiscellaneousSettings.content",
+        "name": "Recipe Mangment",
+        "content": "Pages/Settings/RecipeMangement.content"
+      },
+      {
+        "name": "Log Settings",
+        "content": "Pages/Settings/LogSettings.content",
         "icon_a": "%tr%TR_Icon_MiscellaneousSettings_active%/tr%",
         "icon_n": "%tr%TR_Icon_MiscellaneousSettings_normal%/tr%",
         "icon_p": "%tr%TR_Icon_MiscellaneousSettings_pressed%/tr%"
       },
       {
-        "name": "Log Settings",
-        "content": "Pages/Settings/LogSettings.content",
+        "name": "%l%L_MiscellaneousSettings%/l%",
+        "content": "Pages/Settings/MiscellaneousSettings.content",
         "icon_a": "%tr%TR_Icon_MiscellaneousSettings_active%/tr%",
         "icon_n": "%tr%TR_Icon_MiscellaneousSettings_normal%/tr%",
         "icon_p": "%tr%TR_Icon_MiscellaneousSettings_pressed%/tr%"

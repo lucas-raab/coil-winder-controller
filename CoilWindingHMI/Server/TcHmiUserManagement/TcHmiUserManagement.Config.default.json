@@ -13,10 +13,10 @@
             "SALT": "ip08K2u5G0u7pL199QyJQu886OgyKWlyK77r82H9mw+6Uqnv4/YkLzV4yG1tU0p8gSfv+KBhbmdsJ2EqGsqAEg=="
         },
         "__SystemAdministrator": {
-            "ALGORITHM": 0,
-            "ENABLED": false,
-            "PASSWORD": "",
-            "SALT": ""
+            "ALGORITHM": 1,
+            "ENABLED": true,
+            "PASSWORD": "d8c374238e019429bd7e9ec4343a1199f853f462635303aa7c2d5948182ad10dbeca305a917010224fca031c73b3361f2dbdf4346751ed7a7e9ae0a33c366267",
+            "SALT": "g2bRHssJ76NnVIy59tLJpc2/Pm9VdGxbSmgY59LeWMOxhlnA8a6l+zOj7SsFDO61XT+PKkRk4Nl1puIp2qdgvQ=="
         },
         "__SystemGuest": {
             "ALGORITHM": 0,

@@ -387,6 +387,20 @@ END_VAR]]></Declaration>
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="reset" Id="{a9274014-8d3d-4329-a687-d688cefe417a}">
+      <Declaration><![CDATA[METHOD reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bDone:=FALSE;
+bValidPath:=FALSE;
+bWrite:=FALSE;
+bError:=FALSE;
+nErrId:=0;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="update_database" Id="{822f2f6a-ee12-4586-a471-9c4d67af88e7}" FolderPath="write database stack\">
       <Declaration><![CDATA[METHOD update_database : BOOL
 VAR_INPUT
@@ -534,6 +548,11 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="88" Count="4" />
       <LineId Id="86" Count="0" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_fileReadWrite.reset">
+      <LineId Id="5" Count="2" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.update_database">
       <LineId Id="53" Count="5" />

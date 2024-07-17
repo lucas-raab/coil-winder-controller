@@ -130,6 +130,13 @@
       "preloadBindings": false
     },
     {
+      "url": "Pages/Settings/RecipeMangement.content",
+      "preload": false,
+      "keepAlive": false,
+      "loadSync": false,
+      "preloadBindings": false
+    },
+    {
       "url": "Pages/StartPage.content",
       "preload": false,
       "keepAlive": false,
@@ -373,6 +380,46 @@
       "Payoff3TrendLineColor": {
         "value": {
           "color": "rgba(231, 72, 220, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "borderLineColor": {
+        "value": {
+          "color": "rgba(90, 90, 90, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "color_disabled_outline": {
+        "value": {
+          "color": "rgba(52, 52, 52, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "color_powered_outline": {
+        "value": {
+          "color": "rgba(25, 104, 4, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "color_winding_outline": {
+        "value": {
+          "color": "rgba(153, 112, 0, 1)"
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "color_error_outline": {
+        "value": {
+          "color": "rgba(94, 2, 2, 1)"
         },
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,

@@ -189,6 +189,7 @@ cnt := cnt +1;
 	CASE state OF
 		10:
 		// ========================================10========================================
+		
 		IF hmiConnection^.resetUI THEN
 		reset();
 		hmiConnection^.resetUI:=FALSE;
@@ -207,18 +208,7 @@ cnt := cnt +1;
 		END_IF
 	
 		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-			
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			 
-		END_IF
+		transfer_hmi_vars();
 		
 		IF hmiConnection^.homeUI THEN
 			state:=50;
@@ -255,17 +245,7 @@ cnt := cnt +1;
 		END_IF
 	
 		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			
-		END_IF
+		transfer_hmi_vars();
 		
 		IF hmiConnection^.homeUI THEN
 			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
@@ -462,17 +442,7 @@ cnt := cnt +1;
 		END_IF
 		
 		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			
-		END_IF
+		transfer_hmi_vars();
 		
 		IF hmiConnection^.homeUI THEN
 			
@@ -1459,7 +1429,8 @@ END_VAR
       <Implementation>
         <ST><![CDATA[state := 10;
 progressPercent:=0;
-//TO DO . need to find out out to clear position to 0
+
+fileReadWrite^.reset();
 ]]></ST>
       </Implementation>
     </Method>
@@ -1651,6 +1622,41 @@ END_VAR]]></Declaration>
 		
 	END_FOR 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="transfer_hmi_vars" Id="{a22def73-99d5-4798-8700-74bd55b9eec0}" FolderPath="Methods\MISC\">
+      <Declaration><![CDATA[METHOD transfer_hmi_vars : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//transfer vars from hmi to windingcontrol
+
+//general
+desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
+
+desiredLinspeed:=hmiConnection^.general_input_datagrid_params_list[1].linspeed;
+
+unwinding:=hmiConnection^.general_input_datagrid_params_list[1].unwinding;
+
+//pickup
+
+desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
+pickup_axis_list[1].coilShapeID:=hmiConnection^.pickup_input_datagrid_params_list[1].coil_shape;
+pickup_axis_list[1].pancake.radius:=hmiConnection^.pickup_pancake_input_datagrid_params_list[1].radius;
+//payoff
+ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+	
+
+	payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+	payoff_axis_list[i].tapeType:=hmiConnection^.payoff_input_datagrid_params_list[i].tape_type;
+	
+	payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].radius;
+		
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="update_error_status" Id="{8a130ded-d455-41f2-ac7c-8c70dbeb7a89}" FolderPath="Methods\HMI updates\">
@@ -1849,7 +1855,9 @@ END_IF
       <LineId Id="181" Count="0" />
       <LineId Id="457" Count="0" />
       <LineId Id="284" Count="0" />
-      <LineId Id="287" Count="2" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="1164" Count="0" />
+      <LineId Id="288" Count="1" />
       <LineId Id="331" Count="0" />
       <LineId Id="290" Count="3" />
       <LineId Id="308" Count="0" />
@@ -1859,13 +1867,6 @@ END_IF
       <LineId Id="961" Count="0" />
       <LineId Id="298" Count="1" />
       <LineId Id="586" Count="0" />
-      <LineId Id="300" Count="1" />
-      <LineId Id="567" Count="0" />
-      <LineId Id="585" Count="0" />
-      <LineId Id="302" Count="0" />
-      <LineId Id="459" Count="2" />
-      <LineId Id="470" Count="1" />
-      <LineId Id="489" Count="0" />
       <LineId Id="463" Count="0" />
       <LineId Id="584" Count="0" />
       <LineId Id="615" Count="0" />
@@ -1893,14 +1894,6 @@ END_IF
       <LineId Id="963" Count="0" />
       <LineId Id="326" Count="1" />
       <LineId Id="338" Count="0" />
-      <LineId Id="328" Count="1" />
-      <LineId Id="568" Count="0" />
-      <LineId Id="330" Count="0" />
-      <LineId Id="472" Count="0" />
-      <LineId Id="583" Count="0" />
-      <LineId Id="475" Count="0" />
-      <LineId Id="479" Count="1" />
-      <LineId Id="582" Count="0" />
       <LineId Id="473" Count="0" />
       <LineId Id="620" Count="0" />
       <LineId Id="622" Count="0" />
@@ -1987,7 +1980,8 @@ END_IF
       <LineId Id="689" Count="0" />
       <LineId Id="697" Count="2" />
       <LineId Id="693" Count="1" />
-      <LineId Id="651" Count="32" />
+      <LineId Id="651" Count="19" />
+      <LineId Id="681" Count="2" />
       <LineId Id="686" Count="1" />
       <LineId Id="700" Count="0" />
       <LineId Id="966" Count="0" />
@@ -2386,7 +2380,9 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.reset">
       <LineId Id="5" Count="0" />
-      <LineId Id="10" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="11" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.set_pos_all">
@@ -2478,6 +2474,26 @@ END_IF
       <LineId Id="20" Count="1" />
       <LineId Id="25" Count="5" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.transfer_hmi_vars">
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="20" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.update_error_status">
       <LineId Id="5" Count="1" />

@@ -1,6 +1,6 @@
 <div id="Settings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-height="100" data-tchmi-width-unit="%" data-tchmi-height-unit="%">
 
-<div id="MainSettings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-height="100" data-tchmi-height-unit="px" data-tchmi-height-mode="Content">
+<div id="MainSettings" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="0" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-height="100" data-tchmi-height-unit="%" data-tchmi-height-mode="Content">
 <div id="TcHmiTextblock_MainSettings_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-text="Main Settings" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-right="16">
 
 
@@ -62,7 +62,11 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "minValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_low%/s%",
+      "maxValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.turn_count_pickup_high%/s%"
+    }
   },
   {
     "name": "coil_shape",
@@ -84,12 +88,8 @@
     "autoSelectText": false,
     "dataDefinitions": [
       {
-        "value": 0,
+        "value": 0.0,
         "text": "Pancake Coil"
-      },
-      {
-        "value": 1,
-        "text": "RaceTrack Coil"
       }
     ]
   }
@@ -234,7 +234,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiTextblock_MiscSettings_Localization_4" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Coil Parameters">
+<div id="TcHmiTextblock_MiscSettings_Localization_4" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="26" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="200" data-tchmi-width-unit="px" data-tchmi-word-wrap="True" data-tchmi-text="Pickup Coil Parameters">
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json">
           [
           "headline-3"
@@ -264,7 +264,7 @@
     "name": "unwinding",
     "label": "Unwinding",
     "control": "CheckBox",
-    "width": 15,
+    "width": 20,
     "widthUnit": "%",
     "resize": false,
     "sortable": false,
@@ -298,8 +298,8 @@
     "autoFocusOut": true,
     "autoSelectText": false,
     "dataDefinitions": {
-      "minValue": 0.0,
-      "maxValue": 5.0
+      "minValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.tension_low%/s%",
+      "maxValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.tension_high%/s%"
     }
   },
   {
@@ -319,7 +319,11 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "minValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_low%/s%",
+      "maxValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.linear_speed_high%/s%"
+    }
   }
 ]
 </script>
@@ -462,7 +466,11 @@
     "headerVerticalAlignment": "Center",
     "ignoreEscapeSequences": false,
     "autoFocusOut": true,
-    "autoSelectText": false
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "minValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_low%/s%",
+      "maxValue": "%s%PLC1.MAIN.FB_WindingControl.input_bounds.radius_payoff_high%/s%"
+    }
   },
   {
     "name": "tape_type",
@@ -537,9 +545,5 @@
 </div>
 </div>
 </div>
-</div>
-<div id="TcHmiToggleButton_input_check" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-text="Check Inputs" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width="148" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.checkInputsUI%/s%" data-tchmi-right="200">
-</div>
-<div id="TcHmiToggleButton_update_inputs" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="32" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-text="Update Inputs" data-tchmi-top="18" data-tchmi-top-unit="px" data-tchmi-width="148" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.updateInputsUI%/s%" data-tchmi-right="20">
 </div>
 </div>

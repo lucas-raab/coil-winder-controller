@@ -190,6 +190,9 @@
     <Content Include="Pages\Settings\MiscellaneousSettings.content">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Pages\Settings\RecipeMangement.content">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="Pages\StartPage.content">
       <SubType>Content</SubType>
     </Content>

@@ -6,7 +6,7 @@ TYPE input_bounds :
 STRUCT
 	
 	linear_speed_low : LREAL := 0.01; //(m/s)
-	linear_speed_high: LREAL := 20.0;  //(m/s)
+	linear_speed_high: LREAL := 10.0;  //(m/s)
 
 	tension_low : LREAL := 0.5; //(N)
 	tension_high : LREAL := 5; //(N)
@@ -16,6 +16,12 @@ STRUCT
 	
 	radius_payoff_low : LREAL:=1; //(mm)
 	radius_payoff_high : LREAL:=1000; //(mm)
+	
+	
+	radius_pickup_pancake_low : LREAL:=1; //((mm)
+	radius_pickup_pancake_high: LREAL:=1000; //(mm)
+	
+	
 
 	coil_shape_low : INT :=0;
 	coil_shape_high : INT :=2;

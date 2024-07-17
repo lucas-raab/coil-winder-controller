@@ -4,9 +4,9 @@
     <Declaration><![CDATA[TYPE payoff_input_datagrid_params :
 STRUCT
 	motor_name : STRING;
-	tape_type : INT;
-	coil_type : INT;
-	radius : LREAL;
+	tape_type : INT :=1;
+	coil_type : INT :=0;
+	radius : LREAL :=1;
 	enabled : BOOL ;
 END_STRUCT
 END_TYPE

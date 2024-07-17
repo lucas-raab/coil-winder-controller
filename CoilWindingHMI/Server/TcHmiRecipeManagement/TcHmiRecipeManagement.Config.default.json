@@ -1,39 +1,49 @@
 {
     "recipeList": {
-        "New recipe": {
-            "recipeTypeName": "Winding Parameters",
-            "values": {
-                "Coil Shape ID": 0,
-                "Enabled 1": true,
-                "Enabled 2": false,
-                "Enabled 3": false,
-                "Inital Outer Radius 1": 100.0,
-                "Inital Outer Radius 2": 100.0,
-                "Inital Outer Radius 3": 100.0,
-                "Linear Speed": 1.0,
-                "Target Turn Count": 111,
-                "Tension": 4.0
-            }
-        },
-        "New recipe 2": {
-            "recipeTypeName": "Winding Parameters",
-            "values": {
-                "Coil Shape ID": 1,
-                "Enabled 1": false,
-                "Enabled 2": false,
-                "Enabled 3": false,
-                "Inital Outer Radius 1": 100.0,
-                "Inital Outer Radius 2": 100.0,
-                "Inital Outer Radius 3": 100.0,
-                "Linear Speed": 1.0,
-                "Target Turn Count": 1,
-                "Tension": 1.0
+        "Defaults": {
+            "Default Pickup Pancake": {
+                "recipeTypeName": "Pancake Coil",
+                "values": {
+                    "Radius": 1.0
+                }
+            },
+            "Default Winding Parameters": {
+                "recipeTypeName": "Winding Parameters",
+                "values": {
+                    "Coil Shape ID": 0,
+                    "Enabled 1": true,
+                    "Enabled 2": false,
+                    "Enabled 3": false,
+                    "Linear Speed": 4,
+                    "Radius 1": 400,
+                    "Radius 2": 400,
+                    "Radius 3": 400,
+                    "Tape Type 1": 1,
+                    "Tape Type 2": 1,
+                    "Tape Type 3": 1,
+                    "Target Turn Count": 1,
+                    "Tension": 4,
+                    "Unwinding": false
+                }
             }
         }
     },
     "recipeTypeList": {
         "Pancake Coil": {
-            "members": {},
+            "members": {
+                "Radius": {
+                    "defaultValue": 1.0,
+                    "enabled": true,
+                    "group": "",
+                    "order": 0,
+                    "schema": {
+                        "maximum": 1000.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.pickup_pancake_input_datagrid_params_list[0]::radius",
+                    "unit": "mm"
+                }
+            },
             "options": {
                 "enabled": "None"
             },
@@ -43,94 +53,134 @@
             "members": {
                 "Coil Shape ID": {
                     "comment": "0 = Pancake, 1 = Racetrack",
-                    "defaultValue": 1,
+                    "defaultValue": 0,
                     "enabled": true,
                     "group": "Pickup",
-                    "order": 2,
+                    "order": 4,
                     "schema": {
-                        "maximum": 1,
+                        "maximum": 0,
                         "minimum": 0
                     },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.pickup_axis_list.0.coilShapeID",
-                    "unit": ""
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list[0]::coil_shape",
+                    "unit": "ID"
                 },
                 "Enabled 1": {
-                    "defaultValue": false,
-                    "enabled": true,
-                    "group": "Payoff Motor 1",
-                    "order": 4,
-                    "schema": {},
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.enabled",
-                    "unit": ""
-                },
-                "Enabled 2": {
-                    "defaultValue": false,
-                    "enabled": true,
-                    "group": "Payoff Motor 2",
-                    "order": 6,
-                    "schema": {},
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.enabled",
-                    "unit": ""
-                },
-                "Enabled 3": {
-                    "defaultValue": false,
-                    "enabled": true,
-                    "group": "Payoff Motor 3",
-                    "order": 8,
-                    "schema": {},
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.enabled",
-                    "unit": ""
-                },
-                "Inital Outer Radius 1": {
-                    "defaultValue": 100.0,
+                    "defaultValue": true,
                     "enabled": true,
                     "group": "Payoff Motor 1",
                     "order": 5,
-                    "schema": {
-                        "maximum": 500.0,
-                        "minimum": 1.0
-                    },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.0.pancake.radius",
-                    "unit": "mm"
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[0]::enabled",
+                    "unit": ""
                 },
-                "Inital Outer Radius 2": {
-                    "defaultValue": 100.0,
+                "Enabled 2": {
+                    "defaultValue": true,
                     "enabled": true,
                     "group": "Payoff Motor 2",
-                    "order": 7,
-                    "schema": {
-                        "maximum": 500.0,
-                        "minimum": 1.0
-                    },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.1.pancake.radius",
-                    "unit": "mm"
+                    "order": 8,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[1]::enabled",
+                    "unit": ""
                 },
-                "Inital Outer Radius 3": {
-                    "defaultValue": 100.0,
+                "Enabled 3": {
+                    "defaultValue": true,
                     "enabled": true,
                     "group": "Payoff Motor 3",
-                    "order": 9,
-                    "schema": {
-                        "maximum": 500.0,
-                        "minimum": 1.0
-                    },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.payoff_axis_list.2.pancake.radius",
-                    "unit": "mm"
+                    "order": 11,
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[2]::enabled",
+                    "unit": ""
                 },
                 "Linear Speed": {
-                    "defaultValue": 1.0,
+                    "defaultValue": 4.0,
                     "enabled": true,
                     "group": "General",
-                    "order": 1,
+                    "order": 2,
                     "schema": {
-                        "maximum": 1.0,
+                        "maximum": 10.0,
                         "minimum": 0.01
                     },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredLinspeed",
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list[0]::tension",
                     "unit": "m/s"
                 },
-                "Target Turn Count": {
+                "Radius 1": {
+                    "defaultValue": 200.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 1",
+                    "order": 7,
+                    "schema": {
+                        "maximum": 400.0,
+                        "minimum": 0.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[0]::radius",
+                    "unit": "mm"
+                },
+                "Radius 2": {
+                    "defaultValue": 200.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 2",
+                    "order": 10,
+                    "schema": {
+                        "maximum": 400.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[1]::radius",
+                    "unit": "mm"
+                },
+                "Radius 3": {
+                    "defaultValue": 200.0,
+                    "enabled": true,
+                    "group": "Payoff Motor 3",
+                    "order": 13,
+                    "schema": {
+                        "maximum": 400.0,
+                        "minimum": 1.0
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[2]::radius",
+                    "unit": "mm"
+                },
+                "Tape Type 1": {
+                    "comment": "0 = SS, 1=HTS",
                     "defaultValue": 1,
+                    "enabled": true,
+                    "group": "Payoff Motor 1",
+                    "order": 6,
+                    "schema": {
+                        "maximum": 2,
+                        "minimum": 1
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[0]::tape_type",
+                    "unit": "ID"
+                },
+                "Tape Type 2": {
+                    "comment": "0 = SS, 1=HTS",
+                    "defaultValue": 1,
+                    "enabled": true,
+                    "group": "Payoff Motor 2",
+                    "order": 9,
+                    "schema": {
+                        "maximum": 2,
+                        "minimum": 1
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[1]::tape_type",
+                    "unit": "ID"
+                },
+                "Tape Type 3": {
+                    "comment": "0 = SS, 1=HTS",
+                    "defaultValue": 1,
+                    "enabled": true,
+                    "group": "Payoff Motor 3",
+                    "order": 12,
+                    "schema": {
+                        "maximum": 2,
+                        "minimum": 1
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list[2]::tape_type",
+                    "unit": "ID"
+                },
+                "Target Turn Count": {
+                    "comment": "End Turn Count",
+                    "defaultValue": 400,
                     "enabled": true,
                     "group": "Pickup",
                     "order": 3,
@@ -138,21 +188,29 @@
                         "maximum": 1000,
                         "minimum": 1
                     },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup",
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.pickup_input_datagrid_params_list[0]::turn_count",
                     "unit": "Turns"
                 },
                 "Tension": {
-                    "comment": "",
-                    "defaultValue": 1.0,
+                    "defaultValue": 4.0,
+                    "enabled": true,
+                    "group": "General",
+                    "order": 1,
+                    "schema": {
+                        "maximum": 5.0,
+                        "minimum": 0.1
+                    },
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list[0]::linspeed",
+                    "unit": "Nm"
+                },
+                "Unwinding": {
+                    "defaultValue": true,
                     "enabled": true,
                     "group": "General",
                     "order": 0,
-                    "schema": {
-                        "maximum": 10.0,
-                        "minimum": 1.0
-                    },
-                    "symbol": "PLC1.MAIN.FB_WindingControl.desiredTension",
-                    "unit": "Nm"
+                    "schema": {},
+                    "symbol": "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list[0]::unwinding",
+                    "unit": ""
                 }
             },
             "options": {
