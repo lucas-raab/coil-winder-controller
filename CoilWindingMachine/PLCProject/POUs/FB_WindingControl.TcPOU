@@ -40,7 +40,7 @@ VAR
 	// AXIS LIST
 	payoff_axis_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;   // Payoff axis list
 	pickup_axis_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;   // Pickup axis list
-	axis_list 				: ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF FB_Axis; //contains pointers to all axies. 1 being pickup, 2,3,4 being payoff
+	axis_list 				: ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF POINTER TO FB_Axis; //contains pointers to all axies. 1 being pickup, 2,3,4 being payoff
 	// MISC
 	numOfEnabledPayoff      : INT := 0;           // Number of enabled payoffs
 	tStart                  : TIME;               // Start time
@@ -923,9 +923,16 @@ END_CASE
 minutes := TRUNC(eta / 60);
 seconds := TRUNC(eta - (minutes * 60));
 
+
 // Convert the minutes and seconds to strings
 minutesString := DINT_TO_STRING(minutes);
-secondsString := DINT_TO_STRING(seconds);
+
+IF seconds < 10 THEN
+	secondsString :=CONCAT('0', DINT_TO_STRING(seconds)) ;
+ELSE
+	secondsString := DINT_TO_STRING(seconds);
+END_IF
+
 
 // Format the final output string
 find_eta := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
@@ -1172,24 +1179,6 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//inital jog (so function not closed right away) 
-
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT DO
-		IF axis_list[i].enabled THEN
-			
-			axis_list[i].MCJOG(,eAcceleration:=axis_list[i].acceleration,mode:=MC_JOGMODE_STANDARD_SLOW,Position:=0,Deceleration:=axis_list[i].deceleration,Velocity:=180,axis:=AXIS_LIST[i]);
-			
-		END_IF
-	END_FOR 
-
-
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT DO
-		IF axis_list[i].enabled THEN
-			
-			axis_list[i].jogEnable:=TRUE;	
-			home := home AND NOT axis_list[i].MCJOG.Busy;
-		END_IF
-	END_FOR 
-
 
 
 
@@ -2236,7 +2225,15 @@ END_IF
       <LineId Id="50" Count="1" />
       <LineId Id="35" Count="1" />
       <LineId Id="52" Count="0" />
-      <LineId Id="37" Count="12" />
+      <LineId Id="37" Count="5" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="207" Count="0" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="211" Count="1" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="46" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.find_tape_length_used">
@@ -2305,7 +2302,6 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="92" Count="0" />
-      <LineId Id="139" Count="17" />
       <LineId Id="109" Count="2" />
       <LineId Id="124" Count="7" />
       <LineId Id="5" Count="0" />

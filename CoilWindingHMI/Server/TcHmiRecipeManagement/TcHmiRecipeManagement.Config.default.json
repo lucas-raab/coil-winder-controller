@@ -180,7 +180,7 @@
                 },
                 "Target Turn Count": {
                     "comment": "End Turn Count",
-                    "defaultValue": 400,
+                    "defaultValue": 5,
                     "enabled": true,
                     "group": "Pickup",
                     "order": 3,
