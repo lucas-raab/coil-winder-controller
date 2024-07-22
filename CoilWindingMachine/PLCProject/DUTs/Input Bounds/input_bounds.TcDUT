@@ -15,14 +15,11 @@ STRUCT
 	turn_count_pickup_high : INT := 1000;
 	
 	radius_payoff_low : LREAL:=1; //(mm)
-	radius_payoff_high : LREAL:=1000; //(mm)
-	
+	radius_payoff_high : LREAL:=250; //(mm)
 	
 	radius_pickup_pancake_low : LREAL:=1; //((mm)
-	radius_pickup_pancake_high: LREAL:=1000; //(mm)
+	radius_pickup_pancake_high: LREAL:=400; //(mm)
 	
-	
-
 	coil_shape_low : INT :=0;
 	coil_shape_high : INT :=2;
 	
@@ -34,6 +31,7 @@ STRUCT
 
 	jerk_low : LREAL:=0.1;
 	jerk_high : LREAL:=1;
+	
 END_STRUCT
 END_TYPE
 ]]></Declaration>

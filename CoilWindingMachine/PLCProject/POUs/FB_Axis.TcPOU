@@ -34,7 +34,7 @@ VAR_INPUT
     modmoveEnable         : BOOL;                     // move modulo enable
     test                  : BOOL;                     // test enable
     enabled               : BOOL;                     // sets whether axis is enabled
-
+	
     //========================================================AXIS CONTROL MISC OPTIONS========================================================
     // misc options for axis
     directionB            : INT := 0;                 // direction
@@ -131,7 +131,13 @@ MCHALT(Axis:=Axis,
 		Deceleration:=deceleration,
 		Jerk:=jerk,BufferMode:=buffermode,
 		Options:=moveOptions);		
-
+MCMOVEMOD(Axis:=Axis,
+			Execute:=velocityEnable,
+			Acceleration:=acceleration,
+			Deceleration:=deceleration,
+			Jerk:=jerk,
+			Direction:=direction,
+			Velocity:=velocity);
 MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
@@ -514,6 +520,7 @@ END_VAR]]></Declaration>
       <LineId Id="41" Count="0" />
       <LineId Id="43" Count="3" />
       <LineId Id="95" Count="0" />
+      <LineId Id="190" Count="5" />
       <LineId Id="164" Count="0" />
       <LineId Id="167" Count="14" />
       <LineId Id="25" Count="0" />

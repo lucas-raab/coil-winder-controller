@@ -621,40 +621,7 @@
       }
     }
   },
-  "trigger": [
-    {
-      "event": "onUserChanged",
-      "actions": [
-        {
-          "objectType": "WriteToSymbol",
-          "active": true,
-          "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.user%/s%",
-          "value": {
-            "objectType": "Symbol",
-            "valueType": "tchmi:general#/definitions/String",
-            "symbolExpression": "%f%TcHmi.Functions.CoilWindingHMI.getUser()%/f%"
-          },
-          "asyncWait": true
-        }
-      ]
-    },
-    {
-      "event": "onInitialized",
-      "actions": [
-        {
-          "objectType": "WriteToSymbol",
-          "active": true,
-          "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.user%/s%",
-          "value": {
-            "objectType": "Symbol",
-            "valueType": "tchmi:general#/definitions/String",
-            "symbolExpression": "%f%TcHmi.Functions.CoilWindingHMI.getUser()%/f%"
-          },
-          "asyncWait": true
-        }
-      ]
-    }
-  ],
+  "trigger": [],
   "actionTemplates": [],
   "languages": {
     "de": "Localization/de.localization",

@@ -24,6 +24,10 @@ VAR_GLOBAL CONSTANT
 	TAPE2_DEPTH: LREAL := 0.1;
 	TAPE2_MASS_PER_CM_G : LREAL :=10;
 	
+	//LIMITS
+	
+	INNER_RADIUS : LREAL:= 133; //(mm)
+	
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

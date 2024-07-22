@@ -4194,6 +4194,23 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_hmi_connection.userNote": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::userNote",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/STRING%2880%29"
+                    },
+                    {
+                        "propertyOrder": 15
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "RefreshDefinitions": {
             "ACCESS": 3,
             "DOMAIN": "TcHmiSrv",
@@ -6633,6 +6650,7 @@
                 "PLC1.MAIN.FB_hmi_connection.torque.3": 3,
                 "PLC1.MAIN.FB_hmi_connection.updateInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.user": 3,
+                "PLC1.MAIN.FB_hmi_connection.userNote": 3,
                 "SetLocale": 3,
                 "SubscribeEvents": 3,
                 "TcHmiEcDiagnostics.Diagnostics": 1,

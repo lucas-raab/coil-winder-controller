@@ -40,7 +40,7 @@ VAR
 	// AXIS LIST
 	payoff_axis_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;   // Payoff axis list
 	pickup_axis_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;   // Pickup axis list
-
+	axis_list 				: ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF FB_Axis; //contains pointers to all axies. 1 being pickup, 2,3,4 being payoff
 	// MISC
 	numOfEnabledPayoff      : INT := 0;           // Number of enabled payoffs
 	tStart                  : TIME;               // Start time
@@ -720,7 +720,20 @@ CASE state OF
 	
 	// ========================================50========================================
 	
-
+	// ========================================60========================================
+	60:
+	//exit homing state if homing is done or error.
+	IF Home() THEN
+		state:=10;
+		hmiConnection^.homeUI:=FALSE;
+	
+	ELSE
+		state:=50;
+	END_IF
+	
+	
+	// ========================================60========================================
+	
 	
 	400: //ERROR STATE
 	//error on a axis preventing motor movement, or winding start. //do nothing 'till resolved
@@ -1152,41 +1165,43 @@ END_VAR
 
 VAR
 	i: INT;
+	busytemp: BOOL;
+	errortemp: BOOL;
+	busy: INT;
+	error: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//to do . something about the set pos function is broken but not sure what. in duplicate project i was able to replicate the error so either 
-//it is something to do with virtual axis, or bug in twincat. may need to find workaround with drive manager. 
+        <ST><![CDATA[//inital jog (so function not closed right away) 
 
-
-//check to see if we are done
-pickup_axis_list[1].setPos();
-home := home AND pickup_axis_list[1].MCPOS.Done ;
-	
-
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-		IF payoff_axis_list[i].enabled THEN
-			payoff_axis_list[i].setPos();
-			home := home AND payoff_axis_list[i].MCPOS.Done ;
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT DO
+		IF axis_list[i].enabled THEN
+			
+			axis_list[i].MCJOG(,eAcceleration:=axis_list[i].acceleration,mode:=MC_JOGMODE_STANDARD_SLOW,Position:=0,Deceleration:=axis_list[i].deceleration,Velocity:=180,axis:=AXIS_LIST[i]);
+			
 		END_IF
-			
-	END_FOR
+	END_FOR 
 
-	
-//cancels home if we run into any error
-//home := home OR pickup_axis_list[1].MCPOS.Error;
-	
-FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-	IF payoff_axis_list[i].enabled THEN
-		
-		payoff_axis_list[i].setPos();
-		home := home AND payoff_axis_list[i].MCPOS.Done;
-	END_IF
+
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT DO
+		IF axis_list[i].enabled THEN
 			
-END_FOR
-			
-			
-		
-	]]></ST>
+			axis_list[i].jogEnable:=TRUE;	
+			home := home AND NOT axis_list[i].MCJOG.Busy;
+		END_IF
+	END_FOR 
+
+
+
+
+
+
+
+
+
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="INIT" Id="{a56443b6-9d3c-4e19-bf68-551e95d54fd0}">
@@ -1217,7 +1232,13 @@ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].gearRatioDen:=1;
 END_FOR
 
-etaFormattedString := CONCAT(CONCAT('ETA: ', '0'), CONCAT(':', '0'));]]></ST>
+etaFormattedString := CONCAT(CONCAT('ETA: ', '0'), CONCAT(':', '0'));
+
+
+axis_list[1]:=ADR(pickup_axis_list[1]);
+axis_list[2]:=ADR(payoff_axis_list[1]);
+axis_list[3]:=ADR(payoff_axis_list[2]);
+axis_list[4]:=ADR(payoff_axis_list[3]);]]></ST>
       </Implementation>
     </Method>
     <Method Name="init_coil_model" Id="{90edf354-a001-4a69-9922-1b60f25b1548}" FolderPath="Methods\Init Methods\">
@@ -1757,6 +1778,10 @@ IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= desiredTurnCountPickup THE
 		
 	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
 END_IF
+
+//inner radius reached check
+
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -2136,7 +2161,10 @@ END_IF
       <LineId Id="608" Count="1" />
       <LineId Id="605" Count="2" />
       <LineId Id="600" Count="0" />
-      <LineId Id="144" Count="2" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="1176" Count="11" />
+      <LineId Id="1191" Count="0" />
+      <LineId Id="145" Count="1" />
       <LineId Id="28" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="42" Count="1" />
@@ -2276,24 +2304,10 @@ END_IF
       <LineId Id="37" Count="2" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
-      <LineId Id="56" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="57" Count="1" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="6" Count="1" />
-      <LineId Id="15" Count="2" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="33" Count="4" />
-      <LineId Id="49" Count="0" />
-      <LineId Id="38" Count="2" />
-      <LineId Id="24" Count="3" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="139" Count="17" />
+      <LineId Id="109" Count="2" />
+      <LineId Id="124" Count="7" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.INIT">
@@ -2313,6 +2327,9 @@ END_IF
       <LineId Id="15" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="58" Count="2" />
     </LineIds>
     <LineIds Name="FB_WindingControl.init_coil_model">
       <LineId Id="52" Count="1" />
@@ -2529,6 +2546,10 @@ END_IF
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="3" />
       <LineId Id="15" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="22" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_tension">

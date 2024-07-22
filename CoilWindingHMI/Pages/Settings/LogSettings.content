@@ -13,7 +13,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiFileExplorer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiFileExplorer" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-bottom="10" data-tchmi-root="/LOG/" data-tchmi-path="%s%PLC1.MAIN.FB_FileReadWrite.sFilePath%/s%" data-tchmi-right-unit="%" data-tchmi-width="60">
+<div id="TcHmiFileExplorer" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiFileExplorer" data-tchmi-height-unit="px" data-tchmi-left="7" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-bottom="10" data-tchmi-root="/LOG/" data-tchmi-path="%s%PLC1.MAIN.FB_FileReadWrite.sFilePath%/s%" data-tchmi-right-unit="%" data-tchmi-width="60">
 
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
@@ -40,7 +40,7 @@
 </div>
 <div id="TcHmiTextblock_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="30" data-tchmi-height-unit="px" data-tchmi-left="61.5" data-tchmi-left-unit="%" data-tchmi-text="User Log Note" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="18">
 </div>
-<div id="TcHmiTextbox_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-text-horizontal-alignment="Left" data-tchmi-multiline="false" data-tchmi-right="10" data-tchmi-bottom-unit="%" data-tchmi-width="38" data-tchmi-placeholder="Single line user note for log" data-tchmi-text="%s%PLC1.MAIN.FB_hmi_connection::userNote%/s%" data-tchmi-auto-focus-out="true">
+<div id="TcHmiTextbox_5" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="60" data-tchmi-top-unit="px" data-tchmi-width-unit="%" data-tchmi-text-horizontal-alignment="Left" data-tchmi-multiline="false" data-tchmi-right="18" data-tchmi-bottom-unit="%" data-tchmi-width="38" data-tchmi-placeholder="Single line user note for log" data-tchmi-auto-focus-out="true" data-tchmi-text="%s%PLC1.MAIN.FB_hmi_connection.userNote%/s%">
 <script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
 {
   "top": 3,
@@ -51,15 +51,17 @@
 </script>
 
 
+
+
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
-    "event": "TcHmiTextbox_5.onTextChanged",
+    "event": "TcHmiTextbox_5.onUserInteractionFinished",
     "actions": [
       {
         "objectType": "WriteToSymbol",
         "active": true,
-        "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection::userNote%/s%",
+        "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.userNote%/s%",
         "value": {
           "objectType": "Symbol",
           "valueType": "tchmi:general#/definitions/String",
