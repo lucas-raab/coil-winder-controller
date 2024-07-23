@@ -10,6 +10,9 @@ VAR_GLOBAL CONSTANT
 	MAX_CSV_COLUMNS : INT:=1;
 	MAX_CSV_FIELD_LENGTH: INT:=128;
 	
+	
+	MIN_MOUNT_RADIUS: LREAL := 113; //(mm)
+	
 	//found from hardware. specific to each type of motor
 	PICKUP_RATED_CURRENT : LREAL :=11.8;
 	PICKUP_TORQUE_CONSTANT: LREAL :=1.9;

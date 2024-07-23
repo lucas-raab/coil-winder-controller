@@ -14,11 +14,11 @@ STRUCT
 	turn_count_pickup_low : INT := 1;
 	turn_count_pickup_high : INT := 1000;
 	
-	radius_payoff_low : LREAL:=1; //(mm)
-	radius_payoff_high : LREAL:=250; //(mm)
+	radius_payoff_low : LREAL:=GVL.MIN_MOUNT_RADIUS; //(mm)
+	radius_payoff_high : LREAL:=200; //(mm)
 	
-	radius_pickup_pancake_low : LREAL:=1; //((mm)
-	radius_pickup_pancake_high: LREAL:=400; //(mm)
+	radius_pickup_pancake_low : LREAL:=GVL.MIN_MOUNT_RADIUS; //((mm)
+	radius_pickup_pancake_high: LREAL:=250; //(mm)
 	
 	coil_shape_low : INT :=0;
 	coil_shape_high : INT :=2;

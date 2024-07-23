@@ -1857,7 +1857,10 @@ END_VAR
       <Declaration><![CDATA[METHOD winding_exit_check : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//Checks to see if various conditions are met to exit
 
@@ -1871,7 +1874,16 @@ END_IF
 
 //inner radius reached check
 
-
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+1 DO
+	IF axis_list[i]^.enabled THEN
+		IF axis_list[i]^.outerRadiusCurrent*0.95 <= GVL.MIN_MOUNT_RADIUS THEN
+			winding_exit_check :=TRUE;
+		
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius.', strArg:= '');
+		END_IF
+	
+	END_IF
+END_FOR
 ]]></ST>
       </Implementation>
     </Method>
@@ -2704,6 +2716,13 @@ END_IF
       <LineId Id="20" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="22" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="28" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_tension">
