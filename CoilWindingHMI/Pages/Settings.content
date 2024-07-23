@@ -496,7 +496,7 @@
         "text": "Tape 1"
       },
       {
-        "value": "0",
+        "value": 1,
         "text": "Tape 2"
       }
     ]

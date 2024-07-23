@@ -5,7 +5,7 @@
 STRUCT
 	motor_name : STRING;
 	tape_type : INT :=1;
-	coil_type : INT :=0;
+	coil_type : INT :=1;
 	radius : LREAL :=1;
 	enabled : BOOL ;
 END_STRUCT

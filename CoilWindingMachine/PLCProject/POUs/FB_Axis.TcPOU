@@ -14,7 +14,7 @@ VAR_INPUT
     outerRadiusCurrent    : LREAL;                    // outer radius of coil
 
     //========================================================AXIS TAPE========================================================
-    tape_info             : ARRAY[0..10] OF tape_info;// array of tape information
+    tape_info             : POINTER TO ARRAY[0..10] OF tape_info;// array of tape information
     tapeType              : INT;                      // type of tape
 
     //========================================================MASS========================================================
@@ -52,8 +52,8 @@ VAR_INPUT
     velocityLimitLow      : LREAL;                    // low velocity limit
 
     // SECONDARY TORQUE CONTROL SETTINGS
-    acceleration          : LREAL := 1;               // acceleration value
-    deceleration          : LREAL := 1;               // deceleration value
+    acceleration          : LREAL := 180;               // acceleration value
+    deceleration          : LREAL := 180;               // deceleration value
     torqueRamp            : LREAL := 1000;            // torque ramp value
 
     jerk                  : LREAL := 1;               // jerk value
@@ -110,7 +110,7 @@ END_VAR
 
 VAR
 	homePosition: LREAL;
-	velocity: LREAL;
+
 	
 END_VAR]]></Declaration>
       <Implementation>
@@ -131,7 +131,25 @@ MCHALT(Axis:=Axis,
 		Deceleration:=deceleration,
 		Jerk:=jerk,BufferMode:=buffermode,
 		Options:=moveOptions);		
-MCMOVEMOD(Axis:=Axis,
+
+	
+MCTORQUECONTROL(Axis:=Axis,
+				Execute:=torqueEnable,
+				ContinuousUpdate:=TRUE,
+				Relative:=FALSE,
+				Torque:=torque,
+				TorqueRamp:=torqueRamp,
+				VelocityLimitHigh:=velocityLimitHigh,
+				VelocityLimitLow:=velocityLimitLow);
+			(* 			
+MCVELOCITY(Axis:=Axis,
+			Execute:=velocityEnable,
+			Acceleration:=acceleration,
+			Deceleration:=deceleration,
+			Jerk:=jerk,
+			Direction:=direction,
+			Velocity:=velocity);		
+	MCMOVEMOD(Axis:=Axis,
 			Execute:=velocityEnable,
 			Acceleration:=acceleration,
 			Deceleration:=deceleration,
@@ -142,41 +160,25 @@ MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
 				Relative:=FALSE,
-				Torque:=torque,
-				TorqueRamp:=torqueRamp,
-				VelocityLimitHigh:=velocityLimitHigh,
-				VelocityLimitLow:=velocityLimitLow);
-				
-MCVELOCITY(Axis:=Axis,
-			Execute:=velocityEnable,
-			Acceleration:=acceleration,
-			Deceleration:=deceleration,
-			Jerk:=jerk,
-			Direction:=direction,
-			Velocity:=velocity);		
-(* 
-MCTORQUECONTROL(Axis:=Axis,
-				Execute:=torqueEnable,
-				ContinuousUpdate:=TRUE,
-				Relative:=FALSE,
 				Torque:=torque*(gearRatioDen/gearRatioNum),
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh*(gearRatioNum/gearRatioDen),
 				VelocityLimitLow:=velocityLimitLow*(gearRatioNum/gearRatioDen));
-				
+				*)
 MCVELOCITY(Axis:=Axis,
 			Execute:=velocityEnable,
 			Acceleration:=acceleration,
 			Deceleration:=deceleration,
 			Jerk:=jerk,
 			Direction:=direction,
-			Velocity:=velocity*(gearRatioNum/gearRatioDen));
+			Velocity:=velocity);
 			
-*)
+
 
 MCGETVELOCITY(Axis:=AXIS,
 			Enable:=TRUE,
 			ActualVelocity=>actualVelocity);
+actualVelocity:=actualVelocity/(gearRatioNum/gearRatioDen);
 	 
 getTorque();
 stateUpdate();
@@ -235,6 +237,8 @@ END_VAR
       <Implementation>
         <ST><![CDATA[//Finds distance to axis from internal dimension and turn count vars. 
 
+//NOTE: this only works for payoff axies. 
+
 //output units in mm. IMPORTANT
 
 CASE coilShapeID OF
@@ -244,11 +248,11 @@ CASE coilShapeID OF
 		
 	0: //Finds direction if motor is being unwound
 	
-	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info[tapeType].tape_depth)/1000; 
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info^[tapeType].tape_depth)/1000; 
 	
 	1: //Finds direction if motor is being wound
 	
-	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info[tapeType].tape_depth)/1000;
+	getDistToAxis:=(pancake.radius + axis.NcToPlc.ModuloActTurns*tape_info^[tapeType].tape_depth)/1000;
 	
 	
 	END_CASE
@@ -268,7 +272,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqaueConstrant;]]></ST>
+        <ST><![CDATA[//actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqaueConstrant;
+actualTorque:=AXIS.NcToPlc.ActTorque;]]></ST>
       </Implementation>
     </Method>
     <Method Name="halt_error_check" Id="{2ca5f59d-5312-4450-b836-ed2e20c6ea56}" FolderPath="Methods\Error Checks\">
@@ -299,14 +304,7 @@ END_VAR]]></Declaration>
 ST_SetPositionOptions.ClearPositionLag:=TRUE;
 MCRESET(Axis:=AXIS,Execute:=TRUE);
 
-//this is ugly :( it gets the job done though
-tape_info[0].tape_width:=GVL.TAPE1_WIDTH;
-tape_info[0].tape_depth:=GVL.TAPE1_DEPTH;
-tape_info[0].mass_per_cm_g:=GVL.TAPE1_MASS_PER_CM_G;
 
-tape_info[1].tape_width:=GVL.TAPE2_WIDTH;
-tape_info[1].tape_depth:=GVL.TAPE2_DEPTH;
-tape_info[1].mass_per_cm_g:=GVL.TAPE2_MASS_PER_CM_G;
 ]]></ST>
       </Implementation>
     </Method>
@@ -520,10 +518,13 @@ END_VAR]]></Declaration>
       <LineId Id="41" Count="0" />
       <LineId Id="43" Count="3" />
       <LineId Id="95" Count="0" />
-      <LineId Id="190" Count="5" />
       <LineId Id="164" Count="0" />
-      <LineId Id="167" Count="14" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="167" Count="3" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="172" Count="9" />
       <LineId Id="25" Count="0" />
+      <LineId Id="205" Count="5" />
       <LineId Id="165" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="26" Count="2" />
@@ -535,6 +536,7 @@ END_VAR]]></Declaration>
       <LineId Id="88" Count="0" />
       <LineId Id="87" Count="0" />
       <LineId Id="89" Count="1" />
+      <LineId Id="211" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="68" Count="0" />
@@ -560,6 +562,8 @@ END_VAR]]></Declaration>
     </LineIds>
     <LineIds Name="FB_Axis.getDistToAxis">
       <LineId Id="5" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="7" Count="2" />
@@ -576,6 +580,7 @@ END_VAR]]></Declaration>
     </LineIds>
     <LineIds Name="FB_Axis.getTorque">
       <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.halt_error_check">
       <LineId Id="5" Count="1" />
@@ -586,10 +591,6 @@ END_VAR]]></Declaration>
       <LineId Id="9" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="32" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="25" Count="1" />
-      <LineId Id="29" Count="2" />
       <LineId Id="28" Count="0" />
       <LineId Id="27" Count="0" />
     </LineIds>

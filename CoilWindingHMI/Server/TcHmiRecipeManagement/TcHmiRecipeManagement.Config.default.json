@@ -49,6 +49,22 @@
             },
             "recipeTypeNames": []
         },
+        "Tape Parameters": {
+            "Tape 1 Parameters": {
+                "members": {},
+                "options": {
+                    "enabled": "None"
+                },
+                "recipeTypeNames": []
+            },
+            "Tape 2 Parameters": {
+                "members": {},
+                "options": {
+                    "enabled": "None"
+                },
+                "recipeTypeNames": []
+            }
+        },
         "Winding Parameters": {
             "members": {
                 "Coil Shape ID": {
