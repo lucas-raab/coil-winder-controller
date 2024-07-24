@@ -65,6 +65,7 @@ VAR_INPUT
     actualTorque          : LREAL;                    // actual torque value
     actualVelocity        : LREAL;                    // actual velocity value
 
+	
     state                 : INT;                      // state value
 
     adsError              : BOOL;                     // ADS error flag
@@ -146,7 +147,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
 				
-
+MCVELOCITY(Axis:=Axis,Execute:=FALSE);
 MCVELOCITY(Axis:=Axis,
 			Execute:=velocityEnable,
 			Acceleration:=acceleration,
@@ -160,7 +161,7 @@ MCVELOCITY(Axis:=Axis,
 MCGETVELOCITY(Axis:=AXIS,
 			Enable:=TRUE,
 			ActualVelocity=>actualVelocity);
-actualVelocity:=actualVelocity/(gearRatioNum/gearRatioDen);
+
 	 
 getTorque();
 stateUpdate();

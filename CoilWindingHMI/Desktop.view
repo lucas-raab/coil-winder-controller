@@ -220,13 +220,6 @@
     ]
   },
   {
-    "name": "%l%L_Controls%/l%",
-    "content": "Pages/Controls.content",
-    "icon_a": "%tr%TR_Icon_Controls_active%/tr%",
-    "icon_n": "%tr%TR_Icon_Controls_normal%/tr%",
-    "icon_p": "%tr%TR_Icon_Controls_pressed%/tr%"
-  },
-  {
     "name": "%l%L_Outputs%/l%",
     "content": "Pages/Outputs.content",
     "icon_a": "%tr%TR_Icon_Outputs_active%/tr%",
@@ -248,7 +241,7 @@
     "icon_p": "%tr%TR_Icon_EtherCATDiagnostics_pressed%/tr%"
   }
 ]
-</script></div><div id="Region_Center" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="180" data-tchmi-scrolling="Yes" data-tchmi-bottom="0" data-tchmi-right="0">
+</script></div><div id="Region_Center" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-left="229" data-tchmi-top="187" data-tchmi-scrolling="Yes" data-tchmi-bottom="0" data-tchmi-right="0">
 
 <script data-tchmi-target-attribute="data-tchmi-class-names" type="application/json"></script></div><script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">[ 
                 {   
@@ -274,8 +267,8 @@
                         } 
                     ] 
                 } 
-            ]</script><div id="TcHmiContainer_button_box" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="100" data-tchmi-height-unit="px" data-tchmi-width-unit="px" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="%ctrl%Header_Top::Height%/ctrl%" data-tchmi-right="0">
-<div id="TcHmiToggleButtonStart_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="85" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%start%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.startUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Starts coil winding. ">
+            ]</script><div id="TcHmiContainer_button_box" data-tchmi-type="TcHmi.Controls.System.TcHmiContainer" data-tchmi-height="93" data-tchmi-height-unit="px" data-tchmi-width-unit="px" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="%ctrl%Header_Top::Height%/ctrl%" data-tchmi-right="0">
+<div id="TcHmiToggleButtonStart_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height-unit="px" data-tchmi-left="10" data-tchmi-left-unit="px" data-tchmi-top="5" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%start%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.startUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Starts coil winding. " data-tchmi-is-enabled="%s%PLC1.MAIN.FB_hmi_connection.tensionUI%/s%" data-tchmi-toggle-state="Normal" data-tchmi-background-color="%i%buttonGreen%/i%" data-tchmi-bottom="5">
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
@@ -307,6 +300,17 @@
                   "value": "Stop Winding"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonStart_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonRed%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -327,6 +331,96 @@
                   "value": "Start Winding"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonStart_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonGreen%/i%"
+                },
+                "asyncWait": true
+              }
+            ]
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  },
+  {
+    "event": "%s%PLC1.MAIN.FB_hmi_connection.startUI%/s%",
+    "actions": [
+      {
+        "objectType": "SwitchCase",
+        "active": true,
+        "compare": {
+          "objectType": "Symbol",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "symbolExpression": "%s%PLC1.MAIN.FB_hmi_connection.startUI%/s%"
+        },
+        "cases": [
+          {
+            "caseValue": {
+              "objectType": "StaticValue",
+              "valueType": "tchmi:general#/definitions/BOOL",
+              "value": true
+            },
+            "actions": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%i%start%/i%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "Stop Winding"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonStart_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonRed%/i%"
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "caseValue": {
+              "objectType": "StaticValue",
+              "valueType": "tchmi:general#/definitions/BOOL",
+              "value": false
+            },
+            "actions": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%i%start%/i%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "value": "Start Winding"
+                },
+                "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonStart_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonGreen%/i%"
+                },
+                "asyncWait": true
               }
             ]
           }
@@ -338,7 +432,7 @@
 ]
 </script>
 </div>
-<div id="TcHmiToggleButtonTension_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="85" data-tchmi-height-unit="px" data-tchmi-left="170" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%tension%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.tensionUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Starts motors, creates tension in cable with no movement.">
+<div id="TcHmiToggleButtonTension_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height-unit="px" data-tchmi-left="170" data-tchmi-left-unit="px" data-tchmi-top="5" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%tension%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.tensionUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Starts motors, creates tension in cable with no movement." data-tchmi-bottom="5">
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
@@ -370,6 +464,17 @@
                   "value": "Stop Tension"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonTension_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonRed%/i%"
+                },
+                "asyncWait": true
               }
             ]
           },
@@ -390,6 +495,17 @@
                   "value": "Start Tension"
                 },
                 "asyncWait": true
+              },
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctrl%TcHmiToggleButtonTension_2::BackgroundColor%/ctrl%",
+                "value": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/String",
+                  "symbolExpression": "%i%buttonGreen%/i%"
+                },
+                "asyncWait": true
               }
             ]
           }
@@ -400,8 +516,14 @@
   }
 ]
 </script>
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(9, 136, 34, 1)"
+}
+</script>
 </div>
-<div id="TcHmiToggleButtonReset_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="85" data-tchmi-height-unit="px" data-tchmi-left="330" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%reset%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.resetUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Clears error, sets program to inital state. ">
+<div id="TcHmiToggleButtonReset_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="5" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%reset%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.resetUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Clears error, sets program to inital state. " data-tchmi-right="170" data-tchmi-bottom="5" data-tchmi-width="150">
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
@@ -463,8 +585,14 @@
   }
 ]
 </script>
+
+
+
+
+
+
 </div>
-<div id="TcHmiToggleButtonHome_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height="85" data-tchmi-height-unit="px" data-tchmi-left="490" data-tchmi-left-unit="px" data-tchmi-top="10" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%Home%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.homeUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Sets motor position to 0.">
+<div id="TcHmiToggleButtonHome_2" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiToggleButton" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-top="5" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text="%i%Home%/i%" data-tchmi-state-symbol="%s%PLC1.MAIN.FB_hmi_connection.homeUI%/s%" data-tchmi-text-font-size="%i%buttonFontSize0%/i%" data-tchmi-tooltip="Sets motor position to 0." data-tchmi-right="10" data-tchmi-bottom="5">
 <script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
 [
   {
@@ -529,6 +657,12 @@
 </script>
 </div>
 </div>
-<div id="TcHmiLine_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="1" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-x2="200" data-tchmi-y2="0" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="%ctrl%Region_Center::Top%/ctrl%" data-tchmi-scale-mode="ScaleToFitWidth">
+<div id="TcHmiLine_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="1" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-x2="200" data-tchmi-y2="0" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="173" data-tchmi-scale-mode="ScaleToFitWidth">
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(147, 147, 147, 1)"
+}
+</script>
 </div>
 </div>

@@ -89,53 +89,7 @@ VAR
 	adjustedVelocity: LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF unwinding THEN
-	//to do update with unwinding feature
-	//seg fault to exit program :D remove when implmenting 
-	i:=0;
-	pickup_axis_list[i].acceleration:=0;
-ELSE
-	
-
-
-	pickup_axis_list[1].torque:=desiredTension*	pickup_axis_list[1].getDistToAxis();
-	
-	//TO DO need to find what to set these to. 
-	// to do . velo limits do not function how I thought they would need to ask beckhoff how they work.
-	pickup_axis_list[1].velocityLimitLow:=(desiredLinspeed/pickup_axis_list[1].getDistToAxis())*57.29578;
-	pickup_axis_list[1].velocityLimitHigh:=1000000 ;
-	
-	pickup_axis_list[1].setTorque();
-	
-	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*	pickup_axis_list[1].getDistToAxis()/57.2957;
-	
-	
-	
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
-		IF payoff_axis_list[i].enabled THEN
-			//ASSUMING CONTINOUS UPDATE LIKE FUNCTION
-			//TO DO figure out directions
-			
-			
-			payoff_axis_list[i].setVelocity();
-			dist:=payoff_axis_list[i].getDistToAxis();
-			
-			
-			desiredVelocity:=(desiredLinspeed/dist)*57.29578;
-			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
-			
-			
-			//sets payoff axis to half way point between target linspeed and the actual linspeed.
-			//i hope that this will give the pickup motor time to ramp up, while not giving too much speed to these motors.
-			payoff_axis_list[i].velocity:=(desiredVelocity+adjustedVelocity)/2;
-			
-			
-			
-		END_IF
-	END_FOR 
-END_IF
-	
-	]]></ST>
+        <ST><![CDATA[winding_tension();]]></ST>
       </Implementation>
     </Method>
     <Method Name="all_check" Id="{3616b09d-79ac-4d4e-a9a8-9c800c9db7f0}" FolderPath="Methods\Input Checks\">
@@ -773,9 +727,9 @@ END_FOR
       <Declaration><![CDATA[METHOD decelerating_tension : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+ ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[winding_tension();]]></ST>
       </Implementation>
     </Method>
     <Method Name="determine_motor_state" Id="{e8b4b006-30e0-4934-923d-a97aac10b32d}" FolderPath="Methods\Motor Control\">
@@ -861,7 +815,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[actualLinspeed:=pickup_axis_list[1].actualVelocity*get_dist_to_axis_pickup();]]></ST>
+        <ST><![CDATA[actualLinspeed:=pickup_axis_list[1].actualVelocity*pickup_axis_list[1].outerRadiusCurrent;]]></ST>
       </Implementation>
     </Method>
     <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
@@ -1142,10 +1096,10 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF unwinding THEN
-	prog := 100-(pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/target_turn_count)*100;
+	prog := 100-(pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns/desiredTurnCountPickup)*100;
 	
 ELSE
-	prog := ((pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/target_turn_count)*100;
+	prog := ((pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/desiredTurnCountPickup)*100;
 
 END_IF
 	
@@ -1639,8 +1593,8 @@ END_VAR]]></Declaration>
         <ST><![CDATA[//creates tension in tape, but does not move the tape.
 
 //set torque to force times number of payoff motors enabled. 
-dist:=get_dist_to_axis_pickup();
-pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* dist)/2;
+
+pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2;
 	
 //TO DO need to find what to set these to. might be too low. 
 pickup_axis_list[1].velocityLimitLow:=50;
@@ -1656,7 +1610,7 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
 		payoff_axis_list[1].velocityLimitLow:=-50;
 		payoff_axis_list[1].velocityLimitHigh:=-50;
-		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[i].getDistToAxis()/2;
+		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2;
 			
 	END_IF
 END_FOR 
@@ -1936,7 +1890,7 @@ VAR
 	desiredVelocity : LREAL;
 	pickupLinspeed: LREAL;
 	adjustedVelocity: LREAL;
-	dist: LREAL;
+	
 END_VAR
 VAR CONSTANT
 	PERCENT_DIFFERENCE: LREAL := 1.1;
@@ -1956,11 +1910,11 @@ ELSE
 	//how i envison the limits to function is that the pickup side will gradually ramp up speed until we hit the upper velocity limit. we could maybe have no limits and just have only torque control
 	//will need testing. 
 	pickup_axis_list[1].velocityLimitLow:=0;
-	pickup_axis_list[1].velocityLimitHigh:=(desiredLinspeed/get_dist_to_axis_pickup())*57.29578 ;
+	pickup_axis_list[1].velocityLimitHigh:=(desiredLinspeed/pickup_axis_list[1].outerRadiusCurrent)*57.29578 ;
 	
 	pickup_axis_list[1].setTorque();
 	
-	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*get_dist_to_axis_pickup()/57.2957;
+	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*pickup_axis_list[1].outerRadiusCurrent/57.2957;
 	
 	
 	
@@ -1971,11 +1925,11 @@ ELSE
 			
 			
 			payoff_axis_list[i].setVelocity();
-			dist:=payoff_axis_list[i].getDistToAxis();
-			
+			dist:=payoff_axis_list[i].outerRadiusCurrent;
+		
 			//find the velocity (degree/s) to acheive our desired linear speed, and the linear speed at pickup motor. 
-			desiredVelocity:=(desiredLinspeed/dist)*57.29578*(payoff_axis_list[i].gearRatioNum) ;
-			adjustedVelocity:=(pickupLinspeed/dist)*57.29578*(payoff_axis_list[i].gearRatioNum);
+			desiredVelocity:=(desiredLinspeed/dist)*57.29578 ;
+			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
 			
 			IF (desiredVelocity >3600)   THEN
 				desiredVelocity:=3600;
@@ -1988,7 +1942,7 @@ ELSE
 			//how i envison this to function, is that while pickup side is at a low speed, the payoff side will also work at a lower speed,
 			//which gives the pickup time to catch up in speed. right now i do this by just averaging desired speed and actual speed,
 			//this could maybe he handled in a better way, so i will leave a TO DO 
-			payoff_axis_list[i].velocity:=(desiredVelocity+adjustedVelocity)/(2);
+			payoff_axis_list[i].velocity:=(0.05*desiredVelocity+adjustedVelocity*0.95);
 			
 			
 			
@@ -2003,7 +1957,6 @@ END_IF
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.accelerating_tension">
-      <LineId Id="6" Count="45" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.all_check">

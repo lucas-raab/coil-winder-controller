@@ -240,7 +240,7 @@
         "readonly": false
       },
       "start": {
-        "value": "Start",
+        "value": "Start Winding",
         "type": "tchmi:general#/definitions/String",
         "persist": false,
         "readonly": false
@@ -424,6 +424,42 @@
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,
         "readonly": false
+      },
+      "buttonRed": {
+        "value": {
+          "angle": 187.96460176991161,
+          "stopPoints": [
+            {
+              "color": "rgba(142, 20, 20, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(250, 0, 0, 1)",
+              "stop": "100%"
+            }
+          ]
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
+      },
+      "buttonGreen": {
+        "value": {
+          "angle": 227.19469026548836,
+          "stopPoints": [
+            {
+              "color": "rgba(34, 90, 8, 1)",
+              "stop": "0%"
+            },
+            {
+              "color": "rgba(13, 168, 10, 1)",
+              "stop": "100%"
+            }
+          ]
+        },
+        "type": "tchmi:framework#/definitions/Color",
+        "persist": false,
+        "readonly": false
       }
     },
     "themedResources": {
@@ -597,26 +633,23 @@
       },
       "TR_Icon_Outputs_normal": {
         "type": "tchmi:framework#/definitions/Path",
-        "description": "",
         "values": {
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_normal.svg",
+          "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_normal.svg",
           "Base": "Themes/Base-Dark/Images/Overview/overview_normal.svg"
-        }
-      },
-      "TR_Icon_Outputs_pressed": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "",
-        "values": {
-          "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_pressed.svg",
-          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
         }
       },
       "TR_Icon_Outputs_active": {
         "type": "tchmi:framework#/definitions/Path",
-        "description": "",
         "values": {
-          "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_active.svg",
+          "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_active.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"
+        }
+      },
+      "TR_Icon_Outputs_pressed": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_pressed.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
         }
       }
     }

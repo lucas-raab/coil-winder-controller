@@ -6,10 +6,10 @@ TYPE input_bounds :
 STRUCT
 	
 	linear_speed_low : LREAL := 0.01; //(m/s)
-	linear_speed_high: LREAL := 10.0;  //(m/s)
+	linear_speed_high: LREAL := 1.0;  //(m/s)
 
-	tension_low : LREAL := 0.5; //(N)
-	tension_high : LREAL := 5; //(N)
+	tension_low : LREAL := 5; //(N)
+	tension_high : LREAL := 20; //(N)
 	
 	turn_count_pickup_low : INT := 1;
 	turn_count_pickup_high : INT := 1000;
