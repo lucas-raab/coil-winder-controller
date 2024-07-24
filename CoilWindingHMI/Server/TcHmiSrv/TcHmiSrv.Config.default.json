@@ -160,6 +160,15 @@
             "startOffset": 1,
             "type": "array"
         },
+        "PLC1.ARRAY_1..4_OF-motor_info_datagrid": {
+            "items": {
+                "$ref": "#/definitions/PLC1.motor_info_datagrid"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "startOffset": 1,
+            "type": "array"
+        },
         "PLC1.FB_hmi_connection": {
             "properties": {
                 "checkInputsUI": {
@@ -512,6 +521,51 @@
                         },
                         {
                             "propertyOrder": 1
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "PLC1.motor_info_datagrid": {
+            "properties": {
+                "errorid": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/UDINT"
+                        },
+                        {
+                            "propertyOrder": 4
+                        }
+                    ]
+                },
+                "errortype": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/UDINT"
+                        },
+                        {
+                            "propertyOrder": 3
+                        }
+                    ]
+                },
+                "speed": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 1
+                        }
+                    ]
+                },
+                "torque": {
+                    "allOf": [
+                        {
+                            "$ref": "tchmi:general#/definitions/LREAL"
+                        },
+                        {
+                            "propertyOrder": 2
                         }
                     ]
                 }
@@ -3905,6 +3959,23 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_hmi_connection.motor_info_datagrid_list": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::motor_info_datagrid_list",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..4_OF-motor_info_datagrid"
+                    },
+                    {
+                        "propertyOrder": 13
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_hmi_connection.motor_state_datagrid_list": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -6628,6 +6699,7 @@
                 "PLC1.MAIN.FB_hmi_connection.color_list.0": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.homeUI": 3,
+                "PLC1.MAIN.FB_hmi_connection.motor_info_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.motor_state_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.overview_outputs_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.payoff_input_datagrid_params_list": 3,

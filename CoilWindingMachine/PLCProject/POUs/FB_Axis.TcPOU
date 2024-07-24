@@ -69,7 +69,9 @@ VAR_INPUT
 
     adsError              : BOOL;                     // ADS error flag
     adsErrorID            : UDINT;                    // ADS error ID
-
+	
+	errorType			  : UDINT;					  // 1= ads 2= axis 0=no error
+	errorID				  : UDINT;					  // error ID, axis errors take precedence over ads errors 	
     //========================================================AXIS PARAMS========================================================
     ratedCurrent          : LREAL;                    // rated current
     torqaueConstrant      : LREAL;                    // torque constant
@@ -89,7 +91,7 @@ VAR_INPUT
     MCPOS                 : MC_SetPosition;           // set position
     MCJOG                 : MC_Jog;                   // jog control
     MCMOVEMOD             : MC_MoveModulo;            // move modulo control
-
+	MCReadStatus		  : MC_ReadStatus;			  // reads status from motor
     //========================================================AXIS========================================================
     AXIS                  : Axis_REF;                 // axis reference
 
@@ -114,7 +116,9 @@ VAR
 	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[powerEnable:=enabled; 
+        <ST><![CDATA[Axis.ReadStatus();
+
+powerEnable:=enabled; 
 
 MCPOWER(Axis:=Axis,
 		Enable:=powerEnable,
@@ -141,30 +145,8 @@ MCTORQUECONTROL(Axis:=Axis,
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
-			(* 			
-MCVELOCITY(Axis:=Axis,
-			Execute:=velocityEnable,
-			Acceleration:=acceleration,
-			Deceleration:=deceleration,
-			Jerk:=jerk,
-			Direction:=direction,
-			Velocity:=velocity);		
-	MCMOVEMOD(Axis:=Axis,
-			Execute:=velocityEnable,
-			Acceleration:=acceleration,
-			Deceleration:=deceleration,
-			Jerk:=jerk,
-			Direction:=direction,
-			Velocity:=velocity);
-MCTORQUECONTROL(Axis:=Axis,
-				Execute:=torqueEnable,
-				ContinuousUpdate:=TRUE,
-				Relative:=FALSE,
-				Torque:=torque*(gearRatioDen/gearRatioNum),
-				TorqueRamp:=torqueRamp,
-				VelocityLimitHigh:=velocityLimitHigh*(gearRatioNum/gearRatioDen),
-				VelocityLimitLow:=velocityLimitLow*(gearRatioNum/gearRatioDen));
-				*)
+				
+
 MCVELOCITY(Axis:=Axis,
 			Execute:=velocityEnable,
 			Acceleration:=acceleration,
@@ -182,7 +164,20 @@ actualVelocity:=actualVelocity/(gearRatioNum/gearRatioDen);
 	 
 getTorque();
 stateUpdate();
-findinertia();]]></ST>
+findinertia();
+
+errorType:=0;
+
+IF adserror THEN
+	errorType:=errorType +1 ;
+	errorID:=adsErrorID;
+END_IF
+IF axis.Status.Error THEN
+	errorType:=errorType +2;
+	errorID:=axis.Status.errorid;
+END_IF
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="error_check_all" Id="{d0c59f3f-f6b6-4fd0-853c-e3534ca6d5d0}" FolderPath="Methods\Error Checks\">
@@ -511,6 +506,8 @@ END_VAR]]></Declaration>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.CYLIC">
+      <LineId Id="234" Count="0" />
+      <LineId Id="249" Count="0" />
       <LineId Id="77" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="4" />
@@ -522,14 +519,8 @@ END_VAR]]></Declaration>
       <LineId Id="204" Count="0" />
       <LineId Id="167" Count="3" />
       <LineId Id="212" Count="0" />
-      <LineId Id="172" Count="9" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="205" Count="5" />
-      <LineId Id="165" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="26" Count="2" />
-      <LineId Id="47" Count="1" />
-      <LineId Id="29" Count="2" />
+      <LineId Id="172" Count="3" />
+      <LineId Id="31" Count="0" />
       <LineId Id="33" Count="6" />
       <LineId Id="154" Count="0" />
       <LineId Id="166" Count="0" />
@@ -541,6 +532,13 @@ END_VAR]]></Declaration>
       <LineId Id="91" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="155" Count="0" />
+      <LineId Id="237" Count="4" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="242" Count="2" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="246" Count="0" />
+      <LineId Id="245" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.error_check_all">
       <LineId Id="42" Count="0" />

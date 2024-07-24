@@ -3,7 +3,7 @@
   <DUT Name="pancake_params_0" Id="{1769945b-20ab-44d0-b148-a16dfae9e3b7}">
     <Declaration><![CDATA[TYPE pancake_params_0 :
 STRUCT
-	radius : LREAL := 100; // radius of pancake coil in mm
+	radius : LREAL := 200; // radius of pancake coil in mm
 END_STRUCT
 END_TYPE
 ]]></Declaration>

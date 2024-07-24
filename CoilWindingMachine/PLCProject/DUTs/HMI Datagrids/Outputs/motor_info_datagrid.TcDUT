@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="motor_info_datagrid" Id="{3ba4319e-66c2-4f57-a3c8-f2a18bb2c71a}">
+    <Declaration><![CDATA[TYPE motor_info_datagrid :
+STRUCT
+	speed : LREAL;
+	torque : LREAL;
+	errortype : UDINT;
+	errorid : UDINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

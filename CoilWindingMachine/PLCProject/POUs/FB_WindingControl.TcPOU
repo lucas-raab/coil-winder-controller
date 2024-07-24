@@ -12,6 +12,7 @@ END_VAR
 VAR
 	// Temporary testing vars
 	dist : LREAL ;
+	testing : BOOL;
 	// Function Blocks
 
 	// CONTROL VARS
@@ -339,7 +340,7 @@ cnt := cnt +1;
 			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
 				 msgFmtStr := 'Error Occured. Unable to start while finished. Please reset first.',
 				 strArg:= '');
-			hmiConnection^.resetUI:=FALSE;
+			hmiConnection^.startUI:=FALSE;
 			
 		END_IF
 		
@@ -538,6 +539,7 @@ END_IF
 hmi_update();
 find_actualLinspeed();
 update_TC();
+update_axis_distance();
 
 //-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
 CASE state OF
@@ -859,7 +861,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[actualLinspeed:=pickup_axis_list[1].actualVelocity*get_dist_to_axis_pickup()/(pickup_axis_list[1].gearRatioNum*57.29578);]]></ST>
+        <ST><![CDATA[actualLinspeed:=pickup_axis_list[1].actualVelocity*get_dist_to_axis_pickup();]]></ST>
       </Implementation>
     </Method>
     <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
@@ -907,11 +909,11 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	
 	//finds current turn count. 
-	currentTurnCount:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/+pickup_axis_list[1].gearRatioNum;
+	currentTurnCount:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
 	
 
 	IF NOT(pickup_axis_list[1].AXIS.NcToPlc.ActVelo =0) THEN
-		eta:=(desiredTurnCountPickup*360-currentTurnCount*360)/(pickup_axis_list[1].AXIS.NcToPlc.ActVelo/pickup_axis_list[1].gearRatioNum);
+		eta:=(desiredTurnCountPickup*360-currentTurnCount*360)/(pickup_axis_list[1].AXIS.NcToPlc.ActVelo);
 	ELSE
 		eta:=0;
 	END_IF
@@ -1191,7 +1193,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	FOR i:=1 TO numOfEnabledPayoff DO
 		IF payoff_axis_list[i].enabled THEN
-			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000*payoff_axis_list[i].gearRatioNum);
+			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
 		dist:=dist+temp;
 		
@@ -1204,7 +1206,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	FOR i:=1 TO numOfEnabledPayoff DO
 		IF payoff_axis_list[i].enabled THEN
-			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000*payoff_axis_list[i].gearRatioNum);
+			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
 		dist:=dist+temp;
 		
@@ -1248,7 +1250,13 @@ hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].act
 hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/pickup_axis_list[1].gearRatioNum;
 hmiConnection^.turncount_output_datagrid_list[1].payoffTC1:=(payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns)/payoff_axis_list[1].gearRatioNum;
 hmiConnection^.turncount_output_datagrid_list[1].payoffTC2:=(payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns)/payoff_axis_list[2].gearRatioNum;
-hmiConnection^.turncount_output_datagrid_list[1].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns)/payoff_axis_list[3].gearRatioNum;]]></ST>
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns)/payoff_axis_list[3].gearRatioNum;
+
+
+FOR i:=1 TO gvl.MAX_PAYOFF_COUNT+gvl.MAX_PICKUP_COUNT DO
+	hmiConnection^.motor_info_datagrid_list[i].errorType:=axis_list[i]^.errorType;
+	hmiConnection^.motor_info_datagrid_list[i].errorID:=axis_list[i]^.errorID;
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
@@ -1632,11 +1640,11 @@ END_VAR]]></Declaration>
 
 //set torque to force times number of payoff motors enabled. 
 dist:=get_dist_to_axis_pickup();
-pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* dist);
+pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* dist)/2;
 	
 //TO DO need to find what to set these to. might be too low. 
-pickup_axis_list[1].velocityLimitLow:=0;
-pickup_axis_list[1].velocityLimitHigh:=1000;
+pickup_axis_list[1].velocityLimitLow:=50;
+pickup_axis_list[1].velocityLimitHigh:=50;
 	
 	
 pickup_axis_list[1].setTorque();
@@ -1646,9 +1654,9 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].setTorque();
 		
-		payoff_axis_list[1].velocityLimitLow:=0;
-		payoff_axis_list[1].velocityLimitHigh:=1;
-		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[1].getDistToAxis()/2;
+		payoff_axis_list[1].velocityLimitLow:=-50;
+		payoff_axis_list[1].velocityLimitHigh:=-50;
+		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[i].getDistToAxis()/2;
 			
 	END_IF
 END_FOR 
@@ -1762,6 +1770,24 @@ pickup_axis_list[1].pancake.radius:=hmiConnection^.pickup_pancake_input_datagrid
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="update_axis_distance" Id="{66fdf023-25cc-43be-86f3-ed799e674baa}">
+      <Declaration><![CDATA[METHOD update_axis_distance : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[pickup_axis_list[1].outerRadiusCurrent:=get_dist_to_axis_pickup();
+
+FOR i:=1 TO gvl.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		payoff_axis_list[i].outerRadiusCurrent:=payoff_axis_list[i].getDistToAxis();
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="update_error_status" Id="{8a130ded-d455-41f2-ac7c-8c70dbeb7a89}" FolderPath="Methods\HMI updates\">
       <Declaration><![CDATA[METHOD update_error_status : BOOL
 VAR_INPUT
@@ -1794,7 +1820,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[
 
-target_turn_count:=desiredTurnCountPickup*pickup_axis_list[1].gearRatioNum;]]></ST>
+target_turn_count:=desiredTurnCountPickup;]]></ST>
       </Implementation>
     </Method>
     <Method Name="update_torque" Id="{ea80d7c9-b122-46ba-af4e-b3e883f32cba}" FolderPath="Methods\HMI updates\">
@@ -1810,12 +1836,12 @@ END_VAR]]></Declaration>
 
 pickup_axis_list[1].getTorque();
 hmiConnection^.torque[1]:=pickup_axis_list[1].actualTorque;
-
+hmiConnection^.motor_info_datagrid_list[1].torque:=hmiConnection^.torque[1];
 
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].getTorque();
 	hmiConnection^.torque[i+1]:=payoff_axis_list[i].actualTorque;
-
+	hmiConnection^.motor_info_datagrid_list[i].torque:=hmiConnection^.torque[i];
 END_FOR
 
 
@@ -1840,8 +1866,10 @@ hmiConnection^.rpm[3]:=payoff_axis_list[2].actualVelocity;
 hmiConnection^.rpm[4]:=payoff_axis_list[3].actualVelocity;
 
 
-
-]]></ST>
+hmiConnection^.motor_info_datagrid_list[1].speed:=hmiConnection^.rpm[1];
+hmiConnection^.motor_info_datagrid_list[2].speed:=hmiConnection^.rpm[2];
+hmiConnection^.motor_info_datagrid_list[3].speed:=hmiConnection^.rpm[3];
+hmiConnection^.motor_info_datagrid_list[4].speed:=hmiConnection^.rpm[4];]]></ST>
       </Implementation>
     </Method>
     <Method Name="winding_check" Id="{31081dd9-0820-42d0-a9d6-769c3442a1c8}" FolderPath="Methods\Input Checks\">
@@ -1860,6 +1888,7 @@ END_VAR
 
 VAR
 	i: INT;
+	ste : INT :=-1;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//Checks to see if various conditions are met to exit
@@ -1867,19 +1896,28 @@ END_VAR]]></Declaration>
 //turn count condition.
 
 IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= target_turn_count THEN
-	winding_exit_check :=TRUE;
-		
+
+	
 	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
+	winding_exit_check :=TRUE;
+	
 END_IF
 
 //inner radius reached check
+IF pickup_axis_list[1].outerRadiusCurrent*0.95*1000 <= GVL.MIN_MOUNT_RADIUS THEN
+			
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	winding_exit_check :=TRUE;
+		
+END_IF
 
-FOR i:=1 TO GVL.MAX_PAYOFF_COUNT+1 DO
-	IF axis_list[i]^.enabled THEN
-		IF axis_list[i]^.outerRadiusCurrent*0.95 <= GVL.MIN_MOUNT_RADIUS THEN
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		IF payoff_axis_list[i].outerRadiusCurrent*0.95*1000 <= GVL.MIN_MOUNT_RADIUS THEN
+			
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PAYOFF AXIS ID: %S', strArg := INT_TO_STRING(i));
 			winding_exit_check :=TRUE;
 		
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius.', strArg:= '');
 		END_IF
 	
 	END_IF
@@ -2150,6 +2188,7 @@ END_IF
       <LineId Id="598" Count="0" />
       <LineId Id="709" Count="0" />
       <LineId Id="587" Count="1" />
+      <LineId Id="1203" Count="0" />
       <LineId Id="522" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="5" Count="0" />
@@ -2456,6 +2495,11 @@ END_IF
       <LineId Id="36" Count="0" />
       <LineId Id="27" Count="0" />
       <LineId Id="37" Count="2" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="52" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="92" Count="0" />
@@ -2671,6 +2715,14 @@ END_IF
       <LineId Id="42" Count="1" />
       <LineId Id="20" Count="0" />
     </LineIds>
+    <LineIds Name="FB_WindingControl.update_axis_distance">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
     <LineIds Name="FB_WindingControl.update_error_status">
       <LineId Id="5" Count="1" />
       <LineId Id="35" Count="0" />
@@ -2702,6 +2754,7 @@ END_IF
       <LineId Id="11" Count="0" />
       <LineId Id="17" Count="1" />
       <LineId Id="5" Count="0" />
+      <LineId Id="33" Count="1" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_check">
       <LineId Id="5" Count="0" />
@@ -2710,20 +2763,28 @@ END_IF
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="3" />
-      <LineId Id="15" Count="1" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="16" Count="0" />
       <LineId Id="21" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="91" Count="4" />
+      <LineId Id="90" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="27" Count="0" />
       <LineId Id="32" Count="0" />
-      <LineId Id="37" Count="1" />
-      <LineId Id="35" Count="1" />
+      <LineId Id="48" Count="1" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="36" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="28" Count="0" />
-      <LineId Id="8" Count="0" />
+      <LineId Id="74" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_tension">
       <LineId Id="31" Count="0" />

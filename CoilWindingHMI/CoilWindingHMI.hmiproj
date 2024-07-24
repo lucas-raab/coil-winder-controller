@@ -22,7 +22,7 @@
     <TargetFramework>native1.12-tchmi</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
     <Name>CoilWindingHMI</Name>
-    <HmiCommunicationRouterPort>10109</HmiCommunicationRouterPort>
+    <HmiCommunicationRouterPort>10111</HmiCommunicationRouterPort>
     <HmiCommunicationServerAuthPort>13002</HmiCommunicationServerAuthPort>
     <HmiInitial>1.12.760.59</HmiInitial>
     <HmiRecent>1.12.760.59</HmiRecent>
@@ -132,6 +132,7 @@
     <Folder Include="Themes\Base-Dark\Images\" />
     <Folder Include="Themes\Base-Dark\Images\Events\" />
     <Folder Include="Themes\Base-Dark\Images\Ethercat" />
+    <Folder Include="Themes\Base-Dark\Images\Outputs" />
     <Folder Include="Themes\Base-Dark\Images\Overview" />
     <Folder Include="Themes\Base-Dark\Images\Placeholder\" />
     <Folder Include="Themes\Base-Dark\Images\Settings\" />
@@ -305,6 +306,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Events\message_pressed.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Outputs\output_active.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Outputs\output_normal.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Outputs\output_pressed.svg">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Overview\overview_active.svg">

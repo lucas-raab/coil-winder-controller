@@ -499,30 +499,6 @@
           "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_active.svg"
         }
       },
-      "TR_Icon_Outputs_normal": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Normal Icon of page: Outputs",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_normal.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_normal.svg"
-        }
-      },
-      "TR_Icon_Outputs_pressed": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Pressed Icon of page: Outputs",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_pressed.svg"
-        }
-      },
-      "TR_Icon_Outputs_active": {
-        "type": "tchmi:framework#/definitions/Path",
-        "description": "Active Icon of page: Outputs",
-        "values": {
-          "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg",
-          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_active.svg"
-        }
-      },
       "TR_Icon_Events_normal": {
         "type": "tchmi:framework#/definitions/Path",
         "description": "Normal Icon of page: Events",
@@ -617,6 +593,30 @@
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Ethercat/ethercat_pressed.svg",
           "Base": "Themes/Base-Dark/Images/Ethercat/ethercat_active.svg"
+        }
+      },
+      "TR_Icon_Outputs_normal": {
+        "type": "tchmi:framework#/definitions/Path",
+        "description": "",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Placeholder/placeholder_normal.svg",
+          "Base": "Themes/Base-Dark/Images/Overview/overview_normal.svg"
+        }
+      },
+      "TR_Icon_Outputs_pressed": {
+        "type": "tchmi:framework#/definitions/Path",
+        "description": "",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_pressed.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
+        }
+      },
+      "TR_Icon_Outputs_active": {
+        "type": "tchmi:framework#/definitions/Path",
+        "description": "",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Overview/overview_active.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"
         }
       }
     }

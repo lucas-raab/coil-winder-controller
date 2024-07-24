@@ -36,6 +36,9 @@
     <Compile Include="DUTs\HMI Datagrids\Inputs\pickup_input_datagrid_params.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DUTs\HMI Datagrids\Outputs\motor_info_datagrid.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\HMI Datagrids\Outputs\motor_state_datagrid.TcDUT">
       <SubType>Code</SubType>
     </Compile>
