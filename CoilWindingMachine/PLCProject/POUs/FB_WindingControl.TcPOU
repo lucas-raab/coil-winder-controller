@@ -1408,27 +1408,9 @@ END_VAR]]></Declaration>
 	IF write THEN
 		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
 		payoff_axis_list[i].tapeType:=hmiConnection^.payoff_input_datagrid_params_list[i].tape_type;
+		payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].radius;
 	END_IF
 
-	IF hmiConnection^.payoff_input_datagrid_params_list[i].enabled THEN
-		
-	
-		IF hmiConnection^.payoff_input_datagrid_params_list[i].radius < input_bounds.radius_payoff_low OR hmiConnection^.payoff_input_datagrid_params_list[i].radius > input_bounds.radius_payoff_high THEN
-		payoff_input_check := TRUE;
-	
-		ADSLOGSTR(
-        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-        	msgFmtStr := 'Error occurred. Payoff Radius outside of range.',
-        	strArg := ''
-   		 );
-		
-		ELSE 
-			IF write THEN
-				payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].radius;
-			END_IF
-		END_IF
-	
-	END_IF
 	
 END_FOR]]></ST>
       </Implementation>
@@ -1633,6 +1615,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[//check to see if HMI vars are valid for stand still tension before winding. outputs true if there was an error.
 
 //PICKUP AXIS CHECKS
+payoff_input_check(write:=TRUE);
 
 IF hmiConnection^.general_input_datagrid_params_list[1].tension < input_bounds.tension_low OR hmiConnection^.general_input_datagrid_params_list[1].tension > input_bounds.tension_high THEN
 	standstill_tension_check := TRUE;
@@ -1652,6 +1635,8 @@ END_IF
 
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoffEnableCheck:=payoffEnableCheck OR hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
+	
+
 	
 END_FOR
 
@@ -1841,6 +1826,7 @@ VAR_INPUT
 END_VAR
 
 VAR
+	ext : BOOL :=FAlse;
 	i: INT;
 	ste : INT :=-1;
 END_VAR]]></Declaration>
@@ -1853,29 +1839,56 @@ IF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns >= target_turn_count THEN
 
 	
 	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, pickup turn count reached', strArg:= '');
 	winding_exit_check :=TRUE;
 	
 END_IF
 
 //inner radius reached check
-IF pickup_axis_list[1].outerRadiusCurrent*0.95*1000 <= GVL.MIN_MOUNT_RADIUS THEN
+IF pickup_axis_list[1].outerRadiusCurrent*0.99*1000 <= GVL.MIN_MOUNT_RADIUS THEN
 			
-	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
-	winding_exit_check :=TRUE;
+	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PICKUP AXIS ID: %d', dintArg := 1);
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	//ext :=TRUE;
 		
 END_IF
 
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
-		IF payoff_axis_list[i].outerRadiusCurrent*0.95*1000 <= GVL.MIN_MOUNT_RADIUS THEN
+		IF payoff_axis_list[i].outerRadiusCurrent*0.99*1000 <= GVL.MIN_MOUNT_RADIUS THEN
 			
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PAYOFF AXIS ID: %S', strArg := INT_TO_STRING(i));
-			winding_exit_check :=TRUE;
+			ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PAYOFF AXIS ID: %d', dintArg := i);
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dropped below inner radius. PAYOFF AXIS ID: %S', strArg := INT_TO_STRING(i));
+	ext :=TRUE;
 		
 		END_IF
 	
 	END_IF
 END_FOR
+
+//max outer radius check
+IF pickup_axis_list[1].outerRadiusCurrent*1.01*1000 >= GVL.MAX_PICKUP_RADIUS THEN
+			
+	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %d', dintArg := 1);
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	ext :=TRUE;
+		
+END_IF
+
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+	IF payoff_axis_list[i].enabled THEN
+		IF payoff_axis_list[i].outerRadiusCurrent*1.01*1000 >= GVL.MAX_PAYOFF_RADIUS THEN
+			
+			ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius raised above max outer radius. PAYOFF AXIS ID: %d', dintArg := i);
+	
+	ext :=TRUE;
+		
+		END_IF
+	
+	END_IF
+END_FOR
+
+winding_exit_check:=ext;
 ]]></ST>
       </Implementation>
     </Method>
@@ -2523,15 +2536,8 @@ END_IF
       <LineId Id="59" Count="0" />
       <LineId Id="66" Count="0" />
       <LineId Id="112" Count="0" />
+      <LineId Id="122" Count="0" />
       <LineId Id="67" Count="0" />
-      <LineId Id="60" Count="1" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="77" Count="9" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="89" Count="1" />
-      <LineId Id="102" Count="0" />
-      <LineId Id="91" Count="0" />
       <LineId Id="71" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -2619,6 +2625,7 @@ END_IF
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="11" Count="0" />
+      <LineId Id="76" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
@@ -2628,12 +2635,10 @@ END_IF
       <LineId Id="16" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="27" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="40" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="71" Count="4" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="41" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="56" Count="0" />
@@ -2719,24 +2724,37 @@ END_IF
       <LineId Id="9" Count="1" />
       <LineId Id="68" Count="0" />
       <LineId Id="11" Count="1" />
+      <LineId Id="125" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="89" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="21" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="91" Count="4" />
+      <LineId Id="91" Count="2" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="94" Count="1" />
       <LineId Id="90" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="27" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="48" Count="1" />
+      <LineId Id="123" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="28" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="105" Count="2" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="108" Count="2" />
+      <LineId Id="132" Count="11" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="130" Count="0" />
       <LineId Id="74" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_tension">

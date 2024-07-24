@@ -31,6 +31,9 @@ VAR_GLOBAL CONSTANT
 	
 	INNER_RADIUS : LREAL:= 133; //(mm)
 	
+	MAX_PICKUP_RADIUS : LREAL:=250;
+	MAX_PAYOFF_RADIUS : LREAL:=200;
+	
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

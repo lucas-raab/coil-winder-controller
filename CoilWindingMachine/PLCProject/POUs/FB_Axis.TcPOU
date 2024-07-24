@@ -52,8 +52,8 @@ VAR_INPUT
     velocityLimitLow      : LREAL;                    // low velocity limit
 
     // SECONDARY TORQUE CONTROL SETTINGS
-    acceleration          : LREAL := 180;               // acceleration value
-    deceleration          : LREAL := 180;               // deceleration value
+    acceleration          : LREAL := 1800;               // acceleration value
+    deceleration          : LREAL := 1800;               // deceleration value
     torqueRamp            : LREAL := 1000;            // torque ramp value
 
     jerk                  : LREAL := 1;               // jerk value
