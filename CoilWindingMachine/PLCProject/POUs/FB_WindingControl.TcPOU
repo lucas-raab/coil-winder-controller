@@ -1148,7 +1148,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	FOR i:=1 TO numOfEnabledPayoff DO
 		IF payoff_axis_list[i].enabled THEN
-			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
+			temp:=temp +(pickup_axis_list[1].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
 		dist:=dist+temp;
 		
@@ -1200,6 +1200,10 @@ update_velocity();
 
 hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
 hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].actualVelocity*pickup_axis_list[1].outerRadiusCurrent/57.29578;
+
+
+
+
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].outerRadiusCurrent;
 
 hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
@@ -2459,6 +2463,8 @@ END_IF
       <LineId Id="14" Count="2" />
       <LineId Id="13" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="62" Count="2" />
+      <LineId Id="61" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="27" Count="0" />

@@ -1,16 +1,16 @@
 {
     "USERS": {
-        "Lucas": {
-            "ALGORITHM": 1,
-            "ENABLED": true,
-            "PASSWORD": "c02fe1173ec064ed1161a93fe1efdf5f55783154fbaa557b5eb3c0e93d01c343223a4e16c56b77fd06b3f08dd6f8a4f3883caf56158ce2446baec3c6d9bc7d1e",
-            "SALT": "mp730yqVK7+HbvF81Fcz9dnnHMwl5tJK0nqo17Gdov5Qy5tG1Rv7aXUutZgKBhQldXO9RmvLvjyf6sfIxNWRQQ=="
-        },
         "LucasRaab": {
             "ALGORITHM": 1,
             "ENABLED": true,
             "PASSWORD": "7ea1d72751d1867f0f8b4f526a018c8d3081bf5d97a3c363b392e93154a17df2a207d196c3fcf8dbc4f6cb7ea171ef6da8f83fe79b82079838a412da861f6bfc",
             "SALT": "ip08K2u5G0u7pL199QyJQu886OgyKWlyK77r82H9mw+6Uqnv4/YkLzV4yG1tU0p8gSfv+KBhbmdsJ2EqGsqAEg=="
+        },
+        "MarcusLo": {
+            "ALGORITHM": 1,
+            "ENABLED": true,
+            "PASSWORD": "e577c51398c2b79fd8e76c18dcbd332693e6ca6949190d518071955c80b3efd6b1763032fb172aded649674d5bcc2b61a3fced7f8d66ae9873e58e7d754e9f7c",
+            "SALT": "pECt7iUvtjE6u4X9p4n1NldAdGX7M/Bz651pPEDE3V2aDnVgWrauMEsCgh8eAQeWrKVfZ3BXp3AfjGHhiEzndw=="
         },
         "__SystemAdministrator": {
             "ALGORITHM": 1,
@@ -29,12 +29,6 @@
             "ENABLED": true,
             "PASSWORD": "",
             "SALT": ""
-        },
-        "temp": {
-            "ALGORITHM": 1,
-            "ENABLED": true,
-            "PASSWORD": "6b9b6730099286a8c99577b6914e1f69d20bfb5c30e450474c24b8873b12a070fbe24181eadb281c65a67233b2cac1b24ff0f298fe6501a20f8a06863299b8f9",
-            "SALT": "MBq6FROPtEVi+j8/MS7cqKzlbR+cgH5zPB8dTw2poL2aTx6lWJkKwkxxxEHYUObc8WNSqbjSl0jozeNXoMdIGw=="
         }
     }
 }

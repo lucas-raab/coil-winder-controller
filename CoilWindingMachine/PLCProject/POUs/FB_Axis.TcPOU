@@ -11,7 +11,7 @@ VAR_INPUT
     racetrack             : racetrack_params_1;       // ID 1
 
     //========================================================AXIS DIMENSIONS========================================================
-    outerRadiusCurrent    : LREAL;                    // outer radius of coil
+    outerRadiusCurrent    : LREAL :=gvl.MIN_MOUNT_RADIUS/1000; // outer radius of coil
 
     //========================================================AXIS TAPE========================================================
     tape_info             : POINTER TO ARRAY[0..10] OF tape_info;// array of tape information

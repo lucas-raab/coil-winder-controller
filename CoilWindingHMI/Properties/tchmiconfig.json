@@ -657,6 +657,7 @@
       },
       "TR_Icon_Recipe_Normal": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_normal.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_normal.svg"
@@ -664,6 +665,7 @@
       },
       "TR_Icon_Recipe_pressed": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_pressed.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
@@ -671,6 +673,7 @@
       },
       "TR_Icon_Recipe_active": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_pressed.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"

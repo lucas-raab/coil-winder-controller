@@ -6759,21 +6759,19 @@
     },
     "USERGROUPUSERS": {
         "TcHmiUserManagement": {
-            "Lucas": {
-                "USERGROUPUSERS_AUTO_LOGOFF": "P30D",
-                "USERGROUPUSERS_GROUPS": [
-                    "__SystemUsers"
-                ],
-                "USERGROUPUSERS_LOCALE": "client",
-                "USERGROUPUSERS_TIMEFORMATLOCALE": "project",
-                "USERGROUPUSERS_TIMEZONE": "project"
-            },
             "LucasRaab": {
                 "USERGROUPUSERS_AUTO_LOGOFF": "PT0S",
                 "USERGROUPUSERS_GROUPS": [
                     "__SystemMaintenanceUsers"
                 ],
                 "USERGROUPUSERS_LOCALE": "client"
+            },
+            "MarcusLo": {
+                "USERGROUPUSERS_AUTO_LOGOFF": "PT0S",
+                "USERGROUPUSERS_GROUPS": [
+                    "__SystemUsers"
+                ],
+                "USERGROUPUSERS_LOCALE": "project"
             },
             "__SystemAdministrator": {
                 "USERGROUPUSERS_AUTO_LOGOFF": "PT0S",
@@ -6801,13 +6799,6 @@
                 "USERGROUPUSERS_LOCALE": "project",
                 "USERGROUPUSERS_TIMEFORMATLOCALE": "project",
                 "USERGROUPUSERS_TIMEZONE": "project"
-            },
-            "temp": {
-                "USERGROUPUSERS_AUTO_LOGOFF": "PT0S",
-                "USERGROUPUSERS_GROUPS": [
-                    "__SystemUsers"
-                ],
-                "USERGROUPUSERS_LOCALE": "project"
             }
         }
     },
