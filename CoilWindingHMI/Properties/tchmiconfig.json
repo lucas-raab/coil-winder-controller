@@ -633,6 +633,7 @@
       },
       "TR_Icon_Outputs_normal": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_normal.svg",
           "Base": "Themes/Base-Dark/Images/Overview/overview_normal.svg"
@@ -640,6 +641,7 @@
       },
       "TR_Icon_Outputs_active": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_active.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"
@@ -647,9 +649,31 @@
       },
       "TR_Icon_Outputs_pressed": {
         "type": "tchmi:framework#/definitions/Path",
+        "description": "",
         "values": {
           "Base-Dark": "Themes/Base-Dark/Images/Outputs/output_pressed.svg",
           "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
+        }
+      },
+      "TR_Icon_Recipe_Normal": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_normal.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_normal.svg"
+        }
+      },
+      "TR_Icon_Recipe_pressed": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_pressed.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_pressed.svg"
+        }
+      },
+      "TR_Icon_Recipe_active": {
+        "type": "tchmi:framework#/definitions/Path",
+        "values": {
+          "Base-Dark": "Themes/Base-Dark/Images/Recipe/recipe_pressed.svg",
+          "Base": "Themes/Base/Images/Placeholder/placeholder_active.svg"
         }
       }
     }

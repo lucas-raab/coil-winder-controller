@@ -132,6 +132,7 @@
     <Folder Include="Themes\Base-Dark\Images\" />
     <Folder Include="Themes\Base-Dark\Images\Events\" />
     <Folder Include="Themes\Base-Dark\Images\Ethercat" />
+    <Folder Include="Themes\Base-Dark\Images\Recipe" />
     <Folder Include="Themes\Base-Dark\Images\Outputs" />
     <Folder Include="Themes\Base-Dark\Images\Overview" />
     <Folder Include="Themes\Base-Dark\Images\Placeholder\" />
@@ -333,6 +334,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Placeholder\placeholder_pressed.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Recipe\recipe_active.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Recipe\recipe_pressed.svg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Themes\Base-Dark\Images\Recipe\recipe_normal.svg">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Themes\Base-Dark\Images\Settings\settings_active.svg">

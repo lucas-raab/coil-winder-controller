@@ -7,6 +7,7 @@ STRUCT
 	torque : LREAL;
 	errortype : UDINT;
 	errorid : UDINT;
+	currentRadius: LREAL;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

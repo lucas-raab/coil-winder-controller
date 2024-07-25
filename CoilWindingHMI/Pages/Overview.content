@@ -192,10 +192,32 @@
     }
   },
   {
+    "name": "currentRadius",
+    "label": "Current Radius",
+    "control": "NumericInput",
+    "width": 20,
+    "widthUnit": "%",
+    "resize": false,
+    "sortable": false,
+    "minWidth": 100,
+    "minWidthUnit": "px",
+    "editable": false,
+    "horizontalAlignment": "Center",
+    "verticalAlignment": "Center",
+    "headerHorizontalAlignment": "Center",
+    "headerVerticalAlignment": "Center",
+    "ignoreEscapeSequences": false,
+    "autoFocusOut": true,
+    "autoSelectText": false,
+    "dataDefinitions": {
+      "decimalDigits": 4.0
+    }
+  },
+  {
     "name": "errortype",
     "label": "Error Type",
     "control": "NumericInput",
-    "width": 30,
+    "width": 20,
     "widthUnit": "%",
     "resize": false,
     "sortable": false,
@@ -214,7 +236,7 @@
     "name": "errorid",
     "label": "Error ID",
     "control": "NumericInput",
-    "width": 30,
+    "width": 20,
     "widthUnit": "%",
     "resize": false,
     "sortable": false,
