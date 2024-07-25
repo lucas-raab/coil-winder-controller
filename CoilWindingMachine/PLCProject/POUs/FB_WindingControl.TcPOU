@@ -1912,8 +1912,8 @@ END_FOR
 //max outer radius check
 IF pickup_axis_list[1].outerRadiusCurrent*1.01*1000 >= GVL.MAX_PICKUP_RADIUS THEN
 			
-	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %d', dintArg := 1);
-	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius raised above max outer radius. PICKUP AXIS ID: %d', dintArg := 1);
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius raised above max outer radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
 	ext :=TRUE;
 		
 END_IF
