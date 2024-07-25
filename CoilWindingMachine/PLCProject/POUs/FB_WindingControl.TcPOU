@@ -1159,14 +1159,13 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	dist:=(pickup_axis_list[1].pancake.radius)/1000; 
 	
-	FOR i:=1 TO numOfEnabledPayoff DO
+		FOR i:=1 TO numOfEnabledPayoff DO
 		IF payoff_axis_list[i].enabled THEN
 			temp:=temp +(pickup_axis_list[1].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
 		dist:=dist+temp;
 		
 	END_FOR
-	
 	
 	END_CASE
 	
@@ -1714,6 +1713,45 @@ pickup_axis_list[1].pancake.radius:=hmiConnection^.pickup_pancake_input_datagrid
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="turncount_check" Id="{4c7cb2bc-d2fc-4d92-bc21-97258f109b7a}" FolderPath="Methods\Input Checks\">
+      <Declaration><![CDATA[METHOD turncount_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	temp: LREAL;
+	ext: BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//checks to see if inputed turncount will result in a outer radius over max
+ext:=FALSE;
+
+
+dist:=(pickup_axis_list[1].pancake.radius)/1000; 
+	
+	FOR i:=1 TO numOfEnabledPayoff DO
+		IF payoff_axis_list[i].enabled THEN
+			temp:=temp + ( desiredTurnCountPickup  *payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
+		END_IF
+		dist:=dist+temp;
+		
+	END_FOR
+
+
+//max outer radius check
+IF dist*1000 >= GVL.MAX_PICKUP_RADIUS THEN
+			
+	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %d', dintArg := 1);
+	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	ext :=TRUE;
+		
+END_IF
+
+
+turncount_check:=ext;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="update_axis_distance" Id="{66fdf023-25cc-43be-86f3-ed799e674baa}">
       <Declaration><![CDATA[METHOD update_axis_distance : BOOL
 VAR_INPUT
@@ -1822,7 +1860,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[winding_check:= winding_check OR turncount_check();]]></ST>
       </Implementation>
     </Method>
     <Method Name="winding_exit_check" Id="{d54735ba-4782-466e-8281-2700698b8cff}" FolderPath="Methods\Exit Checks\">
@@ -2442,18 +2480,14 @@ END_IF
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.get_dist_to_axis_pickup">
-      <LineId Id="6" Count="14" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="40" Count="2" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="53" Count="0" />
+      <LineId Id="6" Count="11" />
+      <LineId Id="83" Count="8" />
       <LineId Id="38" Count="0" />
       <LineId Id="21" Count="1" />
       <LineId Id="50" Count="1" />
-      <LineId Id="68" Count="3" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="73" Count="2" />
-      <LineId Id="23" Count="10" />
+      <LineId Id="68" Count="1" />
+      <LineId Id="92" Count="5" />
+      <LineId Id="24" Count="9" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.hmi_update">
@@ -2683,6 +2717,17 @@ END_IF
       <LineId Id="21" Count="5" />
       <LineId Id="42" Count="1" />
       <LineId Id="20" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.turncount_check">
+      <LineId Id="5" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="32" Count="7" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="7" Count="8" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="44" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.update_axis_distance">
       <LineId Id="5" Count="0" />
