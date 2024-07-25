@@ -1161,7 +1161,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	FOR i:=1 TO numOfEnabledPayoff DO
 		IF payoff_axis_list[i].enabled THEN
-			temp:=temp +(payoff_axis_list[i].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
+			temp:=temp +(pickup_axis_list[1].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
 		dist:=dist+temp;
 		
@@ -2450,7 +2450,9 @@ END_IF
       <LineId Id="38" Count="0" />
       <LineId Id="21" Count="1" />
       <LineId Id="50" Count="1" />
-      <LineId Id="68" Count="7" />
+      <LineId Id="68" Count="3" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="73" Count="2" />
       <LineId Id="23" Count="10" />
       <LineId Id="5" Count="0" />
     </LineIds>
