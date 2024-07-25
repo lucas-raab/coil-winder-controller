@@ -1742,8 +1742,8 @@ dist:=(pickup_axis_list[1].pancake.radius)/1000;
 //max outer radius check
 IF dist*1000 >= GVL.MAX_PICKUP_RADIUS THEN
 			
-	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %d', dintArg := 1);
-	ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_LOG, msgFmtStr := 'Winding stopped, calculated current radius dius raised above max outer radius. PICKUP AXIS ID: %S', strArg := INT_TO_STRING(1));
+	ADSLOGDINT(msgCtrlMask := ADSLOG_MSGTYPE_HINT OR ADSLOG_MSGTYPE_MSGBOX, msgFmtStr := 'Winding stopped, calculated final radius above maximum radius limit, please lower turncount. Pickup Axis: %d', dintArg := 1);
+	
 	ext :=TRUE;
 		
 END_IF
