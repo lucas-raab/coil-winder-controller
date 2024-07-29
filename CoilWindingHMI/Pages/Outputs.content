@@ -233,7 +233,7 @@
         "background-container"
         ]
       </script>
-<div id="TcHmiDatagrid_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="8" data-tchmi-left-unit="px" data-tchmi-top="61" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-header-height="%i%datagrid_row_height%/i%" data-tchmi-row-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="20" data-tchmi-right="12" data-tchmi-bottom="9" data-tchmi-show-row-numbers="false" data-tchmi-src-data="%s%PLC1.MAIN.FB_hmi_connection::turncount_output_datagrid_list%/s%">
+<div id="TcHmiDatagrid_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiDatagrid" data-tchmi-height-unit="px" data-tchmi-left="8" data-tchmi-left-unit="px" data-tchmi-top="61" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-header-height="%i%datagrid_row_height%/i%" data-tchmi-row-height="%i%datagrid_header_heigh%/i%" data-tchmi-grid-font-size="20" data-tchmi-header-font-size="20" data-tchmi-right="12" data-tchmi-bottom="9" data-tchmi-show-row-numbers="false">
 <script data-tchmi-target-attribute="data-tchmi-src-column" type="application/json">
 [
   {

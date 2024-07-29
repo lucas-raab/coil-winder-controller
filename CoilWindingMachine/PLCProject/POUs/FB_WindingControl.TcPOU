@@ -1667,12 +1667,13 @@ pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis, Execute:=TRUE,Position
 
 //turn power off on all axies. 
 pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=TRUE);
-
+pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis,Execute:=FALSE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
 
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].MCPOWER(Axis:=payoff_axis_list[i].AXIS,ENABLE:=TRUE);
-		
+		payoff_axis_list[i].MCPOS(Axis:=payoff_axis_list[i].Axis,Execute:=FALSE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
+			busy:=busy AND busytemp;
 	END_IF		
 END_FOR 
 set_pos_all:=NOT ERROR;
@@ -2803,6 +2804,7 @@ END_IF
       <LineId Id="101" Count="1" />
       <LineId Id="117" Count="0" />
       <LineId Id="119" Count="0" />
+      <LineId Id="137" Count="0" />
       <LineId Id="118" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="90" Count="0" />
