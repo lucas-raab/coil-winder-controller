@@ -73,7 +73,9 @@ END_VAR
       <Folder Name="Init Methods" Id="{313976c9-8371-4349-a1d4-ac334e51a051}" />
       <Folder Name="Input Checks" Id="{3dff40f9-587b-485b-8ffe-a3d1acaecd62}" />
       <Folder Name="MISC" Id="{df8274f9-8bfd-43c2-9dbf-d95ad8873f48}" />
-      <Folder Name="Motor Control" Id="{4367b06a-8be7-4cee-a828-1c414585ef9d}" />
+      <Folder Name="Motor Control" Id="{4367b06a-8be7-4cee-a828-1c414585ef9d}">
+        <Folder Name="misc" Id="{4727363e-bfa8-4742-943c-5f588420eeb1}" />
+      </Folder>
       <Folder Name="Status Updates" Id="{912579cd-d079-4ec8-869a-781310624225}" />
     </Folder>
     <Method Name="accelerating_tension" Id="{51b0940c-2da9-428b-aa7c-7aa4bc946ef3}" FolderPath="Methods\Motor Control\">
@@ -147,6 +149,8 @@ cnt := cnt +1;
 		10:
 		// ========================================10========================================
 		
+		
+		
 		IF hmiConnection^.resetUI THEN
 		reset();
 		hmiConnection^.resetUI:=FALSE;
@@ -177,11 +181,65 @@ cnt := cnt +1;
 
 		END_IF
 		
+		IF hmiConnection^.freespinUI THEN
+			state:=11;
+			
+		END_IF
+		
 		
 		// ========================================10========================================
 		
+		11:
+		// ========================================11========================================
+		
+		IF NOT hmiConnection^.freespinUI THEN
+			state:=10;
+			
+		END_IF
+		
+		IF hmiConnection^.resetUI THEN
+		reset();
+		hmiConnection^.resetUI:=FALSE;
+		END_IF
+	
+		IF hmiConnection^.startUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
+				 strArg:= '');
+			hmiConnection^.startUI:=FALSE;
+			
+		END_IF
+		IF hmiConnection^.tensionUI THEN
+			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start tension while in freespin state',
+				 strArg:= '');
+			hmiConnection^.tensionUI:=FALSE;
+		END_IF
+	
+		//check inputs button
+		
+		
+		IF hmiConnection^.homeUI THEN
+			state:=50;
+			errorOutput:=TRUE;
+		END_IF
+		
+		IF hmiConnection^.estopHW THEN
+			state:=500;
+
+		END_IF
+		transfer_hmi_vars();
+		// ========================================11========================================
 		20,21:
 		// ========================================20========================================
+		
+		IF hmiConnection^.freespinUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+				 strArg:= '');
+			hmiConnection^.freespinUI:=FALSE;
+		END_IF
+		
 		
 		//tension button
 		IF hmiConnection^.resetUI THEN
@@ -220,6 +278,13 @@ cnt := cnt +1;
 		
 		30,31,32,33:
 		// ========================================30========================================
+		
+		IF hmiConnection^.freespinUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+				 strArg:= '');
+			hmiConnection^.freespinUI:=FALSE;
+		END_IF
 		
 		//tension button
 		IF hmiConnection^.resetUI THEN
@@ -273,6 +338,14 @@ cnt := cnt +1;
 		
 		40,41:
 		// ========================================40========================================
+		
+		IF hmiConnection^.freespinUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+				 strArg:= '');
+			hmiConnection^.freespinUI:=FALSE;
+		END_IF
+		
 		//tension button
 		IF  hmiConnection^.tensionUI THEN
 			state:=40;
@@ -327,6 +400,12 @@ cnt := cnt +1;
 		// ========================================400========================================
 		400:
 			
+		IF hmiConnection^.freespinUI THEN
+				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+				 strArg:= '');
+			hmiConnection^.freespinUI:=FALSE;
+		END_IF
 		
 		//reset button
 		IF hmiConnection^.resetUI THEN
@@ -507,6 +586,12 @@ CASE state OF
 	//wait for user inputs to transition to tension state. All motors are idle. Can edit params
 	
 	stop_all();
+	// ========================================10========================================
+	
+	// ========================================11========================================
+	11:
+	freespin_all();
+	// ========================================11========================================
 	// ========================================20========================================
 	20: //STANDBY WITH STANDSTILL TENSION INITAL
 	//inital error check for standstill tension state
@@ -958,6 +1043,27 @@ END_CASE
 
 
 find_tape_length_used:=total_circum;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="freespin_all" Id="{297992c1-22a1-4bab-9fd1-a180ef589cdf}" FolderPath="Methods\Motor Control\misc\">
+      <Declaration><![CDATA[METHOD freespin_all : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+	pickup_axis_list[1].setFree();
+		
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		
+			payoff_axis_list[i].setFree();
+			
+		
+	END_FOR 
 ]]></ST>
       </Implementation>
     </Method>
@@ -1482,7 +1588,7 @@ fileReadWrite^.reset();
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="set_pos_all" Id="{dae62719-33d8-49b6-8821-ff4d77998180}" FolderPath="Methods\Motor Control\">
+    <Method Name="set_pos_all" Id="{dae62719-33d8-49b6-8821-ff4d77998180}" FolderPath="Methods\Motor Control\misc\">
       <Declaration><![CDATA[METHOD set_pos_all : BOOL
 VAR_INPUT
 END_VAR
@@ -1580,7 +1686,7 @@ END_VAR]]></Declaration>
 
 //set torque to force times number of payoff motors enabled. 
 
-pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2;
+pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2+GVL.MIN_THRESHOLD_TORQUE;
 	
 //TO DO need to find what to set these to. might be too low. 
 pickup_axis_list[1].velocityLimitLow:=50;
@@ -1594,9 +1700,9 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].setTorque();
 		
-		payoff_axis_list[1].velocityLimitLow:=-50;
-		payoff_axis_list[1].velocityLimitHigh:=-50;
-		payoff_axis_list[i].torque:=-1*desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2;
+		payoff_axis_list[i].velocityLimitLow:=-50;
+		payoff_axis_list[i].velocityLimitHigh:=-50;
+		payoff_axis_list[i].torque:=-1*(desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2+GVL.MIN_THRESHOLD_TORQUE);
 			
 	END_IF
 END_FOR 
@@ -1657,7 +1763,7 @@ IF NOT payoffEnableCheck THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="stop_all" Id="{91a32785-37fe-490f-8e36-a7fa897334e3}" FolderPath="Methods\Motor Control\">
+    <Method Name="stop_all" Id="{91a32785-37fe-490f-8e36-a7fa897334e3}" FolderPath="Methods\Motor Control\misc\">
       <Declaration><![CDATA[METHOD stop_all : BOOL
 VAR_INPUT
 END_VAR
@@ -1960,7 +2066,7 @@ ELSE
 	
 
 
-	pickup_axis_list[1].torque:=desiredTension*numOfEnabledPayoff * get_dist_to_axis_pickup();
+	pickup_axis_list[1].torque:=desiredTension*numOfEnabledPayoff * get_dist_to_axis_pickup()+GVL.MIN_THRESHOLD_TORQUE;
 	
 	//TO DO . need to confirm these are correct
 	//how i envison the limits to function is that the pickup side will gradually ramp up speed until we hit the upper velocity limit. we could maybe have no limits and just have only torque control
@@ -1970,29 +2076,24 @@ ELSE
 	
 	pickup_axis_list[1].setTorque();
 	
-	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*pickup_axis_list[1].outerRadiusCurrent/57.2957;
+	pickupLinspeed:=pickup_axis_list[1].AXIS.NcToPlc.ActVelo*pickup_axis_list[1].outerRadiusCurrent/57.29578;
 	
 	
 	
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		IF payoff_axis_list[i].enabled THEN
-			//ASSUMING CONTINOUS UPDATE LIKE FUNCTION
-			//TO DO figure out directions
+		
+			
 			
 			
 			payoff_axis_list[i].setVelocity();
 			dist:=payoff_axis_list[i].outerRadiusCurrent;
 		
 			//find the velocity (degree/s) to acheive our desired linear speed, and the linear speed at pickup motor. 
-			desiredVelocity:=(desiredLinspeed/dist)*57.29578 ;
-			adjustedVelocity:=(pickupLinspeed/dist)*57.29578;
+			desiredVelocity:=(desiredLinspeed/payoff_axis_list[i].outerRadiusCurrent)*57.29578 ;
+			adjustedVelocity:=(pickupLinspeed/payoff_axis_list[i].outerRadiusCurrent)*57.29578;
 			
-			IF (desiredVelocity >3600)   THEN
-				desiredVelocity:=3600;
-			END_IF
-			IF (adjustedVelocity >3600)   THEN
-				adjustedVelocity:=3600;
-			END_IF
+			
 			
 			//sets payoff axis to half way point between target linspeed and the actual linspeed.
 			//how i envison this to function, is that while pickup side is at a low speed, the payoff side will also work at a lower speed,
@@ -2036,6 +2137,8 @@ END_IF
       <LineId Id="457" Count="0" />
       <LineId Id="284" Count="0" />
       <LineId Id="287" Count="0" />
+      <LineId Id="1227" Count="0" />
+      <LineId Id="1230" Count="0" />
       <LineId Id="1164" Count="0" />
       <LineId Id="288" Count="1" />
       <LineId Id="331" Count="0" />
@@ -2057,12 +2160,33 @@ END_IF
       <LineId Id="985" Count="1" />
       <LineId Id="988" Count="0" />
       <LineId Id="987" Count="0" />
+      <LineId Id="1267" Count="2" />
+      <LineId Id="1271" Count="0" />
+      <LineId Id="1270" Count="0" />
       <LineId Id="984" Count="0" />
       <LineId Id="617" Count="0" />
       <LineId Id="286" Count="0" />
-      <LineId Id="309" Count="1" />
+      <LineId Id="309" Count="0" />
+      <LineId Id="1231" Count="0" />
+      <LineId Id="1233" Count="0" />
+      <LineId Id="1272" Count="0" />
+      <LineId Id="1275" Count="2" />
+      <LineId Id="1273" Count="1" />
+      <LineId Id="1235" Count="12" />
+      <LineId Id="1263" Count="2" />
+      <LineId Id="1248" Count="0" />
+      <LineId Id="1250" Count="12" />
+      <LineId Id="1234" Count="0" />
+      <LineId Id="1266" Count="0" />
+      <LineId Id="1232" Count="0" />
+      <LineId Id="310" Count="0" />
       <LineId Id="312" Count="0" />
-      <LineId Id="333" Count="1" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="1278" Count="0" />
+      <LineId Id="1283" Count="2" />
+      <LineId Id="1281" Count="1" />
+      <LineId Id="1279" Count="1" />
+      <LineId Id="334" Count="0" />
       <LineId Id="313" Count="1" />
       <LineId Id="332" Count="0" />
       <LineId Id="315" Count="1" />
@@ -2086,7 +2210,10 @@ END_IF
       <LineId Id="474" Count="0" />
       <LineId Id="311" Count="0" />
       <LineId Id="339" Count="1" />
-      <LineId Id="342" Count="3" />
+      <LineId Id="342" Count="1" />
+      <LineId Id="1288" Count="4" />
+      <LineId Id="1286" Count="1" />
+      <LineId Id="344" Count="1" />
       <LineId Id="365" Count="2" />
       <LineId Id="346" Count="0" />
       <LineId Id="368" Count="0" />
@@ -2114,6 +2241,10 @@ END_IF
       <LineId Id="370" Count="0" />
       <LineId Id="404" Count="0" />
       <LineId Id="373" Count="1" />
+      <LineId Id="1293" Count="0" />
+      <LineId Id="1296" Count="4" />
+      <LineId Id="1295" Count="0" />
+      <LineId Id="1294" Count="0" />
       <LineId Id="420" Count="7" />
       <LineId Id="375" Count="2" />
       <LineId Id="380" Count="6" />
@@ -2138,7 +2269,10 @@ END_IF
       <LineId Id="372" Count="0" />
       <LineId Id="502" Count="0" />
       <LineId Id="418" Count="1" />
-      <LineId Id="435" Count="4" />
+      <LineId Id="435" Count="0" />
+      <LineId Id="1302" Count="4" />
+      <LineId Id="1301" Count="0" />
+      <LineId Id="436" Count="3" />
       <LineId Id="455" Count="0" />
       <LineId Id="440" Count="14" />
       <LineId Id="428" Count="0" />
@@ -2211,6 +2345,11 @@ END_IF
       <LineId Id="30" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="516" Count="0" />
+      <LineId Id="1307" Count="0" />
+      <LineId Id="1309" Count="1" />
+      <LineId Id="1308" Count="0" />
+      <LineId Id="1312" Count="0" />
+      <LineId Id="1311" Count="0" />
       <LineId Id="518" Count="0" />
       <LineId Id="13" Count="1" />
       <LineId Id="203" Count="0" />
@@ -2421,6 +2560,10 @@ END_IF
       <LineId Id="22" Count="7" />
       <LineId Id="38" Count="14" />
       <LineId Id="61" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_WindingControl.freespin_all">
+      <LineId Id="6" Count="8" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_error_check">
@@ -2835,9 +2978,7 @@ END_IF
       <LineId Id="113" Count="1" />
       <LineId Id="132" Count="0" />
       <LineId Id="115" Count="0" />
-      <LineId Id="198" Count="0" />
-      <LineId Id="201" Count="3" />
-      <LineId Id="200" Count="0" />
+      <LineId Id="204" Count="0" />
       <LineId Id="199" Count="0" />
       <LineId Id="120" Count="0" />
       <LineId Id="134" Count="0" />

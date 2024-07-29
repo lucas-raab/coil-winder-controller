@@ -1525,6 +1525,7 @@ External Setpoint Generation:
 					<Name>Pickup</Name>
 					<AxisPara>
 						<General UnitName="Degree"/>
+						<Velo Maximum="500"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="1">
@@ -1680,6 +1681,7 @@ External Setpoint Generation:
 					<Name>Payoff 1</Name>
 					<AxisPara>
 						<General UnitName="Degree"/>
+						<Velo Maximum="150"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="1">
@@ -1835,6 +1837,7 @@ External Setpoint Generation:
 					<Name>Payoff 2</Name>
 					<AxisPara>
 						<General UnitName="Degree"/>
+						<Velo Maximum="150"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="1">
@@ -1990,6 +1993,7 @@ External Setpoint Generation:
 					<Name>Payoff 3</Name>
 					<AxisPara>
 						<General UnitName="Degree"/>
+						<Velo Maximum="150"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="1">
@@ -2145,7 +2149,7 @@ External Setpoint Generation:
 		</Motion>
 		<Plc>
 			<Project GUID="{C6BF6199-BF83-4ACE-9260-E74E397BB48B}" Name="PLCProject" PrjFilePath="PLCProject\PLCProject.plcproj" TmcFilePath="PLCProject\PLCProject.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{C6A22A00-4F01-72E5-AF7B-D6AE6D05E0F2}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLCProject\PLCProject.tmc" TmcHash="{5C7C916B-73CC-3944-9E43-6E7D6C3DAAF2}">
 					<Name>PLCProject Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">

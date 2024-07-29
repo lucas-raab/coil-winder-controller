@@ -56,7 +56,7 @@ VAR_INPUT
     deceleration          : LREAL := 1800;               // deceleration value
     torqueRamp            : LREAL := 1000;            // torque ramp value
 
-    jerk                  : LREAL := 1;               // jerk value
+    jerk                  : LREAL := 0;               // jerk value
 
     // VELOCITY CONTROL
     velocity              : LREAL;                    // velocity value
@@ -330,6 +330,20 @@ modmoveEnable:=FALSE;
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="setFree" Id="{d522524d-31a3-418a-824b-ba104553558d}" FolderPath="Methods\sets\">
+      <Declaration><![CDATA[METHOD setFree : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityEnable:=FALSE;
+stopEnable:=FALSE;
+haltEnable:=FALSE;
+homeEnable:= FALSE;
+torqueEnable:= FALSE;
+posEnable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="setHalt" Id="{2d8b8748-a52f-4cd2-900f-26056fd38ca1}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setHalt : BOOL
 VAR_INPUT
@@ -601,6 +615,10 @@ END_VAR]]></Declaration>
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="24" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Axis.setFree">
+      <LineId Id="6" Count="4" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setHalt">
       <LineId Id="6" Count="3" />

@@ -460,6 +460,24 @@
         "type": "tchmi:framework#/definitions/Color",
         "persist": false,
         "readonly": false
+      },
+      "freeSpin": {
+        "value": "Start Freespin",
+        "type": "tchmi:general#/definitions/String",
+        "persist": false,
+        "readonly": false
+      },
+      "freeSpinEnable": {
+        "value": true,
+        "type": "tchmi:general#/definitions/BOOL",
+        "persist": false,
+        "readonly": false
+      },
+      "tensionEnabled": {
+        "value": true,
+        "type": "tchmi:general#/definitions/BOOL",
+        "persist": false,
+        "readonly": false
       }
     },
     "themedResources": {

@@ -3925,6 +3925,23 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_hmi_connection.freespinUI": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::freespinUI",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "propertyOrder": 22
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -6697,6 +6714,7 @@
                 "PLC1.MAIN.FB_hmi_connection": 3,
                 "PLC1.MAIN.FB_hmi_connection.checkInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.color_list.0": 3,
+                "PLC1.MAIN.FB_hmi_connection.freespinUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.general_input_datagrid_params_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.homeUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.motor_info_datagrid_list": 3,

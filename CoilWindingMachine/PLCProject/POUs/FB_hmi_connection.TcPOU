@@ -32,6 +32,7 @@ VAR_INPUT
 	startUI : BOOL ;
 	tensionUI : BOOL;
 	homeUI : BOOL;
+	freespinUI :bool;
 	
 	//SETTINGS
 	checkInputsUI : BOOL;
