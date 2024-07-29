@@ -1944,7 +1944,7 @@ hmiConnection^.motor_info_datagrid_list[1].torque:=hmiConnection^.torque[1];
 FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].getTorque();
 	hmiConnection^.torque[i+1]:=payoff_axis_list[i].actualTorque;
-	hmiConnection^.motor_info_datagrid_list[i].torque:=hmiConnection^.torque[i];
+	hmiConnection^.motor_info_datagrid_list[i+1].torque:=payoff_axis_list[i].actualTorque;;
 END_FOR
 
 
