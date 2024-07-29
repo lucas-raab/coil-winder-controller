@@ -1312,9 +1312,9 @@ hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].a
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].outerRadiusCurrent;
 
 hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
-hmiConnection^.turncount_output_datagrid_list[2].payoffTC1:=(payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
-hmiConnection^.turncount_output_datagrid_list[3].payoffTC2:=(payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns);
-hmiConnection^.turncount_output_datagrid_list[4].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC1:=(payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC2:=(payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[1].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns);
 
 
 FOR i:=1 TO gvl.MAX_PAYOFF_COUNT+gvl.MAX_PICKUP_COUNT DO

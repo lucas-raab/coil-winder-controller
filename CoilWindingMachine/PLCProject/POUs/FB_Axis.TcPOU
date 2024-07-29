@@ -124,7 +124,8 @@ powerEnable:=enabled;
 MCPOWER(Axis:=Axis,
 		Enable:=powerEnable,
 		Enable_Positive:=powerEnable,
-		Enable_Negative:=powerEnable);
+		Enable_Negative:=powerEnable
+		);
 		
 MCSTOP(Axis:=Axis,
 		Execute:=stopEnable,
@@ -166,6 +167,8 @@ MCGETVELOCITY(Axis:=AXIS,
 getTorque();
 stateUpdate();
 findinertia();
+error_check_all();
+
 
 errorType:=0;
 
@@ -188,22 +191,35 @@ VAR_OUTPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+IF(powerEnable) THEN
+	power_error_check(Error=>adsError,errorID=>adsErrorID);
 
-power_error_check(Error=>adsError,errorID=>adsErrorID);
-
-
-
-torque_error_check(Error=>adsError,errorID=>adsErrorID);
+END_IF
 
 
+IF(torqueEnable) THEN
+	torque_error_check(Error=>adsError,errorID=>adsErrorID);
+END_IF
 
-velocity_error_check(Error=>adsError,errorID=>adsErrorID);
+
+
+IF(velocityenable) THEN
+	velocity_error_check(Error=>adsError,errorID=>adsErrorID);
+END_IF
 
 
 
-stop_error_check(Error=>adsError,errorID=>adsErrorID);
+IF(stopenable) THEN
+	stop_error_check(Error=>adsError,errorID=>adsErrorID);
+END_IF
 
-setpos_error_check(Error=>adsError,errorID=>adsErrorID);
+
+
+
+IF(posenable) THEN
+	setpos_error_check(Error=>adsError,errorID=>adsErrorID);
+END_IF
+
 	
 
 ]]></ST>
@@ -534,7 +550,9 @@ END_VAR]]></Declaration>
       <LineId Id="249" Count="0" />
       <LineId Id="77" Count="1" />
       <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="4" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="258" Count="0" />
+      <LineId Id="10" Count="1" />
       <LineId Id="22" Count="2" />
       <LineId Id="41" Count="0" />
       <LineId Id="43" Count="3" />
@@ -556,6 +574,7 @@ END_VAR]]></Declaration>
       <LineId Id="91" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="155" Count="0" />
+      <LineId Id="259" Count="1" />
       <LineId Id="237" Count="4" />
       <LineId Id="247" Count="0" />
       <LineId Id="242" Count="2" />
@@ -567,13 +586,22 @@ END_VAR]]></Declaration>
     <LineIds Name="FB_Axis.error_check_all">
       <LineId Id="42" Count="0" />
       <LineId Id="33" Count="0" />
-      <LineId Id="35" Count="1" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="59" Count="0" />
       <LineId Id="34" Count="0" />
+      <LineId Id="48" Count="1" />
       <LineId Id="5" Count="2" />
-      <LineId Id="18" Count="3" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="19" Count="2" />
       <LineId Id="9" Count="0" />
+      <LineId Id="52" Count="1" />
       <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="2" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="54" Count="4" />
+      <LineId Id="11" Count="1" />
       <LineId Id="14" Count="2" />
     </LineIds>
     <LineIds Name="FB_Axis.findinertia">
