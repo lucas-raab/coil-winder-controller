@@ -1312,8 +1312,9 @@ hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].a
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].outerRadiusCurrent;
 
 hmiConnection^.turncount_output_datagrid_list[1].pickupTC1:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
-hmiConnection^.turncount_output_datagrid_list[1].payoffTC2:=(payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns);
-hmiConnection^.turncount_output_datagrid_list[1].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[2].payoffTC1:=(payoff_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[3].payoffTC2:=(payoff_axis_list[2].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[2].AXIS.NcToPlc.ModuloActTurns);
+hmiConnection^.turncount_output_datagrid_list[4].payoffTC3:=(payoff_axis_list[3].AXIS.NcToPlc.ModuloActPos/360+payoff_axis_list[3].AXIS.NcToPlc.ModuloActTurns);
 
 
 FOR i:=1 TO gvl.MAX_PAYOFF_COUNT+gvl.MAX_PICKUP_COUNT DO
@@ -1700,7 +1701,7 @@ END_VAR]]></Declaration>
 
 //set torque to force times number of payoff motors enabled. 
 
-pickup_axis_list[1].torque:=(desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2+GVL.MIN_THRESHOLD_TORQUE;
+pickup_axis_list[1].torque:=((desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2)+GVL.MIN_THRESHOLD_TORQUE;
 	
 //TO DO need to find what to set these to. might be too low. 
 pickup_axis_list[1].velocityLimitLow:=50;
@@ -1716,7 +1717,7 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
 		payoff_axis_list[i].velocityLimitLow:=-50;
 		payoff_axis_list[i].velocityLimitHigh:=-50;
-		payoff_axis_list[i].torque:=-1*(desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2+GVL.MIN_THRESHOLD_TORQUE);
+		payoff_axis_list[i].torque:=-1*((desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2)+GVL.MIN_THRESHOLD_TORQUE);
 			
 	END_IF
 END_FOR 
@@ -2662,6 +2663,7 @@ END_IF
       <LineId Id="17" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="71" Count="0" />
       <LineId Id="38" Count="1" />
       <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
