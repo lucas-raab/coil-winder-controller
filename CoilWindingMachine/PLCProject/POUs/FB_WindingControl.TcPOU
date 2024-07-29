@@ -1579,12 +1579,26 @@ END_FOR]]></ST>
       <Declaration><![CDATA[METHOD reset : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[state := 10;
 progressPercent:=0;
 
 fileReadWrite^.reset();
+
+
+	pickup_axis_list[1].reset();
+		
+	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+		
+			payoff_axis_list[i].reset();
+			
+		
+	END_FOR 
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -1781,6 +1795,7 @@ END_VAR]]></Declaration>
 			
 		
 	END_FOR 
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -2749,6 +2764,7 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="11" Count="0" />
+      <LineId Id="20" Count="10" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.set_pos_all">
@@ -2839,6 +2855,7 @@ END_IF
       <LineId Id="14" Count="0" />
       <LineId Id="20" Count="1" />
       <LineId Id="25" Count="5" />
+      <LineId Id="37" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.transfer_hmi_vars">

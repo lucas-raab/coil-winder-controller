@@ -314,6 +314,15 @@ END_VAR]]></Declaration>
         <ST><![CDATA[MCPOWER(Axis:=Axis,Error=>Error,ErrorID=>errorID);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="reset" Id="{c85d9ad6-d473-4751-8b53-dcece08669b3}">
+      <Declaration><![CDATA[METHOD reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MCRESET(Axis:=AXIS,EXECUTE:=TRUE);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\sets\">
       <Declaration><![CDATA[METHOD setClear : BOOL
 VAR_INPUT
@@ -608,6 +617,9 @@ END_VAR]]></Declaration>
       <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.power_error_check">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Axis.reset">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setClear">
