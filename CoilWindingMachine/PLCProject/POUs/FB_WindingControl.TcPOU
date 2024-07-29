@@ -1591,14 +1591,14 @@ progressPercent:=0;
 fileReadWrite^.reset();
 
 
-	pickup_axis_list[1].reset();
+pickup_axis_list[1].reset();
 		
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
 			payoff_axis_list[i].reset();
 			
 		
-	END_FOR 
+END_FOR 
 
 ]]></ST>
       </Implementation>
@@ -1647,7 +1647,7 @@ REPEAT
 	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		IF payoff_axis_list[i].enabled THEN
 			
-			payoff_axis_list[1].MCPOS(Axis:=payoff_axis_list[1].Axis,Execute:=TRUE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
+			payoff_axis_list[i].MCPOS(Axis:=payoff_axis_list[i].Axis,Execute:=TRUE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
 			busy:=busy AND busytemp;
 			error:= error AND errorTemp;
 		END_IF
@@ -1663,19 +1663,19 @@ END_REPEAT
 pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis, Execute:=TRUE,Position:=0,mode:=FALSE);
 
 
-set_pos_all:=TRUE;
+
 
 //turn power off on all axies. 
 pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=TRUE);
-pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis,Execute:=FALSE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
+
 
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].MCPOWER(Axis:=payoff_axis_list[i].AXIS,ENABLE:=TRUE);
-		payoff_axis_list[i].MCPOS(Axis:=payoff_axis_list[1].Axis,Execute:=FALSE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
+		
 	END_IF		
 END_FOR 
-
+set_pos_all:=NOT ERROR;
 
 
 
