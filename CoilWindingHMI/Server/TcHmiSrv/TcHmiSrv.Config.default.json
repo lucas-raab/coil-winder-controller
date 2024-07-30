@@ -3472,6 +3472,24 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_WindingControl.allowInputEdits": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_WindingControl::allowInputEdits",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    {
+                        "comment": "enables/disable input mods",
+                        "propertyOrder": 25
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_WindingControl.desiredLinspeed": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -6705,6 +6723,7 @@
                 "Logout": 3,
                 "PLC1.MAIN.FB_FileReadWrite.sFilePath": 3,
                 "PLC1.MAIN.FB_FileReadWrite.sNetId": 3,
+                "PLC1.MAIN.FB_WindingControl.allowInputEdits": 3,
                 "PLC1.MAIN.FB_WindingControl.desiredLinspeed": 3,
                 "PLC1.MAIN.FB_WindingControl.desiredTension": 3,
                 "PLC1.MAIN.FB_WindingControl.desiredTurnCountPickup": 3,

@@ -725,6 +725,10 @@ CASE state OF
 		allowInputEdits:=FALSE;
 	500: //ESTOP STATE
 	//triggered on estop press. can be cleared with reset
+	
+		hmiConnection^.tensionUI:=FALSE;
+		hmiConnection^.freespinUI:=FALSE;
+		hmiConnection^.startUI:=FALSE;
 		allowInputEdits:=FALSE;
 		estop_routine();
 		
@@ -2109,6 +2113,7 @@ END_IF
       <LineId Id="1950" Count="13" />
       <LineId Id="2343" Count="0" />
       <LineId Id="1964" Count="1" />
+      <LineId Id="2344" Count="3" />
       <LineId Id="2342" Count="0" />
       <LineId Id="1966" Count="22" />
       <LineId Id="544" Count="0" />
