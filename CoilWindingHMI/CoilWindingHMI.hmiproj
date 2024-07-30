@@ -146,6 +146,9 @@
     <Content Include=".eslintrc.json">
       <Visible>false</Visible>
     </Content>
+    <Content Include="Content1.content">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="getUser.function.json">
       <SubType>Content</SubType>
       <DependentUpon>getUser.js</DependentUpon>

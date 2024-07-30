@@ -49,7 +49,7 @@ VAR
 	tStart                  : TIME;               // Start time
 	tEnd                    : TIME;               // End time
 	tElapsed                : TIME;               // Elapsed time
-	
+	allowInputEdits 		: BOOL;				  //enables/disable input mods
 
 
 END_VAR
@@ -145,407 +145,344 @@ END_VAR
 cnt := cnt +1;
 
 //-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
-	CASE state OF
-		10:
-		// ========================================10========================================
-		
-		
-		
-		IF hmiConnection^.resetUI THEN
-		reset();
-		hmiConnection^.resetUI:=FALSE;
-		END_IF
-	
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
-				 strArg:= '');
-			hmiConnection^.startUI:=FALSE;
-			
-		END_IF
-		IF hmiConnection^.tensionUI THEN
-		state:=20;
-		errorOutput:=TRUE;
-		END_IF
-	
-		//check inputs button
-		transfer_hmi_vars();
-		
-		IF hmiConnection^.homeUI THEN
-			state:=50;
-			errorOutput:=TRUE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+CASE state OF
+    10:
+    // ========================================10========================================
+    IF hmiConnection^.resetUI THEN
+        reset();
+        hmiConnection^.resetUI := FALSE;
+    END_IF
 
-		END_IF
-		
-		IF hmiConnection^.freespinUI THEN
-			state:=11;
-			
-		END_IF
-		
-		
-		// ========================================10========================================
-		
-		11:
-		// ========================================11========================================
-		
-		IF NOT hmiConnection^.freespinUI THEN
-			state:=10;
-			
-		END_IF
-		
-		IF hmiConnection^.resetUI THEN
-		reset();
-		hmiConnection^.resetUI:=FALSE;
-		END_IF
-	
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
-				 strArg:= '');
-			hmiConnection^.startUI:=FALSE;
-			
-		END_IF
-		IF hmiConnection^.tensionUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start tension while in freespin state',
-				 strArg:= '');
-			hmiConnection^.tensionUI:=FALSE;
-		END_IF
-	
-		//check inputs button
-		
-		
-		IF hmiConnection^.homeUI THEN
-			state:=50;
-			errorOutput:=TRUE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
+                  strArg := '');
+        hmiConnection^.startUI := FALSE;
+    END_IF
 
-		END_IF
-		transfer_hmi_vars();
-		// ========================================11========================================
-		20,21:
-		// ========================================20========================================
-		
-		IF hmiConnection^.freespinUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
-				 strArg:= '');
-			hmiConnection^.freespinUI:=FALSE;
-		END_IF
-		
-		
-		//tension button
-		IF hmiConnection^.resetUI THEN
-		reset();
-		hmiConnection^.resetUI:=FALSE;
-		END_IF
-	
-		//start button
-		IF hmiConnection^.startUI THEN
-			state:=30;
-			errorOutput:=TRUE;
-		END_IF
-		
-		//tension button
-		IF NOT hmiConnection^.tensionUI THEN
-		state:=10;
-		errorOutput:=TRUE;
-		END_IF
-	
-		//check inputs button
-		transfer_hmi_vars();
-		
-		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
-				 strArg:= '');
-			hmiConnection^.homeUI:=FALSE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    IF hmiConnection^.tensionUI THEN
+        state := 20;
+        errorOutput := TRUE;
+    END_IF
 
-		END_IF
-		
-		// ========================================20========================================
-		
-		30,31,32,33:
-		// ========================================30========================================
-		
-		IF hmiConnection^.freespinUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
-				 strArg:= '');
-			hmiConnection^.freespinUI:=FALSE;
-		END_IF
-		
-		//tension button
-		IF hmiConnection^.resetUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to reset during winding. Please pause winding.',
-				 strArg:= '');
-			hmiConnection^.resetUI:=FALSE;
-			
-		END_IF
-	
-		//start button
-		IF NOT hmiConnection^.startUI THEN
-			state:=20;
-			errorOutput:=TRUE;
-		END_IF
-		
-		//tension button
-		IF NOT hmiConnection^.tensionUI THEN
-			hmiConnection^.startUI:=FALSE;
-			state:=10;
-			errorOutput:=TRUE;
-		END_IF
-	
-		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-			errorOutput:=TRUE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:=FALSE;
-			
-		END_IF
-		
-		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
-				 strArg:= '');
-			hmiConnection^.homeUI:=FALSE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    transfer_hmi_vars();
 
-		END_IF
-		// ========================================30========================================
-		
-		
-		40,41:
-		// ========================================40========================================
-		
-		IF hmiConnection^.freespinUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
-				 strArg:= '');
-			hmiConnection^.freespinUI:=FALSE;
-		END_IF
-		
-		//tension button
-		IF  hmiConnection^.tensionUI THEN
-			state:=40;
-			errorOutput:=TRUE;
-		ELSE
-			state:=41;
-			
-		END_IF
-		
-		//reset button
-		IF hmiConnection^.resetUI THEN
-			reset();
-			hmiConnection^.resetUI:=FALSE;
-			
-		END_IF
-	
-		//start button
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start while finished. Please reset first.',
-				 strArg:= '');
-			hmiConnection^.startUI:=FALSE;
-			
-		END_IF
-		
-		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			
-		END_IF
-		
-		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to home outside of standby state',
-				 strArg:= '');
-			hmiConnection^.homeUI:=FALSE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    IF hmiConnection^.homeUI THEN
+        state := 50;
+        errorOutput := TRUE;
+    END_IF
 
-		END_IF
-		// ========================================40========================================
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
 
-		// ========================================400========================================
-		400:
-			
-		IF hmiConnection^.freespinUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
-				 strArg:= '');
-			hmiConnection^.freespinUI:=FALSE;
-		END_IF
-		
-		//reset button
-		IF hmiConnection^.resetUI THEN
-			reset();
-			state:=10;
-			hmiConnection^.resetUI:=FALSE;
-			errorOutput:=TRUE;
-		END_IF
-	
-		//start button
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start while in error state. Please reset first, and resolve error.',
-				 strArg:= '');
-			hmiConnection^.resetUI:=FALSE;
-			
-		END_IF
-		
-		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			
-		END_IF
-		
-		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
-				 strArg:= '');
-			hmiConnection^.homeUI:=FALSE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    IF hmiConnection^.freespinUI THEN
+        state := 11;
+    END_IF
 
-		END_IF
-		// ========================================400========================================
-		
-		// =======================================50========================================
-		50:
-		IF  hmiConnection^.tensionUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to tension while in homing sdtate. Please stop homing.',
-				 strArg:= '');
-			hmiConnection^.resetUI:=FALSE;
-			
-		END_IF
-		
-		//reset button
-		IF hmiConnection^.resetUI THEN
-			reset();
-			state:=10;
-			hmiConnection^.resetUI:=FALSE;
-			errorOutput:=TRUE;
-		END_IF
-	
-		//start button
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start while in homing sdtate. Please stop homing.',
-				 strArg:= '');
-			hmiConnection^.resetUI:=FALSE;
-			
-		END_IF
-		
-		//check inputs button
-		transfer_hmi_vars();
-		
-		IF hmiConnection^.homeUI THEN
-			
-			hmiConnection^.homeUI:=FALSE;
-			state:=10;
-			errorOutput:=TRUE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    // ========================================10========================================
 
-		END_IF
-		// ========================================50========================================
-		
-		// =======================================500========================================
-		500:
-		IF  hmiConnection^.tensionUI THEN
-				ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to tension while in ESTOP state. Please reset first.',
-				 strArg:= '');
-			hmiConnection^.tensionUI:=FALSE;
-			
-		END_IF
-		
-		//reset button
-		IF hmiConnection^.resetUI THEN
-			reset();
-			state:=10;
-			hmiConnection^.resetUI:=FALSE;
-			errorOutput:=TRUE;
-		END_IF
-	
-		//start button
-		IF hmiConnection^.startUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-				 msgFmtStr := 'Error Occured. Unable to start while in ESTOP state. Please reset first.',
-				 strArg:= '');
-			hmiConnection^.startUI:=FALSE;
-			
-		END_IF
-		
-		//check inputs button
-		IF hmiConnection^.checkInputsUI THEN
-			all_check(write:=FALSE);
-			hmiConnection^.checkInputsUI:=FALSE;
-		END_IF
-		
-		//update inputs button
-		IF hmiConnection^.updateInputsUI THEN
-			all_check(write:=TRUE);
-			hmiConnection^.updateInputsUI:= FALSE;
-			
-		END_IF
-		
-		IF hmiConnection^.homeUI THEN
-			ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-			msgFmtStr := 'Error Occured. Unable to home while in ESTOP state. Please reset first.',
-			strArg:= '');
-			hmiConnection^.homeUI:=FALSE;
-		END_IF
-		
-		IF hmiConnection^.estopHW THEN
-			state:=500;
+    11:
+    // ========================================11========================================
+    IF NOT hmiConnection^.freespinUI THEN
+        state := 10;
+    END_IF
 
-		END_IF
-		// ========================================500========================================
-	END_CASE
+    IF hmiConnection^.resetUI THEN
+        reset();
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
+                  strArg := '');
+        hmiConnection^.startUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.tensionUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start tension while in freespin state',
+                  strArg := '');
+        hmiConnection^.tensionUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        state := 50;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+
+    transfer_hmi_vars();
+    // ========================================11========================================
+
+    20, 21:
+    // ========================================20========================================
+    IF hmiConnection^.freespinUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+                  strArg := '');
+        hmiConnection^.freespinUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        state := 30;
+        errorOutput := TRUE;
+    END_IF
+
+    IF NOT hmiConnection^.tensionUI THEN
+        state := 10;
+        errorOutput := TRUE;
+    END_IF
+
+    transfer_hmi_vars();
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================20========================================
+
+    30, 31, 32, 33:
+    // ========================================30========================================
+    IF hmiConnection^.freespinUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+                  strArg := '');
+        hmiConnection^.freespinUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to reset during winding. Please pause winding.',
+                  strArg := '');
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF NOT hmiConnection^.startUI THEN
+        state := 20;
+        errorOutput := TRUE;
+    END_IF
+
+    IF NOT hmiConnection^.tensionUI THEN
+        hmiConnection^.startUI := FALSE;
+        state := 10;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.checkInputsUI THEN
+        all_check(write := FALSE);
+        hmiConnection^.checkInputsUI := FALSE;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.updateInputsUI THEN
+        all_check(write := TRUE);
+        hmiConnection^.updateInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================30========================================
+
+    40, 41:
+    // ========================================40========================================
+    IF hmiConnection^.freespinUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+                  strArg := '');
+        hmiConnection^.freespinUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.tensionUI THEN
+        state := 40;
+        errorOutput := TRUE;
+    ELSE
+        state := 41;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start while finished. Please reset first.',
+                  strArg := '');
+        hmiConnection^.startUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.checkInputsUI THEN
+        all_check(write := FALSE);
+        hmiConnection^.checkInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.updateInputsUI THEN
+        all_check(write := TRUE);
+        hmiConnection^.updateInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home outside of standby state',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================40========================================
+
+    400:
+    // ========================================400========================================
+    IF hmiConnection^.freespinUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start freespin while not in standby state',
+                  strArg := '');
+        hmiConnection^.freespinUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        state := 10;
+        hmiConnection^.resetUI := FALSE;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start while in error state. Please reset first, and resolve error.',
+                  strArg := '');
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.checkInputsUI THEN
+        all_check(write := FALSE);
+        hmiConnection^.checkInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.updateInputsUI THEN
+        all_check(write := TRUE);
+        hmiConnection^.updateInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================400========================================
+
+    50:
+    // ========================================50========================================
+    IF hmiConnection^.tensionUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to tension while in homing sdtate. Please stop homing.',
+                  strArg := '');
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        state := 10;
+        hmiConnection^.resetUI := FALSE;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start while in homing sdtate. Please stop homing.',
+                  strArg := '');
+        hmiConnection^.resetUI := FALSE;
+    END_IF
+
+    transfer_hmi_vars();
+
+    IF hmiConnection^.homeUI THEN
+        hmiConnection^.homeUI := FALSE;
+        state := 10;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================50========================================
+
+    500:
+    // ========================================500========================================
+    IF hmiConnection^.tensionUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to tension while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.tensionUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        state := 10;
+        hmiConnection^.resetUI := FALSE;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.startUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.checkInputsUI THEN
+        all_check(write := FALSE);
+        hmiConnection^.checkInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.updateInputsUI THEN
+        all_check(write := TRUE);
+        hmiConnection^.updateInputsUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.estopHW THEN
+        state := 500;
+    END_IF
+    // ========================================500========================================
+END_CASE
 //-------------------------------------------------------------------------------------------------------------- USER INPUT --------------------------------------------------------------------------------------------------------------
 	
 //clear status vars for axis. we will update them depending on our current state.
@@ -573,7 +510,7 @@ hmi_update();
 find_actualLinspeed();
 update_TC();
 update_axis_distance();
-payoff_input_check(write:=true);
+
 
 //-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
 CASE state OF
@@ -586,16 +523,18 @@ CASE state OF
 	//wait for user inputs to transition to tension state. All motors are idle. Can edit params
 	
 	stop_all();
+	allowInputEdits:=TRUE;
 	// ========================================10========================================
 	
 	// ========================================11========================================
 	11:
+	allowInputEdits:=TRUE;
 	freespin_all();
 	// ========================================11========================================
 	// ========================================20========================================
 	20: //STANDBY WITH STANDSTILL TENSION INITAL
 	//inital error check for standstill tension state
-	
+	allowInputEdits:=FALSE;
 	count_enabled_motors();
 	//check inputs for standstill tension
 	IF standstill_tension_check() THEN
@@ -619,7 +558,7 @@ CASE state OF
 	// ========================================30========================================
 	30: //WINDING TENSION INITAL
 	//inital error check for winding tension state.
-	
+	allowInputEdits:=FALSE;
 	count_enabled_motors();
 	// INPUT VALIDATION
 	IF winding_check() THEN
@@ -726,7 +665,7 @@ CASE state OF
 	// ========================================40========================================
 	40: //FINISHED HOLD STANDSTILL TENSION
 	//cable winding finished, currently mainting tension until user input. Can not edit params
-	
+	allowInputEdits:=FALSE;
 	standstill_tension();
 	
 	IF standstill_tension_check() THEN
@@ -750,6 +689,7 @@ CASE state OF
 	// ========================================50========================================
 	50:
 	//exit homing state if homing is done or error.
+	allowInputEdits:=FALSE;
 	IF set_pos_all() THEN
 		state:=10;
 		hmiConnection^.homeUI:=FALSE;
@@ -767,6 +707,7 @@ CASE state OF
 	// ========================================60========================================
 	60:
 	//exit homing state if homing is done or error.
+		allowInputEdits:=FALSE;
 	IF Home() THEN
 		state:=10;
 		hmiConnection^.homeUI:=FALSE;
@@ -781,8 +722,10 @@ CASE state OF
 	
 	400: //ERROR STATE
 	//error on a axis preventing motor movement, or winding start. //do nothing 'till resolved
+		allowInputEdits:=FALSE;
 	500: //ESTOP STATE
 	//triggered on estop press. can be cleared with reset
+		allowInputEdits:=FALSE;
 		estop_routine();
 		
 	
@@ -1593,6 +1536,10 @@ fileReadWrite^.reset();
 
 pickup_axis_list[1].reset();
 		
+pickup_axis_list[1].SoEReset(axis:=pickup_axis_list[1].AXIS,Execute:=FALSE);
+
+pickup_axis_list[1].SoEReset(axis:=pickup_axis_list[1].AXIS,Execute:=TRUE);
+
 FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
 			payoff_axis_list[i].reset();
@@ -2147,350 +2094,23 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.CYCLIC">
-      <LineId Id="170" Count="0" />
-      <LineId Id="746" Count="0" />
-      <LineId Id="182" Count="0" />
-      <LineId Id="181" Count="0" />
-      <LineId Id="457" Count="0" />
-      <LineId Id="284" Count="0" />
-      <LineId Id="287" Count="0" />
-      <LineId Id="1227" Count="0" />
-      <LineId Id="1230" Count="0" />
-      <LineId Id="1164" Count="0" />
-      <LineId Id="288" Count="1" />
-      <LineId Id="331" Count="0" />
-      <LineId Id="290" Count="3" />
-      <LineId Id="308" Count="0" />
-      <LineId Id="304" Count="2" />
-      <LineId Id="294" Count="0" />
-      <LineId Id="296" Count="1" />
-      <LineId Id="961" Count="0" />
-      <LineId Id="298" Count="1" />
-      <LineId Id="586" Count="0" />
-      <LineId Id="463" Count="0" />
-      <LineId Id="584" Count="0" />
-      <LineId Id="615" Count="0" />
-      <LineId Id="618" Count="0" />
-      <LineId Id="962" Count="0" />
-      <LineId Id="619" Count="0" />
-      <LineId Id="616" Count="0" />
-      <LineId Id="985" Count="1" />
-      <LineId Id="988" Count="0" />
-      <LineId Id="987" Count="0" />
-      <LineId Id="1267" Count="2" />
-      <LineId Id="1271" Count="0" />
-      <LineId Id="1270" Count="0" />
-      <LineId Id="984" Count="0" />
-      <LineId Id="617" Count="0" />
-      <LineId Id="286" Count="0" />
-      <LineId Id="309" Count="0" />
-      <LineId Id="1231" Count="0" />
-      <LineId Id="1233" Count="0" />
-      <LineId Id="1272" Count="0" />
-      <LineId Id="1275" Count="2" />
-      <LineId Id="1273" Count="1" />
-      <LineId Id="1235" Count="12" />
-      <LineId Id="1263" Count="2" />
-      <LineId Id="1248" Count="0" />
-      <LineId Id="1250" Count="12" />
-      <LineId Id="1234" Count="0" />
-      <LineId Id="1266" Count="0" />
-      <LineId Id="1232" Count="0" />
-      <LineId Id="310" Count="0" />
-      <LineId Id="312" Count="0" />
-      <LineId Id="333" Count="0" />
-      <LineId Id="1278" Count="0" />
-      <LineId Id="1283" Count="2" />
-      <LineId Id="1281" Count="1" />
-      <LineId Id="1279" Count="1" />
-      <LineId Id="334" Count="0" />
-      <LineId Id="313" Count="1" />
-      <LineId Id="332" Count="0" />
-      <LineId Id="315" Count="1" />
-      <LineId Id="335" Count="0" />
-      <LineId Id="317" Count="0" />
-      <LineId Id="321" Count="2" />
-      <LineId Id="336" Count="1" />
-      <LineId Id="324" Count="1" />
-      <LineId Id="963" Count="0" />
-      <LineId Id="326" Count="1" />
-      <LineId Id="338" Count="0" />
-      <LineId Id="473" Count="0" />
-      <LineId Id="620" Count="0" />
-      <LineId Id="622" Count="0" />
-      <LineId Id="624" Count="2" />
-      <LineId Id="623" Count="0" />
-      <LineId Id="621" Count="0" />
-      <LineId Id="989" Count="0" />
-      <LineId Id="991" Count="2" />
-      <LineId Id="990" Count="0" />
-      <LineId Id="474" Count="0" />
-      <LineId Id="311" Count="0" />
-      <LineId Id="339" Count="1" />
-      <LineId Id="342" Count="1" />
-      <LineId Id="1288" Count="4" />
-      <LineId Id="1286" Count="1" />
-      <LineId Id="344" Count="1" />
-      <LineId Id="365" Count="2" />
-      <LineId Id="346" Count="0" />
-      <LineId Id="368" Count="0" />
-      <LineId Id="348" Count="9" />
-      <LineId Id="369" Count="0" />
-      <LineId Id="358" Count="0" />
-      <LineId Id="964" Count="0" />
-      <LineId Id="359" Count="4" />
-      <LineId Id="576" Count="0" />
-      <LineId Id="965" Count="0" />
-      <LineId Id="364" Count="0" />
-      <LineId Id="481" Count="0" />
-      <LineId Id="581" Count="0" />
-      <LineId Id="483" Count="0" />
-      <LineId Id="492" Count="0" />
-      <LineId Id="487" Count="1" />
-      <LineId Id="482" Count="0" />
-      <LineId Id="999" Count="0" />
-      <LineId Id="628" Count="4" />
-      <LineId Id="627" Count="0" />
-      <LineId Id="994" Count="0" />
-      <LineId Id="996" Count="2" />
-      <LineId Id="995" Count="0" />
-      <LineId Id="341" Count="0" />
-      <LineId Id="370" Count="0" />
-      <LineId Id="404" Count="0" />
-      <LineId Id="373" Count="1" />
-      <LineId Id="1293" Count="0" />
-      <LineId Id="1296" Count="4" />
-      <LineId Id="1295" Count="0" />
-      <LineId Id="1294" Count="0" />
-      <LineId Id="420" Count="7" />
-      <LineId Id="375" Count="2" />
-      <LineId Id="380" Count="6" />
-      <LineId Id="401" Count="2" />
-      <LineId Id="387" Count="2" />
-      <LineId Id="417" Count="0" />
-      <LineId Id="397" Count="2" />
-      <LineId Id="577" Count="0" />
-      <LineId Id="400" Count="0" />
-      <LineId Id="569" Count="0" />
-      <LineId Id="580" Count="0" />
-      <LineId Id="494" Count="0" />
-      <LineId Id="498" Count="1" />
-      <LineId Id="501" Count="0" />
-      <LineId Id="500" Count="0" />
-      <LineId Id="633" Count="0" />
-      <LineId Id="635" Count="4" />
-      <LineId Id="634" Count="0" />
-      <LineId Id="1003" Count="0" />
-      <LineId Id="1000" Count="2" />
-      <LineId Id="493" Count="0" />
-      <LineId Id="372" Count="0" />
-      <LineId Id="502" Count="0" />
-      <LineId Id="418" Count="1" />
-      <LineId Id="435" Count="0" />
-      <LineId Id="1302" Count="4" />
-      <LineId Id="1301" Count="0" />
-      <LineId Id="436" Count="3" />
-      <LineId Id="455" Count="0" />
-      <LineId Id="440" Count="14" />
-      <LineId Id="428" Count="0" />
-      <LineId Id="578" Count="0" />
-      <LineId Id="456" Count="0" />
-      <LineId Id="570" Count="0" />
-      <LineId Id="579" Count="0" />
-      <LineId Id="572" Count="3" />
-      <LineId Id="571" Count="0" />
-      <LineId Id="640" Count="0" />
-      <LineId Id="642" Count="4" />
-      <LineId Id="641" Count="0" />
-      <LineId Id="1004" Count="0" />
-      <LineId Id="1006" Count="2" />
-      <LineId Id="1005" Count="0" />
-      <LineId Id="371" Count="0" />
-      <LineId Id="647" Count="0" />
-      <LineId Id="695" Count="1" />
-      <LineId Id="689" Count="0" />
-      <LineId Id="697" Count="2" />
-      <LineId Id="693" Count="1" />
-      <LineId Id="651" Count="19" />
-      <LineId Id="681" Count="2" />
-      <LineId Id="686" Count="1" />
-      <LineId Id="700" Count="0" />
-      <LineId Id="966" Count="0" />
-      <LineId Id="688" Count="0" />
-      <LineId Id="1009" Count="0" />
-      <LineId Id="1011" Count="2" />
-      <LineId Id="1010" Count="0" />
-      <LineId Id="648" Count="0" />
-      <LineId Id="1014" Count="0" />
-      <LineId Id="1016" Count="19" />
-      <LineId Id="1067" Count="1" />
-      <LineId Id="1038" Count="18" />
-      <LineId Id="1069" Count="1" />
-      <LineId Id="1057" Count="1" />
-      <LineId Id="1061" Count="5" />
-      <LineId Id="1015" Count="0" />
-      <LineId Id="285" Count="0" />
-      <LineId Id="458" Count="0" />
-      <LineId Id="283" Count="0" />
-      <LineId Id="179" Count="1" />
-      <LineId Id="523" Count="0" />
-      <LineId Id="526" Count="1" />
-      <LineId Id="524" Count="0" />
-      <LineId Id="528" Count="0" />
-      <LineId Id="552" Count="0" />
-      <LineId Id="529" Count="1" />
-      <LineId Id="830" Count="0" />
-      <LineId Id="554" Count="0" />
-      <LineId Id="553" Count="0" />
-      <LineId Id="534" Count="4" />
-      <LineId Id="525" Count="0" />
-      <LineId Id="599" Count="0" />
-      <LineId Id="598" Count="0" />
-      <LineId Id="709" Count="0" />
-      <LineId Id="587" Count="1" />
-      <LineId Id="1203" Count="0" />
-      <LineId Id="1215" Count="0" />
-      <LineId Id="522" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="555" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="506" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="516" Count="0" />
-      <LineId Id="1307" Count="0" />
-      <LineId Id="1309" Count="1" />
-      <LineId Id="1308" Count="0" />
-      <LineId Id="1312" Count="0" />
-      <LineId Id="1311" Count="0" />
-      <LineId Id="518" Count="0" />
-      <LineId Id="13" Count="1" />
-      <LineId Id="203" Count="0" />
-      <LineId Id="1077" Count="0" />
-      <LineId Id="503" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="53" Count="3" />
-      <LineId Id="52" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="507" Count="1" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="504" Count="0" />
-      <LineId Id="72" Count="0" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="509" Count="0" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="1078" Count="0" />
-      <LineId Id="215" Count="0" />
-      <LineId Id="220" Count="0" />
-      <LineId Id="78" Count="3" />
-      <LineId Id="890" Count="0" />
-      <LineId Id="1089" Count="1" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="820" Count="0" />
-      <LineId Id="83" Count="1" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="513" Count="1" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="224" Count="0" />
-      <LineId Id="115" Count="0" />
-      <LineId Id="929" Count="1" />
-      <LineId Id="919" Count="1" />
-      <LineId Id="120" Count="0" />
-      <LineId Id="1101" Count="0" />
-      <LineId Id="921" Count="0" />
-      <LineId Id="924" Count="0" />
-      <LineId Id="1129" Count="0" />
-      <LineId Id="925" Count="3" />
-      <LineId Id="176" Count="0" />
-      <LineId Id="519" Count="0" />
-      <LineId Id="174" Count="0" />
-      <LineId Id="858" Count="0" />
-      <LineId Id="833" Count="3" />
-      <LineId Id="842" Count="2" />
-      <LineId Id="934" Count="0" />
-      <LineId Id="845" Count="0" />
-      <LineId Id="1102" Count="0" />
-      <LineId Id="846" Count="1" />
-      <LineId Id="850" Count="0" />
-      <LineId Id="1130" Count="0" />
-      <LineId Id="851" Count="6" />
-      <LineId Id="173" Count="0" />
-      <LineId Id="1074" Count="1" />
-      <LineId Id="859" Count="2" />
-      <LineId Id="938" Count="4" />
-      <LineId Id="1103" Count="0" />
-      <LineId Id="943" Count="1" />
-      <LineId Id="1115" Count="0" />
-      <LineId Id="1104" Count="0" />
-      <LineId Id="1131" Count="0" />
-      <LineId Id="949" Count="1" />
-      <LineId Id="879" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="1123" Count="0" />
-      <LineId Id="1119" Count="1" />
-      <LineId Id="1125" Count="1" />
-      <LineId Id="1146" Count="0" />
-      <LineId Id="1152" Count="0" />
-      <LineId Id="1147" Count="1" />
-      <LineId Id="1127" Count="0" />
-      <LineId Id="1139" Count="6" />
-      <LineId Id="1124" Count="0" />
-      <LineId Id="1121" Count="1" />
-      <LineId Id="1076" Count="0" />
-      <LineId Id="1117" Count="1" />
-      <LineId Id="510" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="521" Count="0" />
-      <LineId Id="147" Count="6" />
-      <LineId Id="125" Count="2" />
-      <LineId Id="511" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="1073" Count="0" />
-      <LineId Id="512" Count="0" />
-      <LineId Id="161" Count="1" />
-      <LineId Id="142" Count="1" />
-      <LineId Id="603" Count="1" />
-      <LineId Id="610" Count="0" />
-      <LineId Id="908" Count="0" />
-      <LineId Id="612" Count="2" />
-      <LineId Id="611" Count="0" />
-      <LineId Id="608" Count="1" />
-      <LineId Id="605" Count="2" />
-      <LineId Id="600" Count="0" />
-      <LineId Id="144" Count="0" />
-      <LineId Id="1176" Count="11" />
-      <LineId Id="1191" Count="0" />
-      <LineId Id="145" Count="1" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="42" Count="1" />
-      <LineId Id="1071" Count="1" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="515" Count="0" />
-      <LineId Id="971" Count="2" />
-      <LineId Id="967" Count="3" />
-      <LineId Id="541" Count="2" />
-      <LineId Id="540" Count="0" />
-      <LineId Id="547" Count="4" />
-      <LineId Id="545" Count="1" />
+      <LineId Id="1324" Count="1" />
+      <LineId Id="2337" Count="0" />
+      <LineId Id="1326" Count="0" />
+      <LineId Id="2000" Count="336" />
+      <LineId Id="1728" Count="40" />
+      <LineId Id="2338" Count="0" />
+      <LineId Id="1769" Count="3" />
+      <LineId Id="2339" Count="0" />
+      <LineId Id="1773" Count="159" />
+      <LineId Id="2340" Count="0" />
+      <LineId Id="1933" Count="16" />
+      <LineId Id="2341" Count="0" />
+      <LineId Id="1950" Count="13" />
+      <LineId Id="2343" Count="0" />
+      <LineId Id="1964" Count="1" />
+      <LineId Id="2342" Count="0" />
+      <LineId Id="1966" Count="22" />
       <LineId Id="544" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.decelerating_tension">
@@ -2767,7 +2387,11 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="11" Count="0" />
-      <LineId Id="20" Count="10" />
+      <LineId Id="20" Count="3" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="25" Count="5" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.set_pos_all">

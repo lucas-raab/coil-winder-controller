@@ -795,7 +795,7 @@
 </script>
 </div>
 </div>
-<div id="TcHmiLine_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="1" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-width="100" data-tchmi-width-unit="%" data-tchmi-x2="200" data-tchmi-y2="0" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="173" data-tchmi-scale-mode="ScaleToFitWidth">
+<div id="TcHmiLine_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLine" data-tchmi-height="1" data-tchmi-height-unit="px" data-tchmi-left-unit="px" data-tchmi-width-unit="%" data-tchmi-x2="200" data-tchmi-y2="0" data-tchmi-left="%ctrl%Navigation_Left::Width%/ctrl%" data-tchmi-top="173" data-tchmi-scale-mode="ScaleToFitWidth" data-tchmi-right="0">
 
 <script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
 {

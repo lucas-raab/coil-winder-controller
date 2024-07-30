@@ -4246,6 +4246,23 @@
             },
             "USEMAPPING": true
         },
+        "PLC1.MAIN.FB_hmi_connection.turncount_output_datagrid_list": {
+            "ACCESS": 3,
+            "DOMAIN": "ADS",
+            "DYNAMIC": true,
+            "MAPPING": "PLC1::MAIN::FB_hmi_connection::turncount_output_datagrid_list",
+            "SCHEMA": {
+                "allOf": [
+                    {
+                        "$ref": "tchmi:server#/definitions/PLC1.ARRAY_1..1_OF-turncount_output_datagrid"
+                    },
+                    {
+                        "propertyOrder": 12
+                    }
+                ]
+            },
+            "USEMAPPING": true
+        },
         "PLC1.MAIN.FB_hmi_connection.updateInputsUI": {
             "ACCESS": 3,
             "DOMAIN": "ADS",
@@ -6738,6 +6755,7 @@
                 "PLC1.MAIN.FB_hmi_connection.torque.1": 3,
                 "PLC1.MAIN.FB_hmi_connection.torque.2": 3,
                 "PLC1.MAIN.FB_hmi_connection.torque.3": 3,
+                "PLC1.MAIN.FB_hmi_connection.turncount_output_datagrid_list": 3,
                 "PLC1.MAIN.FB_hmi_connection.updateInputsUI": 3,
                 "PLC1.MAIN.FB_hmi_connection.user": 3,
                 "PLC1.MAIN.FB_hmi_connection.userNote": 3,

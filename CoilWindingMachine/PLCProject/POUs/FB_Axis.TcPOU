@@ -93,6 +93,8 @@ VAR_INPUT
     MCJOG                 : MC_Jog;                   // jog control
     MCMOVEMOD             : MC_MoveModulo;            // move modulo control
 	MCReadStatus		  : MC_ReadStatus;			  // reads status from motor
+	MCWriteParam		  : MC_WriteParameter;
+	SoEReset			  : FB_SoEReset;			
     //========================================================AXIS========================================================
     AXIS                  : Axis_REF;                 // axis reference
 
@@ -336,7 +338,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[MCRESET(Axis:=AXIS,EXECUTE:=TRUE);]]></ST>
+        <ST><![CDATA[MCRESET(Axis:=AXIS,EXECUTE:=FALSE);
+MCRESET(Axis:=AXIS,EXECUTE:=TRUE);
+
+axis.PlcToNc.]]></ST>
       </Implementation>
     </Method>
     <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\sets\">
@@ -648,7 +653,10 @@ END_VAR]]></Declaration>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.reset">
+      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Axis.setClear">
       <LineId Id="6" Count="3" />

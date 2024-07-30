@@ -685,21 +685,7 @@
             ]
           },
           {
-            "else": [
-              {
-                "objectType": "WriteToSymbol",
-                "active": true,
-                "symbolExpression": "%ctrl%TcHmiEllipse_Status_Pickup1::FillColor%/ctrl%",
-                "value": {
-                  "objectType": "StaticValue",
-                  "valueType": "tchmi:framework#/definitions/Color",
-                  "value": {
-                    "color": "rgba(140, 19, 237, 1)"
-                  }
-                },
-                "asyncWait": true
-              }
-            ]
+            "else": []
           }
         ],
         "asyncWait": true
