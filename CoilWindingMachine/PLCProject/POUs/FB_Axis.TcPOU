@@ -341,7 +341,7 @@ END_VAR
         <ST><![CDATA[MCRESET(Axis:=AXIS,EXECUTE:=FALSE);
 MCRESET(Axis:=AXIS,EXECUTE:=TRUE);
 
-axis.PlcToNc.]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="setClear" Id="{3edee9ef-4ef0-4a7f-940a-a8847f5820a3}" FolderPath="Methods\sets\">

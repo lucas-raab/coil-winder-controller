@@ -1533,7 +1533,7 @@ progressPercent:=0;
 
 fileReadWrite^.reset();
 
-
+// reset axis's, clear errors
 pickup_axis_list[1].reset();
 		
 pickup_axis_list[1].SoEReset(axis:=pickup_axis_list[1].AXIS,Execute:=FALSE);
