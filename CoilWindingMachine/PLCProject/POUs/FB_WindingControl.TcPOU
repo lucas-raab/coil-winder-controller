@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_WindingControl" Id="{2bf4d53e-3c0a-48b3-b562-160f25601b83}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_WindingControl
 VAR_INPUT
@@ -1667,9 +1667,9 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].setTorque();
 		
-		payoff_axis_list[i].velocityLimitLow:=-50;
-		payoff_axis_list[i].velocityLimitHigh:=-50;
-		payoff_axis_list[i].torque:=-1*((desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2)+GVL.MIN_THRESHOLD_TORQUE);
+		payoff_axis_list[i].velocityLimitLow:=-70;
+		payoff_axis_list[i].velocityLimitHigh:=-70;
+		payoff_axis_list[i].torque:=-1*((desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2)+GVL.MIN_THRESHOLD_TORQUE)-5;
 			
 	END_IF
 END_FOR 

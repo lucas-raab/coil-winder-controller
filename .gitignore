@@ -290,9 +290,11 @@ CoilWindingMachine/_Boot/
 _CompileInfo/
 _Libraries/
 _ModuleInstall/
-*.app
+
+**.TcPOU
 
 *.tpy
 *.tclrs
 *.compiled-library
 *.compileinfo
+*.tclrs

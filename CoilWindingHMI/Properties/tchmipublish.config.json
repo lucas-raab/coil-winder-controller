@@ -35,6 +35,73 @@
       }
     ],
     "isNew": false,
+    "profileName": "CME",
+    "publishMode": "TcHmi",
+    "targetDirectory": "",
+    "server": "",
+    "sitePath": "",
+    "destinationUrl": "",
+    "passiveMode": true,
+    "savePassword": true,
+    "deleteAllFilesBeforePublish": false,
+    "deleteExtensionDataBeforePublish": false,
+    "alwaysPublishLocalServerConfiguration": true,
+    "temporaryPublishWithoutServerConfiguration": false,
+    "abortOnErrors": true,
+    "createPublishLog": false,
+    "userName": "",
+    "encryptedPassword": "",
+    "encryptedTcHmiServerPassword": "1uagE5QlERCxnPzeILknrg==",
+    "tcHmiServerHost": "192.168.1.10",
+    "tcHmiServerPort": "1020",
+    "socketTimeout": "60",
+    "clientCertificateCN": "",
+    "tcHmiUseTLS": true,
+    "useClientCertificate": false,
+    "launchBrowserAfterPublish": true,
+    "createVirtualDirectoriesOnTargetSystem": false,
+    "tcHmiServerUserName": "__SystemAdministrator",
+    "tcHmiDestinationUrl": "https://192.168.1.10:1020/",
+    "publishConfiguration": "test",
+    "tcHmiSavePassword": false,
+    "tcHmiIgnoreCertificateErrors": true
+  },
+  {
+    "serverExtensions": [
+      {
+        "publishServerExtension": true,
+        "name": "ADS"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiEcDiagnostics"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiLua"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiRecipeManagement"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiSqliteHistorize"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiSqliteLogger"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiSrv"
+      },
+      {
+        "publishServerExtension": true,
+        "name": "TcHmiUserManagement"
+      }
+    ],
+    "isNew": false,
     "profileName": "Twincat HMI Server",
     "publishMode": "TcHmi",
     "targetDirectory": "",

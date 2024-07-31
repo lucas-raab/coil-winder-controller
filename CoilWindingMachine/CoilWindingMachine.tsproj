@@ -1551,8 +1551,26 @@ External Setpoint Generation:
 	</ImageDatas>
 	<Project ProjectGUID="{3C450C3B-8B0B-4E52-8750-AE2A64B0E0DB}" TargetNetId="5.143.168.64.1.1" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
-			<Licenses>
+			<Licenses CacheOrCheckLicensesOnStartup="true">
 				<Target>
+					<ManualSelect>{E40D9E9D-E242-457A-9AC7-C915753AC810}</ManualSelect>
+					<ManualSelect>{1C20D4D8-C732-464D-AF34-6EA5D2180E06}</ManualSelect>
+					<ManualSelect>{F1CFF3CF-B042-45EE-A380-4FB3270F0BA5}</ManualSelect>
+					<ManualSelect>{E8CE55B5-3125-49FB-B21B-4CB7A751D68B}</ManualSelect>
+					<ManualSelect>{648F394E-7DD1-499C-8112-7C38E161A94C}</ManualSelect>
+					<ManualSelect>{CB3D4492-5E9E-43BC-AB3B-27CF3896EEC2}</ManualSelect>
+					<ManualSelect>{927A7313-A412-4376-8911-4A8F60EC8651}</ManualSelect>
+					<ManualSelect>{2B655887-A31B-41BB-A125-30011C24FB71}</ManualSelect>
+					<ManualSelect>{8161723B-0C2E-405C-B829-EDC5DAAB5104}</ManualSelect>
+					<ManualSelect>{C1126695-F4A2-4F2D-AA1A-311783D98273}</ManualSelect>
+					<ManualSelect>{C21D857D-6193-4500-8FE2-026AC427DCC4}</ManualSelect>
+					<ManualSelect>{AC534BD2-49E1-4025-9C78-0BC8AE4A36A9}</ManualSelect>
+					<ManualSelect>{5002C16A-02B3-4A8C-8C5C-A65EDD0AE398}</ManualSelect>
+					<ManualSelect>{99A3CF49-FFBF-49D4-BA30-F4C0593B5161}</ManualSelect>
+					<ManualSelect>{2D2E5D68-23A1-4B53-BDF7-41C3861F6DB7}</ManualSelect>
+					<ManualSelect>{3307E182-A1D1-4076-B983-61CAE690B2F9}</ManualSelect>
+					<ManualSelect>{2752D285-16AD-4E89-AE6C-80E72784D264}</ManualSelect>
+					<ManualSelect>{97127BE5-AB00-4872-8A0E-0120D605FA10}</ManualSelect>
 					<LicenseDevice DongleHardwareId="2" DongleDevice="#x03020004" DongleLevel="50" DongleSystemId="{6438177E-B0F9-A121-5B4D-A97CC2C9267B}" DongleSerialNumber="000bsaly"/>
 				</Target>
 			</Licenses>
@@ -1582,12 +1600,13 @@ External Setpoint Generation:
 				<Axis Id="1" CreateSymbols="true" AxisType="1">
 					<Name>Pickup</Name>
 					<AxisPara>
-						<General UnitName="Degree"/>
-						<Velo Maximum="500"/>
+						<General UnitName="°"/>
+						<Dynamic Acceleration="2990.4" Deceleration="2990.4" Jerk="8971.19"/>
+						<Velo RefSearch="19.93598" RefSync="19.93598" SlowManual="99.6799" FastManual="598.0794" Fast="1993.598" Maximum="1993.598"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="8">
-						<EncPara MaxCount="#x0036ee7f"/>
+						<EncPara ScaleFactorNumerator="360" ScaleFactorDenominator="10485760" MaxCount="#xffffffff"/>
 						<Vars VarGrpType="1">
 							<Name>Inputs</Name>
 							<Var>
@@ -1646,7 +1665,7 @@ External Setpoint Generation:
 					</Encoder>
 					<Drive Name="Drive" DrvType="9">
 						<DrvPara MaxCount="#xffffffff" DriveControlDWord="#x00030100">
-							<Analog VeloScale="6" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
+							<Analog VeloReferenz="2192.9578" VeloScale="1.02400649589962" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
 							<TimeComp TaskDelayCycles="1"/>
 						</DrvPara>
 						<Vars VarGrpType="1">
@@ -1723,12 +1742,13 @@ External Setpoint Generation:
 				<Axis Id="2" CreateSymbols="true" AxisType="1">
 					<Name>Payoff 1</Name>
 					<AxisPara>
-						<General UnitName="Degree"/>
-						<Velo Maximum="150"/>
+						<General UnitName="°"/>
+						<Dynamic Acceleration="805.38" Deceleration="805.38" Jerk="2416.14"/>
+						<Velo RefSearch="5.3692" RefSync="5.3692" SlowManual="26.846" FastManual="161.076" Fast="536.92" Maximum="536.92"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="19">
-						<EncPara MaxCount="#xffffffff"/>
+						<EncPara ScaleFactorNumerator="360" ScaleFactorDenominator="62914560" MaxCount="#xffffffff"/>
 						<Vars VarGrpType="1">
 							<Name>Inputs</Name>
 							<Var>
@@ -1787,7 +1807,7 @@ External Setpoint Generation:
 					</Encoder>
 					<Drive Name="Drive" DrvType="16">
 						<DrvPara MaxCount="#xffffffff" DriveControlDWord="#x00020100">
-							<Analog TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
+							<Analog VeloReferenz="590.612" VeloScale="32" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
 							<TimeComp TaskDelayCycles="1"/>
 						</DrvPara>
 						<Vars VarGrpType="1">
@@ -1864,12 +1884,13 @@ External Setpoint Generation:
 				<Axis Id="3" CreateSymbols="true" AxisType="1">
 					<Name>Payoff 2</Name>
 					<AxisPara>
-						<General UnitName="Degree"/>
-						<Velo Maximum="150"/>
+						<General UnitName="°"/>
+						<Dynamic Acceleration="805.38" Deceleration="805.38" Jerk="2416.14"/>
+						<Velo RefSearch="5.3692" RefSync="5.3692" SlowManual="26.846" FastManual="161.076" Fast="536.92" Maximum="536.92"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="19">
-						<EncPara MaxCount="#xffffffff"/>
+						<EncPara ScaleFactorNumerator="360" ScaleFactorDenominator="62914560" MaxCount="#xffffffff"/>
 						<Vars VarGrpType="1">
 							<Name>Inputs</Name>
 							<Var>
@@ -1928,7 +1949,7 @@ External Setpoint Generation:
 					</Encoder>
 					<Drive Name="Drive" DrvType="16">
 						<DrvPara MaxCount="#xffffffff" DriveControlDWord="#x00020100">
-							<Analog TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
+							<Analog VeloReferenz="590.612" VeloScale="32" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
 							<TimeComp TaskDelayCycles="1"/>
 						</DrvPara>
 						<Vars VarGrpType="1">
@@ -2005,12 +2026,13 @@ External Setpoint Generation:
 				<Axis Id="4" CreateSymbols="true" AxisType="1">
 					<Name>Payoff 3</Name>
 					<AxisPara>
-						<General UnitName="Degree"/>
-						<Velo Maximum="150"/>
+						<General UnitName="°"/>
+						<Dynamic Acceleration="805.38" Deceleration="805.38" Jerk="2416.14"/>
+						<Velo RefSearch="5.3692" RefSync="5.3692" SlowManual="26.846" FastManual="161.076" Fast="536.92" Maximum="536.92"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="19">
-						<EncPara MaxCount="#xffffffff"/>
+						<EncPara ScaleFactorNumerator="360" ScaleFactorDenominator="62914560" MaxCount="#xffffffff"/>
 						<Vars VarGrpType="1">
 							<Name>Inputs</Name>
 							<Var>
@@ -2069,7 +2091,7 @@ External Setpoint Generation:
 					</Encoder>
 					<Drive Name="Drive" DrvType="16">
 						<DrvPara MaxCount="#xffffffff" DriveControlDWord="#x00020100">
-							<Analog TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
+							<Analog VeloReferenz="590.612" VeloScale="32" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
 							<TimeComp TaskDelayCycles="1"/>
 						</DrvPara>
 						<Vars VarGrpType="1">
@@ -2207,6 +2229,18 @@ External Setpoint Generation:
 					<TaskPouOids>
 						<TaskPouOid Prio="20" OTCID="#x08502001"/>
 					</TaskPouOids>
+				</Instance>
+			</Project>
+			<Project GUID="{5CCA9D7C-B6AC-41F9-84E8-B1E14F0B2187}" Name="Testing_Marcus" PrjFilePath="..\..\..\Documents\Git\TwinCAT Project2\Testing_Marcus\Testing_Marcus.plcproj" TmcFilePath="..\..\..\Documents\Git\TwinCAT Project2\Testing_Marcus\Testing_Marcus.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="..\..\..\Documents\Git\TwinCAT Project2\Testing_Marcus\Testing_Marcus.tmc" TmcHash="{668A5857-2666-D758-05C2-CF6DE1831442}">
+					<Name>Testing_Marcus Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Contexts>
+						<Context>
+							<Id>1</Id>
+							<Name>Default</Name>
+						</Context>
+					</Contexts>
 				</Instance>
 			</Project>
 		</Plc>
@@ -2465,7 +2499,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								<SortId>0</SortId>
 								<DriveModuleType>14</DriveModuleType>
 								<TcLink>
-									<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+									<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 									<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 11 (ELM7222-0011)</IoItemPathName>
 									<ItemId>11</ItemId>
 									<ObjectId>#x0302000b</ObjectId>
@@ -2521,9 +2555,9 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									</Device>
 									<Channel ChnId="0">
 										<TcLink>
-											<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+											<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 											<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 11 (ELM7222-0011)</IoItemPathName>
-											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Axis 2</NcItemPathName>
+											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Payoff 2</NcItemPathName>
 										</TcLink>
 										<SelectedModifyOptPDOsMode>0</SelectedModifyOptPDOsMode>
 										<Modulo>
@@ -3006,7 +3040,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 												</Parameter>
 												<Parameter>
 													<PropertyName>MaxApplicationTorqueForce</PropertyName>
-													<Value>1.6</Value>
+													<Value>26.2136</Value>
 												</Parameter>
 												<Parameter>
 													<PropertyName>MaxApplicationSpeed</PropertyName>
@@ -3083,7 +3117,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									</Channel>
 									<Channel ChnId="1">
 										<TcLink>
-											<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+											<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 											<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 11 (ELM7222-0011)</IoItemPathName>
 										</TcLink>
 										<SelectedModifyOptPDOsMode>0</SelectedModifyOptPDOsMode>
@@ -3655,7 +3689,7 @@ Bit 8 - 15 : reserved]]></Comment>
 								<SortId>1</SortId>
 								<DriveModuleType>14</DriveModuleType>
 								<TcLink>
-									<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+									<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 									<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 12 (ELM7222-0011)</IoItemPathName>
 									<ItemId>12</ItemId>
 									<ObjectId>#x0302000c</ObjectId>
@@ -3711,9 +3745,9 @@ Bit 8 - 15 : reserved]]></Comment>
 									</Device>
 									<Channel ChnId="0">
 										<TcLink>
-											<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+											<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 											<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 12 (ELM7222-0011)</IoItemPathName>
-											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Axis 1</NcItemPathName>
+											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Payoff 3</NcItemPathName>
 										</TcLink>
 										<SelectedModifyOptPDOsMode>0</SelectedModifyOptPDOsMode>
 										<Modulo>
@@ -4273,9 +4307,9 @@ Bit 8 - 15 : reserved]]></Comment>
 									</Channel>
 									<Channel ChnId="1">
 										<TcLink>
-											<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+											<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 											<IoItemPathName>TIID^Device 1 (EtherCAT)^Term 9 (EK1200)^Term 12 (ELM7222-0011)</IoItemPathName>
-											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Axis 3</NcItemPathName>
+											<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Payoff 1</NcItemPathName>
 										</TcLink>
 										<SelectedModifyOptPDOsMode>0</SelectedModifyOptPDOsMode>
 										<Modulo>
@@ -4758,7 +4792,7 @@ Bit 8 - 15 : reserved]]></Comment>
 												</Parameter>
 												<Parameter>
 													<PropertyName>MaxApplicationTorqueForce</PropertyName>
-													<Value>1.6</Value>
+													<Value>26.2136</Value>
 												</Parameter>
 												<Parameter>
 													<PropertyName>MaxApplicationSpeed</PropertyName>
@@ -5465,7 +5499,7 @@ Bit 8 - 15 : reserved]]></Comment>
 							<SortId>2</SortId>
 							<DriveModuleType>31</DriveModuleType>
 							<TcLink>
-								<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+								<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 								<IoItemPathName>TIID^Device 1 (EtherCAT)^Drive 16 (AX5103-0000-0214)</IoItemPathName>
 								<ItemId>16</ItemId>
 								<ObjectId>#x03020010</ObjectId>
@@ -5477,8 +5511,6 @@ Bit 8 - 15 : reserved]]></Comment>
 							<HardwareVersion>c:0180  p:0103  d:0102  f:0101  o:----  s:0300</HardwareVersion>
 							<SerialNr>Serial#: 000657923</SerialNr>
 							<ProductRevision>AX5103-0000-0214</ProductRevision>
-							<HasDualUseInfo>true</HasDualUseInfo>
-							<OperatingFrequencyLimitation>true</OperatingFrequencyLimitation>
 							<WatchLog UpdateIntervalInMs="500">
 								<WatchLogItem>
 									<WatchLogParaSoE Index="33092"/>
@@ -5568,9 +5600,9 @@ Bit 8 - 15 : reserved]]></Comment>
 								</Device>
 								<Channel ChnId="0">
 									<TcLink>
-										<TcPrjPath>..\TwinCAT Project2\TwinCAT Project2.tsproj</TcPrjPath>
+										<TcPrjPath>..\CoilWindingMachine\CoilWindingMachine.tsproj</TcPrjPath>
 										<IoItemPathName>TIID^Device 1 (EtherCAT)^Drive 16 (AX5103-0000-0214)</IoItemPathName>
-										<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Axis 4</NcItemPathName>
+										<NcItemPathName AxisType="1">TINC^NC-Task 1 SAF^Axes^Pickup</NcItemPathName>
 									</TcLink>
 									<SelectedModifyOptPDOsMode>0</SelectedModifyOptPDOsMode>
 									<Modulo>
