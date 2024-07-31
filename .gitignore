@@ -290,6 +290,8 @@ CoilWindingMachine/_Boot/
 _CompileInfo/
 _Libraries/
 _ModuleInstall/
+CoilWindingMachine.project~u
+CoilWindingMachine.sln
 *.app
 
 *.tpy
