@@ -204,6 +204,7 @@
     <Content Include="Server\ADS\ADS.Config.default.json">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Server\ADS\ADS.Config.default.json" />
     <Content Include="Server\ADS\ADS.Config.test.json">
       <SubType>Content</SubType>
     </Content>

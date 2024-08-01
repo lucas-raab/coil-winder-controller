@@ -2,83 +2,88 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_WindingControl" Id="{2bf4d53e-3c0a-48b3-b562-160f25601b83}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_WindingControl
+
 VAR_INPUT
-	// Input hmi connection from MAIN
-	hmiConnection   : POINTER TO FB_hmi_connection;   // HMI connection
-	eventLogger     : POINTER TO FB_EventLogger;      // Event logger
-	fileReadWrite   : POINTER TO FB_fileReadWrite;    // File read/write
+    // Input connections from MAIN
+    hmiConnection   : POINTER TO FB_hmi_connection;   // HMI connection for user interface
+    eventLogger     : POINTER TO FB_EventLogger;      // Event logger for system events
+    fileReadWrite   : POINTER TO FB_fileReadWrite;    // File read/write operations
 END_VAR
 
 VAR
-	// Temporary testing vars
-	dist : LREAL ;
-	testing : BOOL;
-	// Function Blocks
+    // =================================== TEMPORARY TESTING VARIABLES ===================================
+    dist    : LREAL;    // Distance variable for testing purposes
+    testing : BOOL;     // Boolean flag for testing mode
 
-	// CONTROL VARS
-	desiredTension          : LREAL := 0;         // Desired tension
-	desiredLinspeed         : LREAL := 0;         // Desired linear speed
-	unwinding               : BOOL  := FALSE;     // Unwinding flag
-	desiredTurnCountPickup  : DINT  := 0;         // Desired turn count for pickup
-	
-	// Exit conditions
-	target_turn_count       : DINT  := 0;         // Target turn count post gear ratio
+    // ======================================== CONTROL VARIABLES ========================================
+    desiredTension          : LREAL := 0;    // Desired tension for winding process
+    desiredLinspeed         : LREAL := 0;    // Desired linear speed for winding
+    unwinding               : BOOL  := FALSE;// Flag to indicate unwinding operation
+    desiredTurnCountPickup  : DINT  := 0;    // Desired turn count for pickup reel
+    target_turn_count       : DINT  := 0;    // Target turn count after gear ratio (exit condition)
 
-	// STATUS VARS
-	state                   : INT   := 0;         // State for state machine
-	cnt                     : UINT  := 0;         // PLC cycle counter
-	eta                     : LREAL := 0;         // Time till completion in seconds
-	etaFormattedString      : STRING(255);        // Formatted ETA in format ETA: M:S
-	progressPercent         : LREAL := 0;         // Progress percentage (0 to 100) based on turn count
+    // ========================================== STATUS VARIABLES =======================================
+    state                   : INT   := 0;    // Current state for state machine
+    cnt                     : UINT  := 0;    // PLC cycle counter
+    eta                     : LREAL := 0;    // Estimated time to completion in seconds
+    etaFormattedString      : STRING(255);   // Formatted ETA string (M:S)
+    progressPercent         : LREAL := 0;    // Progress percentage (0 to 100) based on turn count
+    actualLinspeed          : LREAL := 0;    // Actual linear speed during operation
 
-	actualLinspeed			: LREAL := 0;
-	// COIL MODELS (currently not used)
-	// coil_model_base_Xcords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
-	// coil_model_base_Ycords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+    // =============================================AXIS CONTROL========= ===================================
+    payoff_axis_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;   // List of payoff axes
+    pickup_axis_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;   // List of pickup axes
+    axis_list               : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF POINTER TO FB_Axis; // Pointers to all axes (1: pickup, 2-4: payoff)
 
-	// coil_model_rot_Xcords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
-	// coil_model_rot_Ycords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+    // =============================================== MISCELLANEOUS =========================================
+    tape_info               : ARRAY[0..10] OF tape_info; // Information about tape types
+    numOfEnabledPayoff      : INT := 0;      // Number of enabled payoff reels
+    tStart                  : TIME;          // Start time of operation
+    tEnd                    : TIME;          // End time of operation
+    tElapsed                : TIME;          // Elapsed time of operation
+    allowInputEdits         : BOOL;          // Enable/disable input modifications
 
-	// AXIS LIST
-	payoff_axis_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF FB_Axis;   // Payoff axis list
-	pickup_axis_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF FB_Axis;   // Pickup axis list
-	axis_list 				: ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF POINTER TO FB_Axis; //contains pointers to all axies. 1 being pickup, 2,3,4 being payoff
-	// MISC
-	tape_info 				: ARRAY[0..10] OF tape_info;
-	numOfEnabledPayoff      : INT := 0;           // Number of enabled payoffs
-	tStart                  : TIME;               // Start time
-	tEnd                    : TIME;               // End time
-	tElapsed                : TIME;               // Elapsed time
-	allowInputEdits 		: BOOL;				  //enables/disable input mods
-
-
+    // =================================== COIL MODELS (currently not used) ===================================
+    // Uncomment and use if needed in the future
+    // coil_model_base_Xcords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+    // coil_model_base_Ycords : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+    // coil_model_rot_Xcords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
+    // coil_model_rot_Ycords  : ARRAY[0..MAX_COIL_TYPE_COUNT] OF ARRAY[1..MAX_SIZE_COIL_MODEL] OF LREAL;
 END_VAR
 
 VAR CONSTANT
-	input_bounds            : input_bounds;       // Input bounds
-	MAX_COIL_TYPE_COUNT     : INT := 1;           // Number of coil types (counts from 0)
-	MAX_SIZE_COIL_MODEL     : INT := 1205;        // Maximum size of coil model
-	TARGET_PICKUP_FORCE     : LREAL := 10;        // Target pickup force
-	pi                      : LREAL := 4 * ATAN(1); // PI for math reasons (might be built-in but couldn't find it)
-END_VAR
-]]></Declaration>
+    // =============================================== CONSTANT VALUES ===============================================
+    input_bounds            : input_bounds;  // Defined bounds for input values
+    MAX_COIL_TYPE_COUNT     : INT := 1;      // Number of coil types (counts from 0)
+    MAX_SIZE_COIL_MODEL     : INT := 1205;   // Maximum size of coil model
+    TARGET_PICKUP_FORCE     : LREAL := 10;   // Target force for pickup reel
+    pi                      : LREAL := 4 * ATAN(1); // PI constant for calculations
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Folder Name="Methods" Id="{b393cdcb-7058-41c2-9d03-a8f8d00b2dde}">
-      <Folder Name="Axis Control" Id="{49ec2768-53b2-482d-b44d-ec52fe555e63}" />
-      <Folder Name="Error Checks" Id="{dad124df-88d7-4412-bdba-255c48b7272a}" />
-      <Folder Name="Exit Checks" Id="{866f0ce9-c940-4c68-80f5-47885684bea2}" />
+      <Folder Name="Calculations" Id="{35fb52a4-9b2e-4543-81dd-47dc040f0a2d}" />
+      <Folder Name="Checks" Id="{31e7abd2-ccee-45c1-9b72-50dc8913cecf}">
+        <Folder Name="Error Checks" Id="{dad124df-88d7-4412-bdba-255c48b7272a}" />
+        <Folder Name="Exit Checks" Id="{866f0ce9-c940-4c68-80f5-47885684bea2}" />
+        <Folder Name="Input Checks" Id="{3dff40f9-587b-485b-8ffe-a3d1acaecd62}" />
+      </Folder>
       <Folder Name="HMI updates" Id="{df5bfcf9-c740-45ae-b19d-3c3cd0aca00f}" />
       <Folder Name="Init Methods" Id="{313976c9-8371-4349-a1d4-ac334e51a051}" />
-      <Folder Name="Input Checks" Id="{3dff40f9-587b-485b-8ffe-a3d1acaecd62}" />
       <Folder Name="MISC" Id="{df8274f9-8bfd-43c2-9dbf-d95ad8873f48}" />
       <Folder Name="Motor Control" Id="{4367b06a-8be7-4cee-a828-1c414585ef9d}">
+        <Folder Name="Axis Control" Id="{13190a97-e574-45c1-8d63-49afe41c0d88}">
+          <Folder Name="Axis Control" Id="{49ec2768-53b2-482d-b44d-ec52fe555e63}" />
+        </Folder>
         <Folder Name="misc" Id="{4727363e-bfa8-4742-943c-5f588420eeb1}" />
+        <Folder Name="Misc Motor Control Routines" Id="{c85f6397-bdf7-4297-9e1c-8588c06febe6}" />
+        <Folder Name="Standstill Methods" Id="{5a97690b-0fe1-4a36-b337-bb99efd53058}" />
+        <Folder Name="Winding Methods" Id="{0f505234-4be9-4cf6-9596-76fb794045c8}" />
       </Folder>
       <Folder Name="Status Updates" Id="{912579cd-d079-4ec8-869a-781310624225}" />
     </Folder>
-    <Method Name="accelerating_tension" Id="{51b0940c-2da9-428b-aa7c-7aa4bc946ef3}" FolderPath="Methods\Motor Control\">
+    <Method Name="accelerating_tension" Id="{51b0940c-2da9-428b-aa7c-7aa4bc946ef3}" FolderPath="Methods\Motor Control\Winding Methods\">
       <Declaration><![CDATA[METHOD accelerating_tension : BOOL
 VAR_INPUT
 END_VAR
@@ -94,20 +99,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[winding_tension();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="all_check" Id="{3616b09d-79ac-4d4e-a9a8-9c800c9db7f0}" FolderPath="Methods\Input Checks\">
-      <Declaration><![CDATA[METHOD all_check : BOOL
-VAR_INPUT
-	write: BOOL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[all_check:= all_check OR general_input_check(write:=write);
-all_check:= all_check OR payoff_input_check(write:=write);
-all_check:=all_check OR pickup_input_check(write:=write);
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="count_enabled_motors" Id="{4a842378-88e5-40ee-b5f2-32e4ab95fb86}" FolderPath="Methods\Axis Control\">
+    <Method Name="count_enabled_motors" Id="{4a842378-88e5-40ee-b5f2-32e4ab95fb86}" FolderPath="Methods\Motor Control\Axis Control\Axis Control\">
       <Declaration><![CDATA[METHOD count_enabled_motors : BOOL
 VAR_INPUT
 END_VAR
@@ -284,16 +276,7 @@ CASE state OF
         errorOutput := TRUE;
     END_IF
 
-    IF hmiConnection^.checkInputsUI THEN
-        all_check(write := FALSE);
-        hmiConnection^.checkInputsUI := FALSE;
-        errorOutput := TRUE;
-    END_IF
-
-    IF hmiConnection^.updateInputsUI THEN
-        all_check(write := TRUE);
-        hmiConnection^.updateInputsUI := FALSE;
-    END_IF
+   
 
     IF hmiConnection^.homeUI THEN
         ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
@@ -335,16 +318,6 @@ CASE state OF
         hmiConnection^.startUI := FALSE;
     END_IF
 
-    IF hmiConnection^.checkInputsUI THEN
-        all_check(write := FALSE);
-        hmiConnection^.checkInputsUI := FALSE;
-    END_IF
-
-    IF hmiConnection^.updateInputsUI THEN
-        all_check(write := TRUE);
-        hmiConnection^.updateInputsUI := FALSE;
-    END_IF
-
     IF hmiConnection^.homeUI THEN
         ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
                   msgFmtStr := 'Error Occured. Unable to home outside of standby state',
@@ -379,17 +352,7 @@ CASE state OF
                   strArg := '');
         hmiConnection^.resetUI := FALSE;
     END_IF
-
-    IF hmiConnection^.checkInputsUI THEN
-        all_check(write := FALSE);
-        hmiConnection^.checkInputsUI := FALSE;
-    END_IF
-
-    IF hmiConnection^.updateInputsUI THEN
-        all_check(write := TRUE);
-        hmiConnection^.updateInputsUI := FALSE;
-    END_IF
-
+	
     IF hmiConnection^.homeUI THEN
         ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
                   msgFmtStr := 'Error Occured. Unable to home inside error state. Please resolve errors on enabled axises',
@@ -459,16 +422,6 @@ CASE state OF
                   msgFmtStr := 'Error Occured. Unable to start while in ESTOP state. Please reset first.',
                   strArg := '');
         hmiConnection^.startUI := FALSE;
-    END_IF
-
-    IF hmiConnection^.checkInputsUI THEN
-        all_check(write := FALSE);
-        hmiConnection^.checkInputsUI := FALSE;
-    END_IF
-
-    IF hmiConnection^.updateInputsUI THEN
-        all_check(write := TRUE);
-        hmiConnection^.updateInputsUI := FALSE;
     END_IF
 
     IF hmiConnection^.homeUI THEN
@@ -756,7 +709,7 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="decelerating_tension" Id="{c76da513-9eeb-4494-921e-e9d30e1467af}" FolderPath="Methods\Motor Control\">
+    <Method Name="decelerating_tension" Id="{c76da513-9eeb-4494-921e-e9d30e1467af}" FolderPath="Methods\Motor Control\Winding Methods\">
       <Declaration><![CDATA[METHOD decelerating_tension : BOOL
 VAR_INPUT
 END_VAR
@@ -765,7 +718,7 @@ END_VAR
         <ST><![CDATA[winding_tension();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="determine_motor_state" Id="{e8b4b006-30e0-4934-923d-a97aac10b32d}" FolderPath="Methods\Motor Control\">
+    <Method Name="determine_motor_state" Id="{e8b4b006-30e0-4934-923d-a97aac10b32d}" FolderPath="Methods\Motor Control\misc\">
       <Declaration><![CDATA[METHOD determine_motor_state : BOOL
 VAR_INPUT
 END_VAR
@@ -808,7 +761,7 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="estop_routine" Id="{e370fdf5-060a-481a-8925-f8c00351b401}" FolderPath="Methods\Motor Control\">
+    <Method Name="estop_routine" Id="{e370fdf5-060a-481a-8925-f8c00351b401}" FolderPath="Methods\Motor Control\Misc Motor Control Routines\">
       <Declaration><![CDATA[METHOD estop_routine : BOOL
 VAR_INPUT
 END_VAR
@@ -842,7 +795,7 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="find_actualLinspeed" Id="{823ec0fb-b191-48ce-920c-8a8209069cf1}" FolderPath="Methods\Status Updates\">
+    <Method Name="find_actualLinspeed" Id="{823ec0fb-b191-48ce-920c-8a8209069cf1}" FolderPath="Methods\Calculations\">
       <Declaration><![CDATA[METHOD find_actualLinspeed : BOOL
 VAR_INPUT
 END_VAR
@@ -851,7 +804,7 @@ END_VAR
         <ST><![CDATA[actualLinspeed:=pickup_axis_list[1].actualVelocity*pickup_axis_list[1].outerRadiusCurrent;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Status Updates\">
+    <Method Name="find_eta" Id="{85e42879-e4fd-44ad-b45f-475c7a661596}" FolderPath="Methods\Calculations\">
       <Declaration><![CDATA[//updates eta var
 METHOD find_eta : STRING(255)
 VAR
@@ -942,7 +895,7 @@ find_eta := CONCAT(CONCAT('ETA: ', minutesString), CONCAT(':', secondsString));
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="find_tape_length_used" Id="{7ea290bf-df4e-4690-9fae-b92992bd262d}" FolderPath="Methods\Status Updates\">
+    <Method Name="find_tape_length_used" Id="{7ea290bf-df4e-4690-9fae-b92992bd262d}" FolderPath="Methods\Calculations\">
       <Declaration><![CDATA[METHOD find_tape_length_used : LREAL
 VAR_INPUT
 END_VAR
@@ -953,7 +906,7 @@ VAR
 	total_circum: LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//TO DO not sure how acurate this. i sort of stole this code from another function.
+        <ST><![CDATA[
 
 CASE pickup_axis_list[1].coilShapeID OF
 	//finds eta given turn count
@@ -967,17 +920,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 		END_IF
 	END_FOR
 	
-
-	
-	
-	
 	total_circum:=2*pi*desiredTurnCountPickup*pickup_axis_list[1].pancake.radius/1000 + tape_thicnes*EXPT(desiredTurnCountPickup,2)*pi;
-	
-	
-	
-
-	
-	
 	
 	1:	
 	// to do. update this monster of a formula for the race track coil. derived through calculus, which is probably correct, just now cant figure it out because i decided to write a one liner instead of splitting up
@@ -1014,7 +957,7 @@ END_VAR]]></Declaration>
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="general_error_check" Id="{8ba42383-7e8f-4747-9137-d6b0ee74634e}" FolderPath="Methods\Error Checks\">
+    <Method Name="general_error_check" Id="{8ba42383-7e8f-4747-9137-d6b0ee74634e}" FolderPath="Methods\Checks\Error Checks\">
       <Declaration><![CDATA[METHOD general_error_check : BOOL
 VAR
 	i: INT;
@@ -1095,14 +1038,16 @@ END_IF
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="general_input_check" Id="{a3d14995-b6bb-4412-80c9-b4d7fa9675b0}" FolderPath="Methods\Input Checks\">
+    <Method Name="general_input_check" Id="{a3d14995-b6bb-4412-80c9-b4d7fa9675b0}" FolderPath="Methods\Checks\Input Checks\">
       <Declaration><![CDATA[METHOD general_input_check : BOOL
 VAR_INPUT
 	write: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF hmiConnection^.general_input_datagrid_params_list[1].tension < input_bounds.tension_low OR hmiConnection^.general_input_datagrid_params_list[1].tension > input_bounds.tension_high THEN
+        <ST><![CDATA[//does general input checks before 
+
+IF hmiConnection^.general_input_datagrid_params_list[1].tension < input_bounds.tension_low OR hmiConnection^.general_input_datagrid_params_list[1].tension > input_bounds.tension_high THEN
 	general_input_check := TRUE;
 	
 	ADSLOGSTR(
@@ -1195,7 +1140,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 	
 	CASE pickup_axis_list[1].directionB OF
 		
-	0: //Finds direction if motor is being unwound
+	0: //Finds direction if motor is being wound
 	
 	dist:=(pickup_axis_list[1].pancake.radius)/1000; 
 	
@@ -1206,9 +1151,8 @@ CASE pickup_axis_list[1].coilShapeID OF
 		dist:=dist+temp;
 		
 	END_FOR
-	1: //Finds direction if motor is being wound
-	
-	//to do implement directions
+	1: //Finds direction if motor is being unwound
+
 	
 	dist:=(pickup_axis_list[1].pancake.radius)/1000; 
 	
@@ -1216,7 +1160,7 @@ CASE pickup_axis_list[1].coilShapeID OF
 		IF payoff_axis_list[i].enabled THEN
 			temp:=temp +(pickup_axis_list[1].axis.NcToPlc.ModuloActTurns*payoff_axis_list[i].tape_info^[payoff_axis_list[i].tapeType].tape_depth)/(1000);
 		END_IF
-		dist:=dist+temp;
+		dist:=dist-temp;
 		
 	END_FOR
 	
@@ -1271,7 +1215,7 @@ FOR i:=1 TO gvl.MAX_PAYOFF_COUNT+gvl.MAX_PICKUP_COUNT DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\">
+    <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\Misc Motor Control Routines\">
       <Declaration><![CDATA[METHOD home : BOOL
 VAR_INPUT
 END_VAR
@@ -1394,62 +1338,7 @@ END_VAR
 *)]]></ST>
       </Implementation>
     </Method>
-    <Method Name="input_update" Id="{a62c6a9d-53f4-4e3a-966f-6f249a814bd7}" FolderPath="Methods\Input Checks\">
-      <Declaration><![CDATA[METHOD input_update : BOOL
-VAR_INPUT
-	general : BOOL ;
-	pickup : BOOL ;
-	payoff : BOOL ;
-END_VAR
-
-
-
-VAR
-	
-	//chooses which inputs we will update.         
-	i: INT;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[//NOT NEEDED ANYMORE
-(*
-
-
-//Updates internal winding control variables with HMI inputs. 
-IF pickup THEN
-	pickup_axis_list[1].coilShapeID:=hmiConnection^.pickup_input_datagrid_params_list[1].coil_shape;
-	desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
-END_IF
-
-IF payoff THEN
-	FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
-		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
-	IF payoff_axis_list[i].enabled THEN
-		payoff_axis_list[i].pancake.radius:=hmiConnection^.payoff_input_datagrid_params_list[i].outer_dia;
-		
-	
-	END_IF
-	
-	END_FOR
-END_IF
-
-IF general THEN
-	desiredLinspeed:=hmiConnection^.general_input_datagrid_params_list[1].linspeed;
-	desiredTension:=hmiConnection^.general_input_datagrid_params_list[1].tension;
-	unwinding:=hmiConnection^.general_input_datagrid_params_list[1].unwinding;
-	
-	pickup_axis_list[1].directionB:=BOOL_TO_INT(unwinding);
-	
-	FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
-		payoff_axis_list[i].directionB:=BOOL_TO_INT(unwinding);
-
-	END_FOR
-END_IF
-
-*)]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="payoff_input_check" Id="{70c3f949-5037-419d-bccb-87705ebd3434}" FolderPath="Methods\Input Checks\">
+    <Method Name="payoff_input_check" Id="{70c3f949-5037-419d-bccb-87705ebd3434}" FolderPath="Methods\Checks\Input Checks\">
       <Declaration><![CDATA[METHOD payoff_input_check : BOOL
 VAR_INPUT
 END_VAR
@@ -1461,7 +1350,9 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
+        <ST><![CDATA[//write inputs from payoff data grids to payof axis 
+
+FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	
 	IF write THEN
 		payoff_axis_list[i].enabled:=hmiConnection^.payoff_input_datagrid_params_list[i].enabled;
@@ -1473,38 +1364,7 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="pickup_input_check" Id="{3a472a75-4ad8-4147-bca7-de8a29e62be5}" FolderPath="Methods\Input Checks\">
-      <Declaration><![CDATA[METHOD pickup_input_check : BOOL
-VAR_INPUT
-	write : BOOL ;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF hmiConnection^.pickup_input_datagrid_params_list[1].turn_count < input_bounds.turn_count_pickup_low OR hmiConnection^.pickup_input_datagrid_params_list[1].turn_count > input_bounds.turn_count_pickup_high THEN
-	pickup_input_check := TRUE;
-	
-	ADSLOGSTR(
-        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-        	msgFmtStr := 'Error occurred. Pickup turncount outside of range.',
-        	strArg := ''
-   		 );
-	
-ELSE
-	
-	IF write THEN
-		desiredTurnCountPickup:=hmiConnection^.pickup_input_datagrid_params_list[1].turn_count;
-	END_IF
-
-	
-	
-	
-END_IF
-
-
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="read_status" Id="{c26500a1-9771-4061-a160-1627c7f00ff3}" FolderPath="Methods\Axis Control\">
+    <Method Name="read_status" Id="{c26500a1-9771-4061-a160-1627c7f00ff3}" FolderPath="Methods\Motor Control\Axis Control\Axis Control\">
       <Declaration><![CDATA[METHOD read_status : BOOL
 VAR_INPUT
 END_VAR
@@ -1638,7 +1498,7 @@ set_pos_all:=NOT ERROR;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="standstill_tension" Id="{2810c0a6-5d8e-4e25-8bef-5c7267116cff}" FolderPath="Methods\Motor Control\">
+    <Method Name="standstill_tension" Id="{2810c0a6-5d8e-4e25-8bef-5c7267116cff}" FolderPath="Methods\Motor Control\Standstill Methods\">
       <Declaration><![CDATA[METHOD standstill_tension : BOOL
 VAR_INPUT
 	
@@ -1676,7 +1536,7 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="standstill_tension_check" Id="{4514199c-9af5-4a98-ad75-0298298ebf12}" FolderPath="Methods\Input Checks\">
+    <Method Name="standstill_tension_check" Id="{4514199c-9af5-4a98-ad75-0298298ebf12}" FolderPath="Methods\Checks\Input Checks\">
       <Declaration><![CDATA[METHOD standstill_tension_check : BOOL
 VAR_OUTPUT
 
@@ -1787,7 +1647,7 @@ pickup_axis_list[1].pancake.radius:=hmiConnection^.pickup_pancake_input_datagrid
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="turncount_check" Id="{4c7cb2bc-d2fc-4d92-bc21-97258f109b7a}" FolderPath="Methods\Input Checks\">
+    <Method Name="turncount_check" Id="{4c7cb2bc-d2fc-4d92-bc21-97258f109b7a}" FolderPath="Methods\Checks\Input Checks\">
       <Declaration><![CDATA[METHOD turncount_check : BOOL
 VAR_INPUT
 END_VAR
@@ -1799,6 +1659,8 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//checks to see if inputed turncount will result in a outer radius over max
+
+
 ext:=FALSE;
 
 
@@ -1826,7 +1688,7 @@ END_IF
 turncount_check:=ext;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="update_axis_distance" Id="{66fdf023-25cc-43be-86f3-ed799e674baa}">
+    <Method Name="update_axis_distance" Id="{66fdf023-25cc-43be-86f3-ed799e674baa}" FolderPath="Methods\Calculations\">
       <Declaration><![CDATA[METHOD update_axis_distance : BOOL
 VAR_INPUT
 END_VAR
@@ -1868,7 +1730,7 @@ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="update_TC" Id="{af86de83-13e3-4387-9393-79bac0892f14}">
+    <Method Name="update_TC" Id="{af86de83-13e3-4387-9393-79bac0892f14}" FolderPath="Methods\Calculations\">
       <Declaration><![CDATA[METHOD update_TC : BOOL
 VAR_INPUT
 END_VAR
@@ -1928,16 +1790,18 @@ hmiConnection^.motor_info_datagrid_list[3].speed:=hmiConnection^.rpm[3];
 hmiConnection^.motor_info_datagrid_list[4].speed:=hmiConnection^.rpm[4];]]></ST>
       </Implementation>
     </Method>
-    <Method Name="winding_check" Id="{31081dd9-0820-42d0-a9d6-769c3442a1c8}" FolderPath="Methods\Input Checks\">
+    <Method Name="winding_check" Id="{31081dd9-0820-42d0-a9d6-769c3442a1c8}" FolderPath="Methods\Checks\Input Checks\">
       <Declaration><![CDATA[METHOD winding_check : BOOL
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[winding_check:= winding_check OR turncount_check();]]></ST>
+        <ST><![CDATA[//checks inputs to see if we can start winding.
+
+winding_check:= winding_check OR turncount_check();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="winding_exit_check" Id="{d54735ba-4782-466e-8281-2700698b8cff}" FolderPath="Methods\Exit Checks\">
+    <Method Name="winding_exit_check" Id="{d54735ba-4782-466e-8281-2700698b8cff}" FolderPath="Methods\Checks\Exit Checks\">
       <Declaration><![CDATA[METHOD winding_exit_check : BOOL
 VAR_INPUT
 END_VAR
@@ -2009,7 +1873,7 @@ winding_exit_check:=ext;
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="winding_tension" Id="{b4e997d8-0092-4fca-a6b8-7c2e056fe739}" FolderPath="Methods\Motor Control\">
+    <Method Name="winding_tension" Id="{b4e997d8-0092-4fca-a6b8-7c2e056fe739}" FolderPath="Methods\Motor Control\Winding Methods\">
       <Declaration><![CDATA[METHOD winding_tension : BOOL
 VAR_INPUT
 END_VAR
@@ -2084,12 +1948,6 @@ END_IF
     <LineIds Name="FB_WindingControl.accelerating_tension">
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_WindingControl.all_check">
-      <LineId Id="5" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="11" Count="0" />
-    </LineIds>
     <LineIds Name="FB_WindingControl.count_enabled_motors">
       <LineId Id="6" Count="0" />
       <LineId Id="16" Count="0" />
@@ -2101,7 +1959,13 @@ END_IF
       <LineId Id="1324" Count="1" />
       <LineId Id="2337" Count="0" />
       <LineId Id="1326" Count="0" />
-      <LineId Id="2000" Count="336" />
+      <LineId Id="2000" Count="138" />
+      <LineId Id="2148" Count="40" />
+      <LineId Id="2199" Count="34" />
+      <LineId Id="2359" Count="0" />
+      <LineId Id="2245" Count="69" />
+      <LineId Id="2324" Count="0" />
+      <LineId Id="2326" Count="10" />
       <LineId Id="1728" Count="40" />
       <LineId Id="2338" Count="0" />
       <LineId Id="1769" Count="3" />
@@ -2199,8 +2063,9 @@ END_IF
     <LineIds Name="FB_WindingControl.find_tape_length_used">
       <LineId Id="10" Count="6" />
       <LineId Id="71" Count="4" />
-      <LineId Id="22" Count="7" />
-      <LineId Id="38" Count="14" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="44" Count="8" />
       <LineId Id="61" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -2229,6 +2094,7 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_input_check">
+      <LineId Id="55" Count="1" />
       <LineId Id="6" Count="9" />
       <LineId Id="33" Count="1" />
       <LineId Id="42" Count="0" />
@@ -2268,7 +2134,7 @@ END_IF
       <LineId Id="6" Count="11" />
       <LineId Id="83" Count="8" />
       <LineId Id="38" Count="0" />
-      <LineId Id="21" Count="1" />
+      <LineId Id="21" Count="0" />
       <LineId Id="50" Count="1" />
       <LineId Id="68" Count="1" />
       <LineId Id="92" Count="5" />
@@ -2336,51 +2202,17 @@ END_IF
       <LineId Id="16" Count="31" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_WindingControl.input_update">
-      <LineId Id="73" Count="3" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="35" Count="3" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="24" Count="1" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="43" Count="3" />
-      <LineId Id="50" Count="2" />
-      <LineId Id="58" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="6" Count="0" />
-    </LineIds>
     <LineIds Name="FB_WindingControl.payoff_input_check">
-      <LineId Id="35" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="36" Count="0" />
       <LineId Id="59" Count="0" />
       <LineId Id="66" Count="0" />
       <LineId Id="112" Count="0" />
       <LineId Id="122" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="71" Count="1" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_WindingControl.pickup_input_check">
-      <LineId Id="6" Count="9" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="16" Count="4" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.read_status">
@@ -2513,6 +2345,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.turncount_check">
       <LineId Id="5" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="61" Count="0" />
       <LineId Id="50" Count="0" />
       <LineId Id="28" Count="1" />
       <LineId Id="32" Count="7" />
@@ -2564,6 +2398,7 @@ END_IF
       <LineId Id="33" Count="1" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_check">
+      <LineId Id="9" Count="1" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.winding_exit_check">
