@@ -270,12 +270,7 @@ CASE coilShapeID OF
 	
 	
 	END_CASE
-	
-	
-	
-	
-	
-	1://TO DO. IMPLEMENT OTHER COIL IDS BESDIES PANCAKE
+
 END_CASE
 ]]></ST>
       </Implementation>
@@ -629,8 +624,7 @@ END_VAR]]></Declaration>
       <LineId Id="25" Count="4" />
       <LineId Id="22" Count="2" />
       <LineId Id="20" Count="0" />
-      <LineId Id="14" Count="3" />
-      <LineId Id="11" Count="1" />
+      <LineId Id="14" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="6" Count="0" />
     </LineIds>
