@@ -559,7 +559,13 @@ CASE state OF
 	ELSE
 		eventLogger^.fbMessage[1].Send(0);
 		state:=31;
-		tStart:=TIME();
+		
+		
+		
+		IF NOT fileReadWrite^.bInProgress THEN
+				fileReadWrite^.bStartTiming:=TRUE;
+		END_IF
+	
 	END_IF
 	// ========================================30========================================
 	
@@ -572,8 +578,7 @@ CASE state OF
 	
 	accelerating_tension();
 	determine_motor_state();
-	tElapsed:=TIME() -tStart;
-	
+
 	IF winding_exit_check() THEN
 	
 		state:=39;
@@ -593,7 +598,6 @@ CASE state OF
 	
 	winding_tension();
 	determine_motor_state();
-	tElapsed:=TIME() -tStart;
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
@@ -616,7 +620,8 @@ CASE state OF
 	
 	decelerating_tension();
 	determine_motor_state();
-	tElapsed:=TIME() -tStart;
+	
+
 
 	//check for exit conditions 
 	IF winding_exit_check() THEN
@@ -633,13 +638,9 @@ CASE state OF
 		eventLogger^.fbMessage[2].Send(0);
 		hmiConnection^.startUI:=FALSE;
 		
-		tEnd:=TIME();
-		tElapsed:=tEnd -Tstart;
+		fileReadWrite^.bStopTiming:=TRUE;
 		
 		fileReadWrite^.update_database(user:= 'TO DO figure out how to get user information',
-										timeStarted:=tStart,
-										timeCompleted:=tEnd,
-										timeElasped:=tElapsed,
 										numOfCoil:=numOfEnabledPayoff,
 										lengthOCoil:=find_tape_length_used(),
 										userNote:=hmiConnection^.userNote);
@@ -2021,7 +2022,18 @@ END_IF
       <LineId Id="2338" Count="0" />
       <LineId Id="1769" Count="3" />
       <LineId Id="2339" Count="0" />
-      <LineId Id="1773" Count="159" />
+      <LineId Id="1773" Count="41" />
+      <LineId Id="2430" Count="5" />
+      <LineId Id="2428" Count="0" />
+      <LineId Id="1816" Count="11" />
+      <LineId Id="1829" Count="19" />
+      <LineId Id="1850" Count="21" />
+      <LineId Id="2426" Count="1" />
+      <LineId Id="1873" Count="15" />
+      <LineId Id="2429" Count="0" />
+      <LineId Id="1889" Count="0" />
+      <LineId Id="1892" Count="0" />
+      <LineId Id="1896" Count="36" />
       <LineId Id="2340" Count="0" />
       <LineId Id="1933" Count="16" />
       <LineId Id="2341" Count="0" />

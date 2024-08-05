@@ -3,9 +3,17 @@
   <POU Name="FB_fileReadWrite" Id="{672718a4-3f7c-4568-983a-5be17c81c63b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_fileReadWrite
 
+VAR_IN_OUT
+	
+END_VAR
+VAR_OUTPUT
+	bInProgress		: BOOL:=FALSE;
+END_VAR
 VAR_INPUT
 	bInitWrite		: BOOL := FALSE;(* Rising edge starts program execution *)
 	bwrite			: BOOL;
+	 bStartTiming : BOOL;
+    bStopTiming : BOOL;
 END_VAR
 
 VAR
@@ -28,6 +36,13 @@ VAR
 	step			: DWORD 	:= 0;
 	stepCheck		: DWORD 	:= 0;
 	stepDel: INT;
+	
+	
+	startTime : TIMESTRUCT;
+    endTime : TIMESTRUCT;
+    elapsedTime : TIME;
+   	timeStartString : STRING(255);
+	timeEndString : STRING(255);
 	fbTimer   : FB_LocalSystemTime := ( bEnable := TRUE, dwCycle := 1 );
 	fbFileOpen		: FB_FileOpen;(* Opens file *)
 	fbFileClose		: FB_FileClose;(* Closes file *)
@@ -38,6 +53,16 @@ VAR
 	bCheck          : BOOL;
 	bValidPath		: BOOL;
 	bDelete			: BOOL;
+	
+		testdatabase		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ 
+	'User: ', 'TestUser',
+	'Time Started: ', 'N/A', 
+	'Time Completed: ', 'N/A',
+	'Time Elapsed: ', 'N/A', 
+	'Number OF coils: ', 'N/A',
+	'Length of coil used: ', 'N/A',
+	'User Note: ', 'This is a note from the user. should be last'];
+	
 	database		: ARRAY[0..GVL.MAX_CSV_ROWS, 0..GVL.MAX_CSV_COLUMNS ] OF STRING(GVL.MAX_CSV_FIELD_LENGTH) :=[ 
 	'User: ', 'TestUser',
 	'Time Started: ', 'N/A', 
@@ -169,17 +194,32 @@ VAR
 t : DATE_AND_TIME ;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF bInitWrite THEN
+        <ST><![CDATA[fbTimer(bEnable := TRUE, dwCycle := 1 );
+
+IF bInitWrite THEN
 	bCheck:=TRUE;
 	bInitWrite:=FALSE;
+END_IF
+
+IF bStartTiming AND NOT bInProgress THEN
+    startTime:=fbTimer.systemTime;
+    bStartTiming := FALSE;
+	bInProgress:= TRUE;
+END_IF
+
+// Stop timing and calculate elapsed time
+IF bStopTiming THEN
+   endTime:=fbTimer.systemTime;
+  
+    // Calculate elapsed time in milliseconds
+  
+    bStopTiming := FALSE;
+	bInProgress :=FALSE;
 END_IF
 
 fileWrite();
 checkFile();
 fileDelete();
-fbTimer();
-
-
 ]]></ST>
       </Implementation>
     </Method>
@@ -406,25 +446,49 @@ nErrId:=0;
 VAR_INPUT
 	 
 	user : STRING := 'N/A';
-	timeStarted : TIME;
-	timeCompleted : TIME;
-	timeElasped : TIME;
 	numOfCoil : INT :=0;
 	lengthOCoil : LREAL :=0;
 	userNote : STRING;
+	
+	
+END_VAR
+VAR
+	times: STRING(255);
+	timeend: STRING(255);
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+times:=WORD_TO_STRING(startTime.wYear);
+timeS:=CONCAT(times,'/');
+timeS:=CONCAT(times,WORD_TO_STRING(startTime.wMonth));
+timeS:=CONCAT(times,'/');
+timeS:=CONCAT(times,WORD_TO_STRING(startTime.wDay));
+timeS:=CONCAT(times,'/');
+timeS:=CONCAT(times,WORD_TO_STRING(startTime.wHour));
+timeS:=CONCAT(times,'/');
+timeS:=CONCAT(times,WORD_TO_STRING(startTime.wMinute));
+timeS:=CONCAT(times,'/');
+timeS:=CONCAT(times,WORD_TO_STRING(startTime.wSecond));
 
-
+timeend:=WORD_TO_STRING(endtime.wYear);
+timeend:=CONCAT(timeend,'/');
+timeend:=CONCAT(timeend,WORD_TO_STRING(endtime.wMonth));
+timeend:=CONCAT(timeend,'/');
+timeend:=CONCAT(timeend,WORD_TO_STRING(endtime.wDay));
+timeend:=CONCAT(timeend,'/');
+timeend:=CONCAT(timeend,WORD_TO_STRING(endtime.wHour));
+timeend:=CONCAT(timeend,'/');
+timeend:=CONCAT(timeend,WORD_TO_STRING(endtime.wMinute));
+timeend:=CONCAT(timeend,'/');
+timeend:=CONCAT(timeend,WORD_TO_STRING(endtime.wSecond));
 
 
 
 database[ 0, 1 ]:=user; //user ID 
-database[ 1, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeStarted)); //TO DO this leaves a long in a vauge format. 
-database[ 2, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeCompleted));
-database[ 3, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(timeElasped));
+database[ 1, 1 ]:=times;
+database[ 2, 1 ]:=timeend;
+database[ 3, 1 ]:=WSTRING_TO_STRING(TIME_TO_WSTRING(SYSTEMTIME_TO_DT(endTime) - SYSTEMTIME_TO_DT(startTime)));
 database[ 4, 1 ]:=INT_TO_STRING(numOfCoil);
 database[ 5, 1 ]:=LREAL_TO_STRING(lengthOCoil);
 database[ 6, 1 ]:=userNote;
@@ -479,17 +543,22 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYCLIC">
+      <LineId Id="197" Count="1" />
       <LineId Id="153" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="157" Count="0" />
       <LineId Id="156" Count="0" />
-      <LineId Id="154" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="118" Count="0" />
-      <LineId Id="120" Count="1" />
       <LineId Id="143" Count="0" />
+      <LineId Id="165" Count="2" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="168" Count="4" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="174" Count="1" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="180" Count="0" />
       <LineId Id="145" Count="0" />
+      <LineId Id="185" Count="3" />
+      <LineId Id="184" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.fileDelete">
       <LineId Id="30" Count="0" />
@@ -555,7 +624,18 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.update_database">
-      <LineId Id="53" Count="5" />
+      <LineId Id="53" Count="1" />
+      <LineId Id="73" Count="3" />
+      <LineId Id="78" Count="2" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="83" Count="9" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="58" Count="0" />
       <LineId Id="5" Count="1" />
       <LineId Id="35" Count="2" />
       <LineId Id="41" Count="0" />
