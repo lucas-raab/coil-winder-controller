@@ -159,8 +159,8 @@ END_VAR]]></Declaration>
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="CYLIC" Id="{022d29b1-9207-44a1-a9b2-dae6b5311cdc}">
-      <Declaration><![CDATA[METHOD CYLIC : BOOL
+    <Method Name="CYCLIC" Id="{022d29b1-9207-44a1-a9b2-dae6b5311cdc}">
+      <Declaration><![CDATA[METHOD CYCLIC : BOOL
 VAR_INPUT
 END_VAR
 
@@ -478,7 +478,7 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="185" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_fileReadWrite.CYLIC">
+    <LineIds Name="FB_fileReadWrite.CYCLIC">
       <LineId Id="153" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="157" Count="0" />

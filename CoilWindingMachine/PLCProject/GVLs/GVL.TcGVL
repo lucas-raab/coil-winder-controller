@@ -36,7 +36,7 @@ VAR_GLOBAL CONSTANT
 	
 	MIN_THRESHOLD_TORQUE : LREAL:= 2;
 	
-	MAX_EVENT_SIZE : LREAL:= 50;
+	MAX_EVENT_SIZE : INT:= 50;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

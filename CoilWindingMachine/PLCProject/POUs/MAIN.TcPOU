@@ -38,7 +38,7 @@ END_IF
 FB_EventLogger.CYCLIC(); //event logger
 FB_hmi_connection.CYCLIC(); //hmi inputs and outputs
 FB_WindingControl.CYCLIC(); //motor control. 
-FB_FileReadWrite.CYLIC();
+FB_FileReadWrite.CYCLIC();
 
 ]]></ST>
       </Implementation>
