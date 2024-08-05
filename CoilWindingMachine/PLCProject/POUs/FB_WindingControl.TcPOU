@@ -268,11 +268,13 @@ CASE state OF
 
     IF NOT hmiConnection^.startUI THEN
         state := 20;
+		eventLogger^.fbMessage[4].Send(0);
         errorOutput := TRUE;
     END_IF
 
     IF NOT hmiConnection^.tensionUI THEN
         hmiConnection^.startUI := FALSE;
+		eventLogger^.fbMessage[4].Send(0);
         state := 10;
         errorOutput := TRUE;
     END_IF
@@ -1015,6 +1017,8 @@ END_VAR]]></Declaration>
         <ST><![CDATA[//Checks to see if there are any errors in a enabled axis.
 
 
+
+
 pickup_axis_list[1].error_check_all();
 
 errorStatus:=pickup_axis_list[1].AXIS.Status.Error OR pickup_axis_list[1].adsError ;
@@ -1028,7 +1032,7 @@ IF errorOutput AND pickup_axis_list[1].AXIS.Status.Error THEN
    			 );
 		
 			errorOutput:=FALSE;
-		
+			eventLogger^.fbMessage[5].Send(0);
 END_IF
 		
 IF errorOutput AND pickup_axis_list[1].adsError THEN
@@ -1040,7 +1044,7 @@ IF errorOutput AND pickup_axis_list[1].adsError THEN
    			 );
 		
 			errorOutput:=FALSE;
-		
+		eventLogger^.fbMessage[5].Send(0);
 END_IF
 
 
@@ -1050,22 +1054,24 @@ FOR i:= 1 TO GVL.MAX_PAYOFF_COUNT DO
 	payoff_axis_list[i].error_check_all();
 
 	
-		errorStatus:=errorStatus OR ((payoff_axis_list[i].AXIS.Status.Error OR payoff_axis_list[i].adsError) AND payoff_axis_list[i].enabled);
+	errorStatus:=errorStatus OR ((payoff_axis_list[i].AXIS.Status.Error OR payoff_axis_list[i].adsError) AND payoff_axis_list[i].enabled);
 		
-		IF errorOutput AND payoff_axis_list[i].AXIS.Status.Error THEN
+	IF errorOutput AND payoff_axis_list[i].AXIS.Status.Error THEN
 			
-			ADSLOGSTR(
-        		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
-        		msgFmtStr := 'Error occurred. Error on Pickup Axis with ID: %S',
-        		strArg := UDINT_TO_STRING(payoff_axis_list[i].AXIS.Status.ErrorID)
-   			 );
+		ADSLOGSTR(
+        	msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+        	msgFmtStr := 'Error occurred. Error on Pickup Axis with ID: %S',
+        	strArg := UDINT_TO_STRING(payoff_axis_list[i].AXIS.Status.ErrorID)
+   		);
 		
-			errorOutput:=FALSE;
-		
+		errorOutput:=FALSE;
+		eventLogger^.fbMessage[5].Send(0);
 END_IF
 		
-IF errorOutput AND payoff_axis_list[i].adsError THEN
+	IF errorOutput AND payoff_axis_list[i].adsError THEN
 			
+
+			eventLogger^.fbMessage[1].Send(0);
 			ADSLOGSTR(
         		msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
         		msgFmtStr := 'Error occurred. Error in Pickup Axis FB with ID: %S ',
@@ -1073,8 +1079,8 @@ IF errorOutput AND payoff_axis_list[i].adsError THEN
    			 );
 		
 			errorOutput:=FALSE;
-		
-END_IF
+			eventLogger^.fbMessage[5].Send(0);
+	END_IF
 		
 END_FOR]]></ST>
       </Implementation>
@@ -1996,7 +2002,11 @@ END_IF
       <LineId Id="1324" Count="1" />
       <LineId Id="2337" Count="0" />
       <LineId Id="1326" Count="0" />
-      <LineId Id="2000" Count="138" />
+      <LineId Id="2000" Count="129" />
+      <LineId Id="2424" Count="0" />
+      <LineId Id="2130" Count="4" />
+      <LineId Id="2425" Count="0" />
+      <LineId Id="2135" Count="3" />
       <LineId Id="2148" Count="40" />
       <LineId Id="2199" Count="34" />
       <LineId Id="2359" Count="0" />
@@ -2123,6 +2133,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_WindingControl.general_error_check">
       <LineId Id="20" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="153" Count="0" />
       <LineId Id="66" Count="2" />
       <LineId Id="31" Count="2" />
       <LineId Id="84" Count="9" />
@@ -2136,8 +2148,12 @@ END_IF
       <LineId Id="71" Count="0" />
       <LineId Id="26" Count="1" />
       <LineId Id="29" Count="0" />
-      <LineId Id="117" Count="21" />
-      <LineId Id="47" Count="0" />
+      <LineId Id="117" Count="13" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="131" Count="6" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="138" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
