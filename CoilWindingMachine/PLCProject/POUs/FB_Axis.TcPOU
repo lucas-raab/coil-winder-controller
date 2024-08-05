@@ -75,7 +75,7 @@ VAR_INPUT
 	errorID				  : UDINT;					  // error ID, axis errors take precedence over ads errors 	
     //========================================================AXIS PARAMS========================================================
     ratedCurrent          : LREAL;                    // rated current
-    torqaueConstrant      : LREAL;                    // torque constant
+    torqueConstant        : LREAL;                    // torque constant
     gearRatioNum          : INT;                      // gear ratio numerator
     gearRatioDen          : INT;                      // gear ratio denominator
 
@@ -145,7 +145,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				Execute:=torqueEnable,
 				ContinuousUpdate:=TRUE,
 				Relative:=FALSE,
-				Torque:=torque,
+				Torque:=(torque*100)/(ratedCurrent*torqueConstant),
 				TorqueRamp:=torqueRamp,
 				VelocityLimitHigh:=velocityLimitHigh,
 				VelocityLimitLow:=velocityLimitLow);
@@ -281,8 +281,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqaueConstrant;
-actualTorque:=AXIS.NcToPlc.ActTorque;]]></ST>
+        <ST><![CDATA[actualTorque:=(AXIS.NcToPlc.ActTorque/100)*ratedCurrent*torqueConstant;
+//actualTorque:=AXIS.NcToPlc.ActTorque;]]></ST>
       </Implementation>
     </Method>
     <Method Name="halt_error_check" Id="{2ca5f59d-5312-4450-b836-ed2e20c6ea56}" FolderPath="Methods\Error Checks\">
