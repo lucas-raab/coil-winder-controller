@@ -3,58 +3,47 @@
   <POU Name="FB_hmi_connection" Id="{16fd796a-42c3-43cf-88b6-53e67b78becc}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_hmi_connection
 VAR_INPUT
-	//Initlize datagrid params
-	payoff_input_datagrid_params_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_input_datagrid_params;
-	payoff_output_datagrid_params_list: ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_output_datagrid_params;
-	pickup_input_datagrid_params_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_input_datagrid_params;
-	pickup_output_datagrid_params_list: ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_output_datagrid_params;
-	general_input_datagrid_params_list: ARRAY[1..1] OF general_input_datagrid_params;
-	misc_settings_input_datagrid_params_list :ARRAY[1..1] OF misc_settings_input_datagrid_params;
-	pickup_pancake_input_datagrid_params_list : ARRAY[1..1] OF pancake_params_0;
-	pickup_racetrack_input_datagrid_params_list : ARRAY[1..1] OF racetrack_params_1;
-	output_error_datagrid_list : ARRAY[0..3] OF output_error_datagrid;
-	motor_state_datagrid_list : ARRAY[0..3] OF motor_state_datagrid;
-	overview_outputs_datagrid_list :ARRAY[1..1] OF overview_outputs_datagrid;
-	turncount_output_datagrid_list : ARRAY[1..1] OF turncount_output_datagrid;
-	motor_info_datagrid_list : ARRAY[1..4] OF motor_info_datagrid;
-	color_list :ARRAY[0..3] OF DWORD;
-	//Outputs
+    // Datagrid parameters
+    payoff_input_datagrid_params_list        : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_input_datagrid_params;
+    payoff_output_datagrid_params_list       : ARRAY[1..GVL.MAX_PAYOFF_COUNT] OF payoff_output_datagrid_params;
+    pickup_input_datagrid_params_list        : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_input_datagrid_params;
+    pickup_output_datagrid_params_list       : ARRAY[1..GVL.MAX_PICKUP_COUNT] OF pickup_output_datagrid_params;
+    general_input_datagrid_params_list       : ARRAY[1..1] OF general_input_datagrid_params;
+    misc_settings_input_datagrid_params_list : ARRAY[1..1] OF misc_settings_input_datagrid_params;
+    pickup_pancake_input_datagrid_params_list: ARRAY[1..1] OF pancake_params_0;
+    pickup_racetrack_input_datagrid_params_list: ARRAY[1..1] OF racetrack_params_1;
+    output_error_datagrid_list               : ARRAY[0..3] OF output_error_datagrid;
+    motor_state_datagrid_list                : ARRAY[0..3] OF motor_state_datagrid;
+    overview_outputs_datagrid_list           : ARRAY[1..1] OF overview_outputs_datagrid;
+    turncount_output_datagrid_list           : ARRAY[1..1] OF turncount_output_datagrid;
+    motor_info_datagrid_list                 : ARRAY[1..4] OF motor_info_datagrid;
+    color_list                               : ARRAY[0..3] OF DWORD;
+
+    // Outputs
+    motor_turncount                          : ARRAY[1..4] OF DINT;
+    userNote                                 : STRING := '';
+
+    // Hardware inputs
+    estopHW AT %I*                           : BOOL := FALSE;
+
+    // Control page
+    resetUI                                  : BOOL;
+    startUI                                  : BOOL;
+    tensionUI                                : BOOL;
+    homeUI                                   : BOOL;
+    freespinUI                               : BOOL;
+    clearUI                                  : BOOL;
 	
-	motor_turncount : ARRAY[1..4] of DINT;
-	
-	userNote		: STRING := '';
-	
-	//HARDWARE INPUTS
-	estopHW AT %I* : BOOL := FALSE;
-	
-	//CONTROL PAGE
-	resetUI : BOOL ;
-	startUI : BOOL ;
-	tensionUI : BOOL;
-	homeUI : BOOL;
-	freespinUI :bool;
-	
-	//SETTINGS
-	checkInputsUI : BOOL;
-	updateInputsUI : BOOL;
-	
-	//OUTPUT
-	clearUI : BOOL;
-	
-	//HISTORYIZED VARS
-	torque : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
-	rpm : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
-	
-	//misc
-	state : INT:=0;
-	
-	
-	
-	//USER ID
-	user : STRING(255):='N/A';
-	
-END_VAR
-]]></Declaration>
+    // Historized variables
+    torque                                   : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
+    rpm                                      : ARRAY[1..GVL.MAX_PAYOFF_COUNT+GVL.MAX_PICKUP_COUNT] OF LREAL;
+
+    // Misc
+    state                                    : INT := 0;
+
+    // User ID
+    user                                     : STRING(255) := 'N/A';
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>

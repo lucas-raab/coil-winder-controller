@@ -3,7 +3,7 @@
   <POU Name="FB_EventLogger" Id="{4c915152-ce96-45c7-b663-4d8b33611a66}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_EventLogger
 VAR
-	fbMessage : ARRAY[0..100] OF FB_TcMessage;
+	fbMessage : ARRAY[0..GVL.MAX_EVENT_SIZE] OF FB_TcMessage; ///array of all possible events
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>

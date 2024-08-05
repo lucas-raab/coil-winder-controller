@@ -108,7 +108,7 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ //updates status of all axises, pickup and payoff
+        <ST><![CDATA[ //reads number of enabled payoff motors
 
 numOfEnabledPayoff:=0;
 
@@ -945,15 +945,16 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-	pickup_axis_list[1].setFree();
+        <ST><![CDATA[//disables all movement functions on all axis
+
+pickup_axis_list[1].setFree();
 		
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
-			payoff_axis_list[i].setFree();
+	payoff_axis_list[i].setFree();
 			
 		
-	END_FOR 
+END_FOR 
 ]]></ST>
       </Implementation>
     </Method>
@@ -1188,17 +1189,8 @@ END_VAR]]></Declaration>
 
 hmiConnection^.state:=state;
 
-update_error_status();
-update_torque();
-update_velocity();
-
-
-
 hmiConnection^.overview_outputs_datagrid_list[1].pickupTurnCount:=(pickup_axis_list[1].AXIS.NcToPlc.ModuloActPos/360+pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns);
 hmiConnection^.overview_outputs_datagrid_list[1].linspeed:=pickup_axis_list[1].actualVelocity*pickup_axis_list[1].outerRadiusCurrent/57.29578;
-
-
-
 
 hmiConnection^.overview_outputs_datagrid_list[1].torque:=pickup_axis_list[1].actualTorque/pickup_axis_list[1].outerRadiusCurrent;
 
@@ -1212,7 +1204,12 @@ FOR i:=1 TO gvl.MAX_PAYOFF_COUNT+gvl.MAX_PICKUP_COUNT DO
 	hmiConnection^.motor_info_datagrid_list[i].errorType:=axis_list[i]^.errorType;
 	hmiConnection^.motor_info_datagrid_list[i].errorID:=axis_list[i]^.errorID;
 	hmiConnection^.motor_info_datagrid_list[i].currentRadius:=axis_list[i]^.outerRadiusCurrent;
-END_FOR]]></ST>
+END_FOR
+
+//calls other hmi update methods
+update_error_status();
+update_torque();
+update_velocity();]]></ST>
       </Implementation>
     </Method>
     <Method Name="home" Id="{e2c62351-b82f-409f-8c6d-bb5032e701a1}" FolderPath="Methods\Motor Control\Misc Motor Control Routines\">
@@ -1392,7 +1389,9 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[state := 10;
+        <ST><![CDATA[//resets program to inital state, clears any error. 
+
+state := 10;
 progressPercent:=0;
 
 fileReadWrite^.reset();
@@ -1428,9 +1427,7 @@ VAR
 	errorTemp : BOOL := FALSE;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//to do . bug where after a failed winding attemp, users need to press button one more time inorder for command to run. coming back to this later
-
-//function to set pos of all motors to 0
+        <ST><![CDATA[//function to set pos of all motors to 0
 
 //turn power off on all axies. need for set pos function
 pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=FALSE);
@@ -1445,7 +1442,7 @@ END_FOR
 
 
 
-//set pos, repeat till not busy. 
+//set pos, repeat till not busy or error
 REPEAT
 	
 	//set pos of pickup
@@ -1473,9 +1470,6 @@ END_REPEAT
 
 pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis, Execute:=TRUE,Position:=0,mode:=FALSE);
 
-
-
-
 //turn power off on all axies. 
 pickup_axis_list[1].MCPOWER(Axis:=pickup_axis_list[1].AXIS,ENABLE:=TRUE);
 pickup_axis_list[1].MCPOS(Axis:=pickup_axis_list[1].Axis,Execute:=FALSE,Position:=0,MODE:=FALSE,busy=>busytemp,Error=>errortemp);
@@ -1487,6 +1481,7 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 			busy:=busy AND busytemp;
 	END_IF		
 END_FOR 
+
 set_pos_all:=NOT ERROR;
 
 
@@ -1516,8 +1511,8 @@ END_VAR]]></Declaration>
 pickup_axis_list[1].torque:=((desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2)+GVL.MIN_THRESHOLD_TORQUE;
 	
 //TO DO need to find what to set these to. might be too low. 
-pickup_axis_list[1].velocityLimitLow:=50;
-pickup_axis_list[1].velocityLimitHigh:=50;
+pickup_axis_list[1].velocityLimitLow:=0;
+pickup_axis_list[1].velocityLimitHigh:=100;
 	
 	
 pickup_axis_list[1].setTorque();
@@ -1527,8 +1522,8 @@ FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 	IF payoff_axis_list[i].enabled THEN
 		payoff_axis_list[i].setTorque();
 		
-		payoff_axis_list[i].velocityLimitLow:=-50;
-		payoff_axis_list[i].velocityLimitHigh:=-50;
+		payoff_axis_list[i].velocityLimitLow:=-100;
+		payoff_axis_list[i].velocityLimitHigh:=-0;
 		payoff_axis_list[i].torque:=-1*((desiredTension*	payoff_axis_list[i].outerRadiusCurrent/2)+GVL.MIN_THRESHOLD_TORQUE);
 			
 	END_IF
@@ -1599,15 +1594,15 @@ VAR
 	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-	pickup_axis_list[1].setStop();
+        <ST><![CDATA[//sets stop parameter for all motors
+
+pickup_axis_list[1].setStop();
 		
-	FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
+FOR i:=1 TO GVL.MAX_PAYOFF_COUNT DO
 		
-			payoff_axis_list[i].setStop();
+	payoff_axis_list[i].setStop();
 			
-		
-	END_FOR 
+END_FOR 
 
 ]]></ST>
       </Implementation>
@@ -1716,7 +1711,9 @@ VAR
 	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[hmiConnection^.output_error_datagrid_list[0].errorStatus:=pickup_axis_list[1].AXIS.Status.Error;
+        <ST><![CDATA[//updates hmi datagrids relating to axis error status and ID
+
+hmiConnection^.output_error_datagrid_list[0].errorStatus:=pickup_axis_list[1].AXIS.Status.Error;
 hmiConnection^.output_error_datagrid_list[0].errorID:=pickup_axis_list[1].AXIS.Status.ErrorID;
 
 hmiConnection^.motor_state_datagrid_list[0].state:=pickup_axis_list[1].state;
@@ -2070,7 +2067,8 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.freespin_all">
-      <LineId Id="6" Count="8" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="7" Count="7" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.general_error_check">
@@ -2145,12 +2143,9 @@ END_IF
       <LineId Id="8" Count="0" />
       <LineId Id="35" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="5" Count="2" />
-      <LineId Id="14" Count="2" />
+      <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="62" Count="2" />
       <LineId Id="61" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="36" Count="0" />
@@ -2163,6 +2158,8 @@ END_IF
       <LineId Id="53" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="52" Count="0" />
+      <LineId Id="79" Count="3" />
+      <LineId Id="78" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.home">
       <LineId Id="92" Count="0" />
@@ -2220,6 +2217,7 @@ END_IF
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.reset">
+      <LineId Id="50" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="16" Count="0" />
@@ -2232,8 +2230,6 @@ END_IF
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.set_pos_all">
-      <LineId Id="122" Count="0" />
-      <LineId Id="124" Count="0" />
       <LineId Id="123" Count="0" />
       <LineId Id="21" Count="3" />
       <LineId Id="52" Count="4" />
@@ -2257,9 +2253,6 @@ END_IF
       <LineId Id="32" Count="1" />
       <LineId Id="93" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="125" Count="0" />
-      <LineId Id="92" Count="0" />
-      <LineId Id="91" Count="0" />
       <LineId Id="97" Count="3" />
       <LineId Id="116" Count="0" />
       <LineId Id="101" Count="1" />
@@ -2268,6 +2261,7 @@ END_IF
       <LineId Id="137" Count="0" />
       <LineId Id="118" Count="0" />
       <LineId Id="96" Count="0" />
+      <LineId Id="149" Count="0" />
       <LineId Id="90" Count="0" />
       <LineId Id="89" Count="0" />
       <LineId Id="82" Count="2" />
@@ -2317,9 +2311,10 @@ END_IF
       <LineId Id="43" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.stop_all">
-      <LineId Id="14" Count="0" />
+      <LineId Id="44" Count="1" />
       <LineId Id="20" Count="1" />
-      <LineId Id="25" Count="5" />
+      <LineId Id="25" Count="3" />
+      <LineId Id="30" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -2365,6 +2360,7 @@ END_IF
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.update_error_status">
+      <LineId Id="45" Count="1" />
       <LineId Id="5" Count="1" />
       <LineId Id="35" Count="0" />
       <LineId Id="34" Count="0" />
