@@ -17,8 +17,22 @@
 
     <div id="TcHmiEventGrid_Events_1" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiEventGrid" data-tchmi-height-unit="px" data-tchmi-left="16" data-tchmi-left-unit="px" data-tchmi-show-menu-bar="True" data-tchmi-top="16" data-tchmi-top-unit="px" data-tchmi-width-unit="px" data-tchmi-right="16" data-tchmi-bottom="16">
       <script data-tchmi-target-attribute="data-tchmi-filter" type="application/json">
-        []
-      </script>
+[
+  {
+    "path": "domain",
+    "comparator": "==",
+    "value": "ADS"
+  },
+  {
+    "logic": "OR"
+  },
+  {
+    "path": "id",
+    "comparator": "==",
+    "value": "PLC_Events"
+  }
+]
+</script>
       <script data-tchmi-target-attribute="data-tchmi-columns" type="application/json">
         [
         {

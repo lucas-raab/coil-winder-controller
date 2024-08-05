@@ -121,7 +121,9 @@
     <Folder Include="Pages\Coil Params" />
     <Folder Include="Pages\Settings\" />
     <Folder Include="Server\ADS\" />
+    <Folder Include="Server\Beckhoff.TwinCAT.HMI.Server.Engineering" />
     <Folder Include="Server\TcHmiEcDiagnostics" />
+    <Folder Include="Server\TcHmiEventLogger" />
     <Folder Include="Server\TcHmiLua\" />
     <Folder Include="Server\TcHmiRecipeManagement" />
     <Folder Include="Server\TcHmiSqliteHistorize" />
@@ -218,6 +220,15 @@
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiEcDiagnostics\TcHmiEcDiagnostics.Storage.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiEventLogger\TcHmiEventLogger.Config.default.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiEventLogger\TcHmiEventLogger.Config.test.json">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Server\TcHmiEventLogger\TcHmiEventLogger.Storage.json">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Server\TcHmiLua\TcHmiLua.Config.default.json">

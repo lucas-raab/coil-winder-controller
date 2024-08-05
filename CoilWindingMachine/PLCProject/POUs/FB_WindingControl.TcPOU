@@ -432,8 +432,40 @@ CASE state OF
         hmiConnection^.homeUI := FALSE;
     END_IF
 
+
+	 501:
+    // ========================================500========================================
+    IF hmiConnection^.tensionUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to tension while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.tensionUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.resetUI THEN
+        reset();
+        state := 10;
+        hmiConnection^.resetUI := FALSE;
+        errorOutput := TRUE;
+    END_IF
+
+    IF hmiConnection^.startUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.startUI := FALSE;
+    END_IF
+
+    IF hmiConnection^.homeUI THEN
+        ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to home while in ESTOP state. Please reset first.',
+                  strArg := '');
+        hmiConnection^.homeUI := FALSE;
+    END_IF
+
     IF hmiConnection^.estopHW THEN
-        state := 500;
+		state:=501;
+        
     END_IF
     // ========================================500========================================
 END_CASE
@@ -677,15 +709,22 @@ CASE state OF
 	400: //ERROR STATE
 	//error on a axis preventing motor movement, or winding start. //do nothing 'till resolved
 		allowInputEdits:=FALSE;
-	500: //ESTOP STATE
+	500: //ESTOP STATE INIT
 	//triggered on estop press. can be cleared with reset
-	
+		eventLogger^.fbMessage[9].Send(0);
 		hmiConnection^.tensionUI:=FALSE;
 		hmiConnection^.freespinUI:=FALSE;
 		hmiConnection^.startUI:=FALSE;
 		allowInputEdits:=FALSE;
 		estop_routine();
+		state:=501;
 		
+	501:
+		hmiConnection^.tensionUI:=FALSE;
+		hmiConnection^.freespinUI:=FALSE;
+		hmiConnection^.startUI:=FALSE;
+		allowInputEdits:=FALSE;
+		estop_routine();
 	
 END_CASE
 //-------------------------------------------------------------------------------------------------------------- MOTOR CONTROL --------------------------------------------------------------------------------------------------------------
@@ -1963,7 +2002,11 @@ END_IF
       <LineId Id="2359" Count="0" />
       <LineId Id="2245" Count="69" />
       <LineId Id="2324" Count="0" />
-      <LineId Id="2326" Count="10" />
+      <LineId Id="2326" Count="6" />
+      <LineId Id="2335" Count="0" />
+      <LineId Id="2380" Count="32" />
+      <LineId Id="2379" Count="0" />
+      <LineId Id="2336" Count="0" />
       <LineId Id="1728" Count="40" />
       <LineId Id="2338" Count="0" />
       <LineId Id="1769" Count="3" />
@@ -1977,7 +2020,13 @@ END_IF
       <LineId Id="1964" Count="1" />
       <LineId Id="2344" Count="3" />
       <LineId Id="2342" Count="0" />
-      <LineId Id="1966" Count="22" />
+      <LineId Id="1966" Count="0" />
+      <LineId Id="2377" Count="0" />
+      <LineId Id="1967" Count="0" />
+      <LineId Id="2371" Count="0" />
+      <LineId Id="2373" Count="3" />
+      <LineId Id="2372" Count="0" />
+      <LineId Id="1968" Count="20" />
       <LineId Id="544" Count="0" />
     </LineIds>
     <LineIds Name="FB_WindingControl.decelerating_tension">
