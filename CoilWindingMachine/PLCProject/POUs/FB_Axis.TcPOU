@@ -64,13 +64,9 @@ VAR_INPUT
     //========================================================AXIS STATUS VARS========================================================
     actualTorque          : LREAL;                    // actual torque value
     actualVelocity        : LREAL;                    // actual velocity value
-
-	
-    state                 : INT;                      // state value
-
+    state                 : INT;                      // state value ((1=powered,2=disabled,3=in motion,4=error))
     adsError              : BOOL;                     // ADS error flag
     adsErrorID            : UDINT;                    // ADS error ID
-	
 	errorType			  : UDINT;					  // 1= ads 2= axis 0=no error
 	errorID				  : UDINT;					  // error ID, axis errors take precedence over ads errors 	
     //========================================================AXIS PARAMS========================================================
@@ -151,6 +147,7 @@ MCTORQUECONTROL(Axis:=Axis,
 				VelocityLimitLow:=velocityLimitLow);
 				
 MCVELOCITY(Axis:=Axis,Execute:=FALSE);
+
 MCVELOCITY(Axis:=Axis,
 			Execute:=velocityEnable,
 			Acceleration:=acceleration,
@@ -172,7 +169,8 @@ findinertia();
 error_check_all();
 
 
-errorType:=0;
+errorType:=0; //error type 1 = error inside of a FB. Error type 2 = error op axis. Error type 3= error inside of axis and on axis
+
 
 IF adserror THEN
 	errorType:=errorType +1 ;
@@ -310,8 +308,12 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[powerEnable:=TRUE;
 
-ST_SetPositionOptions.ClearPositionLag:=TRUE;
+//set options
+ST_SetPositionOptions.ClearPositionLag:=TRUE;  
+
+//reset axis to clear any errors
 MCRESET(Axis:=AXIS,Execute:=TRUE);
+MCRESET(Axis:=AXIS,Execute:=FALSE);
 
 
 ]]></ST>
@@ -327,7 +329,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[MCPOWER(Axis:=Axis,Error=>Error,ErrorID=>errorID);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="reset" Id="{c85d9ad6-d473-4751-8b53-dcece08669b3}">
+    <Method Name="reset" Id="{c85d9ad6-d473-4751-8b53-dcece08669b3}" FolderPath="Methods\">
       <Declaration><![CDATA[METHOD reset : BOOL
 VAR_INPUT
 END_VAR
@@ -564,6 +566,7 @@ END_VAR]]></Declaration>
       <LineId Id="212" Count="0" />
       <LineId Id="172" Count="3" />
       <LineId Id="31" Count="0" />
+      <LineId Id="269" Count="0" />
       <LineId Id="33" Count="6" />
       <LineId Id="154" Count="0" />
       <LineId Id="166" Count="0" />
@@ -576,7 +579,9 @@ END_VAR]]></Declaration>
       <LineId Id="68" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="259" Count="1" />
-      <LineId Id="237" Count="4" />
+      <LineId Id="237" Count="1" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="239" Count="2" />
       <LineId Id="247" Count="0" />
       <LineId Id="242" Count="2" />
       <LineId Id="248" Count="0" />
@@ -637,9 +642,13 @@ END_VAR]]></Declaration>
     </LineIds>
     <LineIds Name="FB_Axis.INIT">
       <LineId Id="5" Count="0" />
+      <LineId Id="41" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="40" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="39" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="27" Count="0" />

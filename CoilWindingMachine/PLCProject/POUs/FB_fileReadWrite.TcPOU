@@ -24,7 +24,7 @@ VAR
 	sFileRoot		: T_MaxString := 'C:\Users\nbung\Documents\TcXaeShell\CoilWindingMachine\CoilWindingHMI\LOG';
 	sFilePath		: T_MaxString := '\';
 	newsFilePath 	:  T_MaxString := '\';
-	sFileName		: T_MaxString := '';(* CSV destination file path and name *) //to do probably should have a way for users to change this
+	sFileName		: T_MaxString := '';(* CSV destination file path and name *) 
 	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
 	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
 	bBusy			: BOOL;
@@ -41,8 +41,6 @@ VAR
 	startTime : TIMESTRUCT;
     endTime : TIMESTRUCT;
     elapsedTime : TIME;
-   	timeStartString : STRING(255);
-	timeEndString : STRING(255);
 	fbTimer   : FB_LocalSystemTime := ( bEnable := TRUE, dwCycle := 1 );
 	fbFileOpen		: FB_FileOpen;(* Opens file *)
 	fbFileClose		: FB_FileClose;(* Closes file *)
@@ -156,12 +154,17 @@ END_VAR]]></Declaration>
 				stepCheck := 100;
 				bValidPath:=FALSE;
 				bError:=TRUE;
-					
+				
+				  ADSLOGSTR(msgCtrlMask := ADSLOG_MSGTYPE_ERROR OR ADSLOG_MSGTYPE_MSGBOX,
+                  msgFmtStr := 'Error Occured. Unable to start winding while not in tension state',
+                  strArg := '');
+				
+				
 			END_IF
 		END_IF
 
 		
-	//write single text line.
+	//close file
 		10:
 		fbFileClose( bExecute := FALSE );
 		fbFileClose( sNetId := sNetId, hFile := hFile, bExecute := TRUE );
@@ -195,6 +198,12 @@ t : DATE_AND_TIME ;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[fbTimer(bEnable := TRUE, dwCycle := 1 );
+
+//if bInitWrite is selected, then
+//check if path is valid, then
+//delete temporary file, then
+//update data base, then
+//write file, then
 
 IF bInitWrite THEN
 	bCheck:=TRUE;
@@ -438,7 +447,7 @@ bValidPath:=FALSE;
 bWrite:=FALSE;
 bError:=FALSE;
 nErrId:=0;
-]]></ST>
+bInProgress:=FALSE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="update_database" Id="{822f2f6a-ee12-4586-a471-9c4d67af88e7}" FolderPath="write database stack\">
@@ -532,6 +541,8 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="171" Count="1" />
       <LineId Id="215" Count="0" />
       <LineId Id="219" Count="1" />
+      <LineId Id="297" Count="1" />
+      <LineId Id="294" Count="2" />
       <LineId Id="173" Count="1" />
       <LineId Id="248" Count="1" />
       <LineId Id="176" Count="0" />
@@ -543,7 +554,10 @@ database[ 6, 1 ]:=userNote;
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_fileReadWrite.CYCLIC">
-      <LineId Id="197" Count="1" />
+      <LineId Id="197" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="198" Count="0" />
+      <LineId Id="207" Count="4" />
       <LineId Id="153" Count="0" />
       <LineId Id="155" Count="0" />
       <LineId Id="157" Count="0" />

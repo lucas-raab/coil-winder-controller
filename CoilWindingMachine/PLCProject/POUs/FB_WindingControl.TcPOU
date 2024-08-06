@@ -775,25 +775,18 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//to do . comeback on this and do a once over. not sure if this is what we want.
+        <ST><![CDATA[//checks if we need to accelerate, decellerate, or maintain steady state
 			
 actualLinspeed:=pickup_axis_list[1].getDistToAxis()*pickup_axis_list[1].actualVelocity/57.29578;
 		
-//if we are below our desired
 IF actualLinspeed <= 0.9*desiredLinspeed THEN
-	
-	state:=31;
-
-//last turn dedicated to decelerating 
+    state := 31; // Accelerate
+ELSIF actualLinspeed >= 1.1*desiredLinspeed THEN
+    state := 33; // Decelerate
 ELSIF pickup_axis_list[1].AXIS.NcToPlc.ModuloActTurns = desiredTurnCountPickup-1 THEN
-
-	state:=33;
-
-//if not accelerating or decelerating then we are in steady state
+    state := 33; // Decelerate on last turn
 ELSE
-
-	state:=32;
-	
+    state := 32; // Steady state
 END_IF
 
  
@@ -1556,8 +1549,7 @@ END_VAR]]></Declaration>
 //set torque to force times number of payoff motors enabled. 
 
 pickup_axis_list[1].torque:=((desiredTension*numOfEnabledPayoff* pickup_axis_list[1].outerRadiusCurrent)/2)+GVL.MIN_THRESHOLD_TORQUE;
-	
-//TO DO need to find what to set these to. might be too low. 
+
 pickup_axis_list[1].velocityLimitLow:=0;
 pickup_axis_list[1].velocityLimitHigh:=100;
 	
@@ -1944,9 +1936,7 @@ ELSE
 
 	pickup_axis_list[1].torque:=desiredTension*numOfEnabledPayoff * get_dist_to_axis_pickup()+GVL.MIN_THRESHOLD_TORQUE;
 	
-	//TO DO . need to confirm these are correct
-	//how i envison the limits to function is that the pickup side will gradually ramp up speed until we hit the upper velocity limit. we could maybe have no limits and just have only torque control
-	//will need testing. 
+	//sets lower limit to 0, higher limit to target linspeed. pickup motor should accelerate up to upper velocity limit, then sits there. torque should be lowered to keep velo limit. 
 	pickup_axis_list[1].velocityLimitLow:=0;
 	pickup_axis_list[1].velocityLimitHigh:=(desiredLinspeed/pickup_axis_list[1].outerRadiusCurrent)*57.29578 ;
 	
@@ -1971,13 +1961,10 @@ ELSE
 			
 			
 			
-			//sets payoff axis to half way point between target linspeed and the actual linspeed.
-			//how i envison this to function, is that while pickup side is at a low speed, the payoff side will also work at a lower speed,
-			//which gives the pickup time to catch up in speed. right now i do this by just averaging desired speed and actual speed,
-			//this could maybe he handled in a better way, so i will leave a TO DO 
-			payoff_axis_list[i].velocity:=(0.05*desiredVelocity+adjustedVelocity*0.95);
 			
+			payoff_axis_list[i].velocity:=(0.04*desiredVelocity+adjustedVelocity*0.95);
 			
+		
 			
 		END_IF
 	END_FOR 
@@ -2057,17 +2044,7 @@ END_IF
     <LineIds Name="FB_WindingControl.determine_motor_state">
       <LineId Id="14" Count="0" />
       <LineId Id="16" Count="2" />
-      <LineId Id="20" Count="1" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="26" Count="1" />
-      <LineId Id="37" Count="1" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="39" Count="1" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="47" Count="0" />
+      <LineId Id="61" Count="7" />
       <LineId Id="43" Count="0" />
       <LineId Id="41" Count="0" />
       <LineId Id="36" Count="0" />
@@ -2352,7 +2329,8 @@ END_IF
       <LineId Id="25" Count="0" />
       <LineId Id="100" Count="0" />
       <LineId Id="107" Count="0" />
-      <LineId Id="53" Count="11" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="55" Count="9" />
       <LineId Id="73" Count="0" />
       <LineId Id="96" Count="2" />
       <LineId Id="65" Count="0" />
@@ -2524,8 +2502,8 @@ END_IF
       <LineId Id="94" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="69" Count="2" />
-      <LineId Id="178" Count="1" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="179" Count="0" />
       <LineId Id="72" Count="4" />
       <LineId Id="121" Count="0" />
       <LineId Id="124" Count="0" />
@@ -2539,11 +2517,11 @@ END_IF
       <LineId Id="115" Count="0" />
       <LineId Id="204" Count="0" />
       <LineId Id="199" Count="0" />
-      <LineId Id="120" Count="0" />
-      <LineId Id="134" Count="0" />
-      <LineId Id="180" Count="1" />
+      <LineId Id="181" Count="0" />
       <LineId Id="131" Count="0" />
-      <LineId Id="83" Count="3" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="85" Count="1" />
       <LineId Id="67" Count="1" />
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="0" />

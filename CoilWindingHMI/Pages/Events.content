@@ -21,15 +21,15 @@
   {
     "path": "domain",
     "comparator": "==",
-    "value": "ADS"
+    "value": "TcHmiEventLogger"
   },
   {
     "logic": "OR"
   },
   {
-    "path": "id",
+    "path": "domain",
     "comparator": "==",
-    "value": "PLC_Events"
+    "value": "TcHmiSrv"
   }
 ]
 </script>
